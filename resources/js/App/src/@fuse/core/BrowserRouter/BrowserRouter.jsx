@@ -1,6 +1,6 @@
-import { useLayoutEffect, useState } from 'react';
-import history from '@history';
-import { Router } from 'react-router-dom';
+import { useLayoutEffect, useState } from "react";
+import history from "@history";
+import { Router } from "react-router-dom";
 
 function BrowserRouter({ basename, children, window }) {
   const [state, setState] = useState({
@@ -16,6 +16,7 @@ function BrowserRouter({ basename, children, window }) {
       location={state.location}
       navigationType={state.action}
       navigator={history}
+      history={history}
     >
       {children}
     </Router>
