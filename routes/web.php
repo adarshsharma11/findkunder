@@ -14,7 +14,7 @@ use App\Models\User;
 |
 */
 
-Route::get('{reactRoutes}', function () {
+Route::get('{reactRoutes?}', function () {
     $user = User::get()->first();
     return view('welcome', ['user' => $user]);
 })->where('reactRoutes', '^((?!api).)*$'); 
