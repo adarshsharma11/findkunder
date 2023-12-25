@@ -1,13 +1,25 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /  # Adjust this if your app is not in the root directory
+    <!-- <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule> -->
+
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} !^/index.html$
+    RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png|css|js)$
+    RewriteRule .* /index.html [L,R=302]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
 
-    # Handle Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
+    # Send Requests To Front Controller...
+    Options -MultiViews
+    RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+    RewriteRule ^ index.html [QSA,L]
 </IfModule>
