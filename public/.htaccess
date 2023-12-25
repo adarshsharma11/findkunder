@@ -3,7 +3,10 @@
         Options -MultiViews -Indexes
     </IfModule>
 
-    RewriteEngine On
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} !^/index.html$
+    RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png|css|js)$
+    RewriteRule .* /index.html [L,R=302]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -16,8 +19,9 @@
 
     # Send Requests To Front Controller...
     RewriteBase /
-    RewriteRule ^index\.html$ - [L]
+    RewriteRule ^index.html$ - [L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule . /index.html [L]
 </IfModule>
