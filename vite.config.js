@@ -1,19 +1,29 @@
 import laravel from "laravel-vite-plugin";
 import { defineConfig } from "vite";
+import tailwindcss from "tailwindcss";
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
   plugins: [
     react(),
+    cssInjectedByJsPlugin(),
     laravel({
       input: ["resources/js/app.tsx"],
       refresh: true,
     }),
   ],
   build: {
+    manifest: true,
     rollupOptions: {
+      input: "resources/js/app.tsx",
       external: ["/src/i18n"],
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [tailwindcss],
     },
   },
   resolve: {

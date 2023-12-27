@@ -42,7 +42,7 @@
           work correctly both with client-side routing and a non-root public URL.
           Learn how to configure a non-root public URL by running `npm run build`.
         -->
-        <title>Fuse React - Material Design Admin Template</title>
+        <title>Findkunder Admin</title>
         @viteReactRefresh
         @vite('resources/js/app.tsx')
 

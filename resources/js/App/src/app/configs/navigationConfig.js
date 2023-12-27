@@ -80,71 +80,27 @@ const navigationConfig = [
         type: "collapse",
         icon: "heroicons-outline:clock",
         url: "/pages/coming-soon",
-        children: [
-          {
-            id: "pages.coming-soon.classic",
-            title: "Classic",
-            type: "item",
-            url: "/pages/coming-soon/classic",
-          },
-          {
-            id: "pages.coming-soon.modern",
-            title: "Modern",
-            type: "item",
-            url: "/pages/coming-soon/modern",
-          },
-          {
-            id: "pages.coming-soon.modern-reversed",
-            title: "Modern Reversed",
-            type: "item",
-            url: "/pages/coming-soon/modern-reversed",
-          },
-          {
-            id: "pages.coming-soon.split-screen",
-            title: "Split Screen",
-            type: "item",
-            url: "/pages/coming-soon/split-screen",
-          },
-          {
-            id: "pages.coming-soon.split-screen-reversed",
-            title: "Split Screen Reversed",
-            type: "item",
-            url: "/pages/coming-soon/split-screen-reversed",
-          },
-          {
-            id: "pages.coming-soon.full-screen",
-            title: "Full Screen",
-            type: "item",
-            url: "/pages/coming-soon/full-screen",
-          },
-          {
-            id: "pages.coming-soon.full-screen-reversed",
-            title: "Full Screen Reversed",
-            type: "item",
-            url: "/pages/coming-soon/full-screen-reversed",
-          },
-        ],
       },
-      {
-        id: "pages.error",
-        title: "Error",
-        type: "collapse",
-        icon: "heroicons-outline:exclamation-circle",
-        children: [
-          {
-            id: "pages.error.404",
-            title: "404",
-            type: "item",
-            url: "/pages/error/404",
-          },
-          {
-            id: "pages.error.500",
-            title: "500",
-            type: "item",
-            url: "/pages/error/500",
-          },
-        ],
-      },
+      // {
+      //   id: "pages.error",
+      //   title: "Error",
+      //   type: "collapse",
+      //   icon: "heroicons-outline:exclamation-circle",
+      //   children: [
+      //     {
+      //       id: "pages.error.404",
+      //       title: "404",
+      //       type: "item",
+      //       url: "/pages/error/404",
+      //     },
+      //     {
+      //       id: "pages.error.500",
+      //       title: "500",
+      //       type: "item",
+      //       url: "/pages/error/500",
+      //     },
+      //   ],
+      // },
       {
         id: "pages.invoice",
         title: "Invoice",
