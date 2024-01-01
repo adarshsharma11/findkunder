@@ -18,10 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [Api\AuthController::class, 'login']);
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [Api\AuthController::class, 'logout']);
+        Route::post('/me', [Api\AuthController::class, 'me']);
     });
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
