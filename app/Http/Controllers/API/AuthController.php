@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,11 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             // Authentication successful
             $user = Auth::user();
-            return response()->json(['status' => true, 'user' => $user]);
+            $expirationTime = now()->addDay();
+            $user->tokens()->delete();
+            $token = $user->createToken('auth-token', ['*'],  $expirationTime)->accessToken->token;
+            $role = $user->roles()->pluck('name')[0];
+            return response()->json(['status' => true, 'user' => $user, 'accessToken' => $token, 'expirationTime' => $expirationTime, 'role' => $role]);
         } else {
             // Authentication failed
             return response()->json(['status' => false, 'message' => 'Invalid email or password'], 401);
@@ -68,6 +73,28 @@ class AuthController extends Controller
     public function me()
     {
         // Return the authenticated user information
-        return response()->json(['status' => true, 'user' => auth()->user()]);
+        $user = Auth::user();
+        $accessToken = $user->tokens->first();
+        $role = $user->roles()->pluck('name')[0];
+        //print_r($accessToken->expire_at); die;
+
+    if ($accessToken) {
+        // Extract the token and its expiration time
+        $token = $accessToken->token;
+        $expirationTime = $accessToken->expires_at;
+    } else {
+        // Set default values if the token doesn't exist
+        $token = null;
+        $expirationTime = null;
+    }
+
+    // Return the user information along with the token and expiration time
+    return response()->json([
+        'status' => true,
+        'user' => $user,
+        'accessToken' => $token,
+        'expirationTime' => $expirationTime,
+        'role' => $role
+    ]);
     }
 }

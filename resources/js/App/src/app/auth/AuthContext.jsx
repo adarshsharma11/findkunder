@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import FuseSplashScreen from '@fuse/core/FuseSplashScreen';
-import { showMessage } from 'app/store/fuse/messageSlice';
-import { logoutUser, setUser } from 'app/store/userSlice';
-import jwtService from './services/jwtService';
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import FuseSplashScreen from "@fuse/core/FuseSplashScreen";
+import { showMessage } from "app/store/fuse/messageSlice";
+import { logoutUser, setUser } from "app/store/userSlice";
+import AuthService from "./services/AuthService";
 
 const AuthContext = React.createContext();
 
@@ -14,43 +14,42 @@ function AuthProvider({ children }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    jwtService.on('onAutoLogin', () => {
-      dispatch(showMessage({ message: 'Signing in with JWT' }));
+    AuthService.on("onAutoLogin", () => {
+      dispatch(showMessage({ message: "Signing in with JWT" }));
 
       /**
        * Sign in and retrieve user data with stored token
        */
-      jwtService
-        .signInWithToken()
+      AuthService.signInWithToken()
         .then((user) => {
-          success(user, 'Signed in with JWT');
+          success(user, "Signed in with JWT");
         })
         .catch((error) => {
           pass(error.message);
         });
     });
 
-    jwtService.on('onLogin', (user) => {
-      success(user, 'Signed in');
+    AuthService.on("onLogin", (user) => {
+      success(user, "Signed in");
     });
 
-    jwtService.on('onLogout', () => {
-      pass('Signed out');
+    AuthService.on("onLogout", () => {
+      pass("Signed out");
 
       dispatch(logoutUser());
     });
 
-    jwtService.on('onAutoLogout', (message) => {
+    AuthService.on("onAutoLogout", (message) => {
       pass(message);
 
       dispatch(logoutUser());
     });
 
-    jwtService.on('onNoAccessToken', () => {
+    AuthService.on("onNoAccessToken", () => {
       pass();
     });
 
-    jwtService.init();
+    AuthService.init();
 
     function success(user, message) {
       if (message) {
@@ -79,14 +78,16 @@ function AuthProvider({ children }) {
   return waitAuthCheck ? (
     <FuseSplashScreen />
   ) : (
-    <AuthContext.Provider value={{ isAuthenticated }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 
 function useAuth() {
   const context = React.useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within a AuthProvider');
+    throw new Error("useAuth must be used within a AuthProvider");
   }
   return context;
 }

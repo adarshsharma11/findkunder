@@ -9,13 +9,11 @@ import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
 import _ from "@lodash";
-import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import { useEffect } from "react";
-import jwtService from "../../auth/services/jwtService";
+import AuthService from "../../auth/services/AuthService";
 
 /**
  * Form Validation Schema
@@ -33,7 +31,7 @@ const schema = yup.object().shape({
 
 const defaultValues = {
   email: "",
-  password: "",
+  password: "dk#findkunder.2024",
   remember: true,
 };
 
@@ -46,17 +44,8 @@ function SignInPage() {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  useEffect(() => {
-    setValue("email", "admin@fusetheme.com", {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    setValue("password", "admin", { shouldDirty: true, shouldValidate: true });
-  }, [setValue]);
-
   function onSubmit({ email, password }) {
-    jwtService
-      .signInWithEmailAndPassword(email, password)
+    AuthService.signInWithEmailAndPassword(email, password)
       .then((user) => {
         // No need to do anything, user data will be set at app/auth/AuthContext
       })
