@@ -23,4 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/me', [AuthController::class, 'me']);
     });
+Route::post('/tokens/create', function (Request $request) {
+    $token = $request->user()->createToken($request->token_name);
+    return ['token' => $token->plainTextToken];
+});
 
