@@ -1121,8 +1121,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-right: -0.8rem;
 }
 .mx-4 {
-  margin-left: 0.4rem;
-  margin-right: 0.4rem;
+  margin-left: 0.4rem !important; 
+  margin-right: 0.4rem !important;
 }
 .my-24 {
   margin-top: 2.4rem;
@@ -1296,7 +1296,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-left: 1.6rem;
 }
 .mb-16 {
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.6rem !important;
 }
 .mb-32 {
   margin-bottom: 3.2rem;

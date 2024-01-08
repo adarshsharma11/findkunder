@@ -10,6 +10,8 @@ import dashboardsConfigs from "../main/dashboards/dashboardsConfigs";
 import appsConfigs from "../main/apps/appsConfigs";
 import pagesConfigs from "../main/pages/pagesConfigs";
 import authRoleExamplesConfigs from "../main/auth/authRoleExamplesConfigs";
+import CompaniesConfig from "../main/pages/companies/CompaniesConfig";
+import ContactPersonConfig from "../main/pages/contact-person/ContactPersonConfig";
 
 const routeConfigs = [
   ...appsConfigs,
@@ -20,6 +22,8 @@ const routeConfigs = [
   SignOutConfig,
   SignInConfig,
   SignUpConfig,
+  CompaniesConfig,
+  ContactPersonConfig,
 ];
 
 const routes = [
