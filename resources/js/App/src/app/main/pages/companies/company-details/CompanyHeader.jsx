@@ -113,6 +113,7 @@ function ProductHeader(props) {
           variant="contained"
           color="secondary"
           onClick={handleRemoveProduct}
+          disabled={id === "new"}
           startIcon={
             <FuseSvgIcon className="hidden sm:flex">
               heroicons-outline:trash

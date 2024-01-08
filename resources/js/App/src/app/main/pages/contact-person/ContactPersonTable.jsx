@@ -202,6 +202,13 @@ function ContactPersonTable(props) {
                     >
                       {n.last_name}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.company?.company_name}
+                    </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"

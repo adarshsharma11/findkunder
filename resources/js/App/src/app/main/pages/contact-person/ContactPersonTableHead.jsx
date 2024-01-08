@@ -33,7 +33,14 @@ const rows = [
     sort: true,
   },
   {
-    id: "emain",
+    id: "company_name",
+    align: "left",
+    disablePadding: false,
+    label: "Company",
+    sort: true,
+  },
+  {
+    id: "email",
     align: "right",
     disablePadding: false,
     label: "Email",

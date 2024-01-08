@@ -11,7 +11,7 @@ class ContactPersonController extends Controller
 {
     public function index()
     {
-        $contactPersons = ContactPerson::all();
+        $contactPersons = ContactPerson::with('company')->get();
         return response()->json($contactPersons);
     }
 
