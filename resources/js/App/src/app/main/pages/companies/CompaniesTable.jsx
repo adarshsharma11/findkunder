@@ -211,7 +211,6 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      <span>$</span>
                       {n.street}
                     </TableCell>
 
