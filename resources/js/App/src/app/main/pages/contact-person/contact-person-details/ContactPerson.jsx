@@ -44,9 +44,13 @@ const schema = yup.object().shape({
     .max(255, "Last name must not exceed 255 characters"),
   email: yup
     .string()
+    .required("You must enter a email")
     .email("Invalid email format")
     .max(255, "Email must not exceed 255 characters"),
-  phone: yup.string().nullable().max(20, "Phone must not exceed 20 characters"),
+  phone: yup
+    .string()
+    .required("You must enter a phone")
+    .max(20, "Phone must not exceed 20 characters"),
   comment: yup
     .string()
     .nullable()

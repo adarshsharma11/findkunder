@@ -39,16 +39,19 @@ const schema = yup.object().shape({
     .max(20, "CVR must not exceed 20 characters"),
   street: yup
     .string()
-    .nullable()
+    .required("You must enter a street")
     .max(255, "Street must not exceed 255 characters"),
   postal_code: yup
     .string()
-    .nullable()
+    .required("You must enter a postal code")
     .max(20, "Postal code must not exceed 20 characters"),
-  city: yup.string().nullable().max(255, "City must not exceed 255 characters"),
+  city: yup
+    .string()
+    .required("You must enter a city")
+    .max(255, "City must not exceed 255 characters"),
   location: yup
     .string()
-    .nullable()
+    .required("You must enter a location")
     .max(255, "Location must not exceed 255 characters"),
   website: yup
     .string()
