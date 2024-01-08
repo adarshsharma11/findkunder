@@ -95,7 +95,6 @@ class AuthService extends FuseUtils.EventEmitter {
         .post(authServiceConfig.userInfo)
         .then((response) => {
           const userInfo = response.data.user;
-          console.log(response, "jkbjbvjh");
           if (response.data.user) {
             this.setSession(
               response.data.accessToken,

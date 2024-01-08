@@ -1,14 +1,30 @@
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
+  const { t } = useTranslation("contactPerson");
   const { companies } = props;
   const { control, formState } = methods;
   const { errors } = formState;
+  const titleOptions = [
+    {
+      value: "approved_auditor",
+      label: t("approved_auditor"),
+    },
+    {
+      value: "bookkeeper",
+      label: t("bookkeeper"),
+    },
+    {
+      value: "other",
+      label: t("other"),
+    },
+  ];
 
   return (
     <div>
@@ -38,6 +54,35 @@ function BasicInfoTab(props) {
                 ))}
               <MenuItem value="" disabled>
                 Select Company
+              </MenuItem>
+            </Select>
+          </>
+        )}
+      />
+      <Controller
+        name="title"
+        control={control}
+        render={({ field }) => (
+          <>
+            <InputLabel id="demo-simple-select-label">Title</InputLabel>
+            <Select
+              {...field}
+              className="mt-8 mb-16"
+              error={!!errors.title}
+              required
+              helperText={errors?.title?.message}
+              id="title"
+              variant="outlined"
+              fullWidth
+            >
+              {titleOptions &&
+                titleOptions?.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              <MenuItem value="" disabled>
+                Select Title
               </MenuItem>
             </Select>
           </>
@@ -74,6 +119,7 @@ function BasicInfoTab(props) {
             helperText={errors?.last_name?.message}
             label="Last Name"
             type="text"
+            required
             variant="outlined"
             fullWidth
           />
@@ -91,6 +137,7 @@ function BasicInfoTab(props) {
             helperText={errors?.email?.message}
             label="Email"
             type="text"
+            required
             variant="outlined"
             fullWidth
           />
@@ -107,7 +154,8 @@ function BasicInfoTab(props) {
             error={!!errors.phone}
             helperText={errors?.phone?.message}
             label="Phone"
-            type="text"
+            required
+            type="number"
             variant="outlined"
             fullWidth
           />

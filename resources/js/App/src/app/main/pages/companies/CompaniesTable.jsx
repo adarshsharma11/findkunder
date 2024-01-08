@@ -7,14 +7,12 @@ import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
-import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
   getProducts,
   selectProducts,
@@ -245,7 +243,7 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.website}
+                      {n.website || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -253,7 +251,7 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.linkedin}
+                      {n.linkedin || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -261,7 +259,7 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.facebook}
+                      {n.facebook || "N/A"}
                     </TableCell>
                   </TableRow>
                 );

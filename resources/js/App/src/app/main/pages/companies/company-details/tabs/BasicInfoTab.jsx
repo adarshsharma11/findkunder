@@ -1,5 +1,18 @@
 import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
+
+const regions = [
+  "North Jutland",
+  "Central Jutland",
+  "Southern Denmark",
+  "Zealand",
+  "Capital Region",
+  "Greenland",
+  "Faroe Islands",
+];
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -35,10 +48,11 @@ function BasicInfoTab(props) {
             {...field}
             className="mt-8 mb-16"
             id="cvr"
+            required
             error={!!errors.cvr}
             helperText={errors?.cvr?.message}
             label="CVR"
-            type="text"
+            type="number"
             variant="outlined"
             fullWidth
           />
@@ -52,6 +66,7 @@ function BasicInfoTab(props) {
             {...field}
             className="mt-8 mb-16"
             id="street"
+            required
             error={!!errors.street}
             helperText={errors?.street?.message}
             label="Street"
@@ -69,10 +84,11 @@ function BasicInfoTab(props) {
             {...field}
             className="mt-8 mb-16"
             id="postal_code"
+            required
             error={!!errors.postal_code}
             helperText={errors?.postal_code?.message}
             label="Postal Code"
-            type="text"
+            type="number"
             variant="outlined"
             fullWidth
           />
@@ -86,6 +102,7 @@ function BasicInfoTab(props) {
             {...field}
             className="mt-8 mb-16"
             id="city"
+            required
             error={!!errors.city}
             helperText={errors?.city?.message}
             label="City"
@@ -99,17 +116,31 @@ function BasicInfoTab(props) {
         name="location"
         control={control}
         render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            id="location"
-            error={!!errors.location}
-            helperText={errors?.location?.message}
-            label="Location"
-            type="text"
-            variant="outlined"
-            fullWidth
-          />
+          <>
+            <InputLabel id="demo-simple-select-label">
+              Select Location
+            </InputLabel>
+            <Select
+              {...field}
+              className="mt-8 mb-16"
+              error={!!errors.location}
+              required
+              helperText={errors?.location?.message}
+              id="location"
+              variant="outlined"
+              fullWidth
+            >
+              {regions &&
+                regions?.map((region) => (
+                  <MenuItem key={region} value={region}>
+                    {region}
+                  </MenuItem>
+                ))}
+              <MenuItem value="" disabled>
+                Select Location
+              </MenuItem>
+            </Select>
+          </>
         )}
       />
       <Controller

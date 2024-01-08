@@ -34,6 +34,10 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a first name")
     .max(255, "First name must not exceed 255 characters"),
+  title: yup
+    .string()
+    .required("You must enter a title")
+    .max(255, "First name must not exceed 255 characters"),
   last_name: yup
     .string()
     .required("You must enter a last name")
@@ -54,6 +58,7 @@ const schema = yup.object().shape({
   linkedin: yup
     .string()
     .nullable()
+    .transform((curr, orig) => (orig === "" ? null : curr))
     .matches(
       /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
       "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"

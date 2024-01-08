@@ -52,11 +52,12 @@ const schema = yup.object().shape({
     .max(255, "Location must not exceed 255 characters"),
   website: yup
     .string()
-    .nullable()
-    .url("Invalid website URL. Please enter a valid URL"),
+    .url("Invalid website URL. Please enter a valid URL")
+    .nullable(),
   linkedin: yup
     .string()
     .nullable()
+    .transform((curr, orig) => (orig === "" ? null : curr))
     .matches(
       /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
       "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"
@@ -64,9 +65,10 @@ const schema = yup.object().shape({
   facebook: yup
     .string()
     .nullable()
+    .transform((curr, orig) => (orig === "" ? null : curr))
     .matches(
       /^(https?:\/\/)?(www\.)?facebook\.com\/.*$/,
-      "Invalid Facebook URL. Please enter a valid Facebook URL"
+      "Invalid LinkedIn URL. Please enter a valid Facebook URL"
     ),
 });
 

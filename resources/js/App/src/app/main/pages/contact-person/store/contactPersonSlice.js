@@ -34,7 +34,6 @@ export const saveProduct = createAsyncThunk(
 export const addNewPerson = createAsyncThunk(
   "eCommerceApp/product/addNewPerson",
   async (personData, { dispatch, getState }) => {
-    console.log(personData, "MMMM");
     const response = await axios.post("/api/contact-person", personData);
     const data = response.data;
     return data;
@@ -51,6 +50,7 @@ const productSlice = createSlice({
       prepare: (event) => ({
         payload: {
           company_id: "",
+          title: "",
           first_name: "",
           last_name: "",
           email: "",

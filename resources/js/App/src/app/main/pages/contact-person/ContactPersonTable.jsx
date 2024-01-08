@@ -8,6 +8,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,7 @@ import ContactPersonTableHead from "./ContactPersonTableHead";
 
 function ContactPersonTable(props) {
   const dispatch = useDispatch();
+  const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
 
@@ -192,6 +194,14 @@ function ContactPersonTable(props) {
                       component="th"
                       scope="row"
                     >
+                      {t(n.title) || "N/A"}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
                       {n.first_name}
                     </TableCell>
 
@@ -234,7 +244,7 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.linkedin}
+                      {n.linkedin || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -242,7 +252,7 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.comment}
+                      {n.comment || "N/A"}
                     </TableCell>
                   </TableRow>
                 );

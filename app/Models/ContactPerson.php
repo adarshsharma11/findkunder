@@ -13,6 +13,7 @@ class ContactPerson extends Model
     protected $fillable = [
         'first_name',
         'last_name',
+        'title',
         'email',
         'phone',
         'linkedin',
