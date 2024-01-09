@@ -53,10 +53,7 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a location")
     .max(255, "Location must not exceed 255 characters"),
-  website: yup
-    .string()
-    .url("Invalid website URL. Please enter a valid URL")
-    .nullable(),
+  website: yup.string().nullable(),
   linkedin: yup
     .string()
     .nullable()

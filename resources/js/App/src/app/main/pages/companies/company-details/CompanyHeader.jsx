@@ -48,7 +48,7 @@ function ProductHeader(props) {
 
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
-      <div className="flex flex-col items-center sm:items-start space-y-8 sm:space-y-0 w-full sm:max-w-full min-w-0">
+      <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
         <motion.div
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
@@ -68,7 +68,8 @@ function ProductHeader(props) {
             <span className="flex mx-4 font-medium">Companies</span>
           </Typography>
         </motion.div>
-
+      </div>
+      <div className="flex flex-col items-center sm:items-start space-y-8 sm:space-y-0 w-full sm:max-w-full min-w-0">
         <div className="flex items-center max-w-full">
           <motion.div
             className="hidden sm:flex"

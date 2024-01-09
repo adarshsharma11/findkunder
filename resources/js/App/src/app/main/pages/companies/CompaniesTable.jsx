@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
   getProducts,
   selectProducts,
@@ -243,7 +244,25 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.website || "N/A"}
+                      {n.website ? (
+                        <div className="flex justify-end">
+                          <a
+                            target="_blank"
+                            href={`https://${n.website}`}
+                            rel="noopener noreferrer"
+                          >
+                            <FuseSvgIcon
+                              className="text-48"
+                              size={24}
+                              color="blue"
+                            >
+                              heroicons-outline:eye
+                            </FuseSvgIcon>
+                          </a>
+                        </div>
+                      ) : (
+                        "N/A"
+                      )}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -251,7 +270,25 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.linkedin || "N/A"}
+                      {n.linkedin ? (
+                        <div className="flex justify-end">
+                          <a
+                            target="_blank"
+                            href={`https://${n.linkedin}`}
+                            rel="noopener noreferrer"
+                          >
+                            <FuseSvgIcon
+                              className="text-48"
+                              size={24}
+                              color="blue"
+                            >
+                              heroicons-outline:information-circle
+                            </FuseSvgIcon>
+                          </a>
+                        </div>
+                      ) : (
+                        "N/A"
+                      )}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -259,7 +296,25 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.facebook || "N/A"}
+                      {n.facebook ? (
+                        <div className="flex justify-end">
+                          <a
+                            target="_blank"
+                            href={`https://${n.facebook}`}
+                            rel="noopener noreferrer"
+                          >
+                            <FuseSvgIcon
+                              className="text-48"
+                              size={24}
+                              color="blue"
+                            >
+                              material-solid:facebook
+                            </FuseSvgIcon>
+                          </a>
+                        </div>
+                      ) : (
+                        "N/A"
+                      )}
                     </TableCell>
                   </TableRow>
                 );
