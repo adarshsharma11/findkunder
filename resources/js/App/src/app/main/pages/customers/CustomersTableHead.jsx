@@ -15,28 +15,42 @@ import { Box } from "@mui/system";
 import TableHead from "@mui/material/TableHead";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { lighten } from "@mui/material/styles";
-import { removeProducts } from "./store/companiesSlice";
+import { removeProducts } from "./store/customersSlice";
 
 const rows = [
   {
-    id: "company_name",
+    id: "first_name",
+    align: "left",
+    disablePadding: false,
+    label: "First Name",
+    sort: true,
+  },
+  {
+    id: "company_id",
     align: "left",
     disablePadding: false,
     label: "Company",
     sort: true,
   },
   {
-    id: "cvr",
+    id: "person_id",
     align: "left",
     disablePadding: false,
-    label: "CVR",
+    label: "Contact Person",
     sort: true,
   },
   {
-    id: "street",
+    id: "email",
     align: "right",
     disablePadding: false,
-    label: "Street",
+    label: "Email",
+    sort: true,
+  },
+  {
+    id: "Phone",
+    align: "right",
+    disablePadding: false,
+    label: "Phone",
     sort: true,
   },
   {
@@ -47,38 +61,10 @@ const rows = [
     sort: true,
   },
   {
-    id: "city",
+    id: "region",
     align: "right",
     disablePadding: false,
-    label: "City",
-    sort: true,
-  },
-  {
-    id: "location",
-    align: "right",
-    disablePadding: false,
-    label: "Location",
-    sort: true,
-  },
-  {
-    id: "website",
-    align: "right",
-    disablePadding: false,
-    label: "Website",
-    sort: true,
-  },
-  {
-    id: "linkedin",
-    align: "right",
-    disablePadding: false,
-    label: "Linkedin",
-    sort: true,
-  },
-  {
-    id: "facebook",
-    align: "right",
-    disablePadding: false,
-    label: "Facebook",
+    label: "Region",
     sort: true,
   },
   {
@@ -90,7 +76,7 @@ const rows = [
   },
 ];
 
-function CompaniesTableHead(props) {
+function CustomersTableHead(props) {
   const { selectedProductIds } = props;
   const numSelected = selectedProductIds.length;
 
@@ -210,4 +196,4 @@ function CompaniesTableHead(props) {
   );
 }
 
-export default CompaniesTableHead;
+export default CustomersTableHead;

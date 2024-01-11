@@ -7,8 +7,10 @@ import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -176,7 +178,6 @@ function ContactPersonTable(props) {
                     tabIndex={-1}
                     key={n.id}
                     selected={isSelected}
-                    onClick={(event) => handleClick(n)}
                   >
                     <TableCell
                       className="w-40 md:w-64 text-center"
@@ -213,14 +214,6 @@ function ContactPersonTable(props) {
                       {n.last_name}
                     </TableCell>
                     <TableCell
-                      className="p-4 md:p-16 truncate"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.company?.company_name}
-                    </TableCell>
-
-                    <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
@@ -244,7 +237,26 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.linkedin || "N/A"}
+                      {n.linkedin ? (
+                        <div className="flex justify-end">
+                          <a
+                            target="_blank"
+                            href={`https://${n.linkedin}`}
+                            rel="noopener noreferrer"
+                            role="button"
+                          >
+                            <FuseSvgIcon
+                              className="text-48"
+                              size={24}
+                              color="blue"
+                            >
+                              heroicons-outline:information-circle
+                            </FuseSvgIcon>
+                          </a>
+                        </div>
+                      ) : (
+                        "N/A"
+                      )}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -253,6 +265,26 @@ function ContactPersonTable(props) {
                       align="right"
                     >
                       {n.comment || "N/A"}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={(event) => handleClick(n)}
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                            heroicons-solid:external-link
+                          </FuseSvgIcon>
+                        }
+                      >
+                        View/Edit
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

@@ -12,6 +12,7 @@ import pagesConfigs from "../main/pages/pagesConfigs";
 import authRoleExamplesConfigs from "../main/auth/authRoleExamplesConfigs";
 import CompaniesConfig from "../main/pages/companies/CompaniesConfig";
 import ContactPersonConfig from "../main/pages/contact-person/ContactPersonConfig";
+import CustomersConfig from "../main/pages/customers/CustomersConfig";
 
 const routeConfigs = [
   ...appsConfigs,
@@ -24,6 +25,7 @@ const routeConfigs = [
   SignUpConfig,
   CompaniesConfig,
   ContactPersonConfig,
+  CustomersConfig,
 ];
 
 const routes = [
@@ -33,7 +35,7 @@ const routes = [
   ),
   {
     path: "/",
-    element: <Navigate to="dashboards/analytics" />,
+    element: <Navigate to="companies" />,
     auth: settingsConfig.defaultAuth,
   },
   {

@@ -35,7 +35,7 @@ const navigationConfig = [
         title: "Findkunder",
         type: "item",
         icon: "search",
-        url: "/apps/findkunder",
+        url: "/customers",
       },
       // {
       //   id: "apps.ecommerce",

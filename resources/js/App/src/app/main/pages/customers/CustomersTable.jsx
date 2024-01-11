@@ -9,21 +9,23 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
-import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
   getProducts,
   selectProducts,
   selectProductsSearchText,
-} from "./store/companiesSlice";
-import CompaniesTableHead from "./CompaniesTableHead";
+} from "./store/customersSlice";
+import CustomersTableHead from "./CustomersTableHead";
 
-function CompaniesTable(props) {
+function CutomersTable(props) {
   const dispatch = useDispatch();
+  const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
 
@@ -45,7 +47,7 @@ function CompaniesTable(props) {
     if (searchText.length !== 0) {
       setData(
         _.filter(products, (item) =>
-          item.company_name.toLowerCase().includes(searchText.toLowerCase())
+          item.first_name.toLowerCase().includes(searchText.toLowerCase())
         )
       );
       setPage(0);
@@ -81,7 +83,7 @@ function CompaniesTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/companies/${item.id}`);
+    props.navigate(`/customers/${item.id}`);
   }
 
   function handleCheck(event, id) {
@@ -128,7 +130,7 @@ function CompaniesTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no companies!
+          There are no customers!
         </Typography>
       </motion.div>
     );
@@ -138,7 +140,7 @@ function CompaniesTable(props) {
     <div className="w-full flex flex-col min-h-full">
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <CompaniesTableHead
+          <CustomersTableHead
             selectedProductIds={selected}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -193,7 +195,15 @@ function CompaniesTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.company_name}
+                      {n.first_name || "N/A"}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.company.company_name}
                     </TableCell>
 
                     <TableCell
@@ -201,7 +211,14 @@ function CompaniesTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.cvr}
+                      {n.person.first_name}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.email}
                     </TableCell>
 
                     <TableCell
@@ -210,7 +227,7 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.street}
+                      {n.phone}
                     </TableCell>
 
                     <TableCell
@@ -228,96 +245,7 @@ function CompaniesTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.city}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.location}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.website ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.website}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="blue"
-                            >
-                              heroicons-outline:eye
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.linkedin ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.linkedin}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="blue"
-                            >
-                              heroicons-outline:information-circle
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.facebook ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.facebook}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="blue"
-                            >
-                              material-solid:facebook
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
+                      {n.region}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -365,4 +293,4 @@ function CompaniesTable(props) {
   );
 }
 
-export default withRouter(CompaniesTable);
+export default withRouter(CutomersTable);

@@ -20,9 +20,11 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
-} from "../store/contactPersonSlice";
+} from "../store/customerSlice";
+import { getProducts } from "../../companies/store/companiesSlice";
+import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
 import reducer from "../store";
-import ProductHeader from "./ContactPersonHeader";
+import ProductHeader from "./CustomerHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 
 /**
@@ -33,13 +35,13 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a first name")
     .max(255, "First name must not exceed 255 characters"),
-  title: yup
+  company_id: yup
     .string()
-    .required("You must enter a title")
+    .required("You must enter a company")
     .max(255, "First name must not exceed 255 characters"),
-  last_name: yup
+  person_id: yup
     .string()
-    .required("You must enter a last name")
+    .required("You must enter a contact person")
     .max(255, "Last name must not exceed 255 characters"),
   email: yup
     .string()
@@ -50,18 +52,14 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a phone")
     .max(20, "Phone must not exceed 20 characters"),
-  comment: yup
+  postal_code: yup
+    .string()
+    .required("You must enter a phone")
+    .max(20, "Phone must not exceed 20 characters"),
+  region: yup
     .string()
     .nullable()
     .max(255, "Comment must not exceed 255 characters"),
-  linkedin: yup
-    .string()
-    .nullable()
-    .transform((curr, orig) => (orig === "" ? null : curr))
-    .matches(
-      /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
-      "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"
-    ),
 });
 
 function Product(props) {
@@ -72,6 +70,8 @@ function Product(props) {
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
+  const [companies, setCompanies] = useState(false);
+  const [contact, setContacts] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
@@ -106,6 +106,22 @@ function Product(props) {
 
     updateProductState();
   }, [dispatch, routeParams]);
+
+  useEffect(() => {
+    dispatch(getProducts()).then((action) => {
+      if (action.payload) {
+        setCompanies(action.payload);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getContactPerson()).then((action) => {
+      if (action.payload) {
+        setContacts(action.payload);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!product) {
@@ -151,10 +167,55 @@ function Product(props) {
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/contact-person"
+          to="/customers"
           color="inherit"
         >
-          Go to Contact Person Page
+          Go to Customers Page
+        </Button>
+      </motion.div>
+    );
+  }
+  if (companies && companies?.length == 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-col flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          There are no companies added to system!
+        </Typography>
+        <Button
+          className="mt-24"
+          component={Link}
+          variant="outlined"
+          to="/companies/new"
+          color="inherit"
+        >
+          Go to Companies Page & add one
+        </Button>
+      </motion.div>
+    );
+  }
+
+  if (contact && contact?.length == 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-col flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          There are no contacts added to system!
+        </Typography>
+        <Button
+          className="mt-24"
+          component={Link}
+          variant="outlined"
+          to="/contact-person/new"
+          color="inherit"
+        >
+          Go to Contact Page & add one
         </Button>
       </motion.div>
     );
@@ -166,7 +227,9 @@ function Product(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new")
+      routeParams.productId !== "new") ||
+    !companies ||
+    !contact
   ) {
     return <FuseLoading />;
   }
@@ -190,7 +253,7 @@ function Product(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab />
+                <BasicInfoTab companies={companies} contacts={contact} />
               </div>
             </div>
           </>

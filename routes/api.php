@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\ContactPersonController;
+use App\Http\Controllers\API\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
         Route::apiResource('/contact-person', ContactPersonController::class);
+        Route::apiResource('/customers', CustomerController::class); 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/me', [AuthController::class, 'me']);
     });

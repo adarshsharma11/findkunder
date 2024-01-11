@@ -40,13 +40,6 @@ const rows = [
     sort: true,
   },
   {
-    id: "company_name",
-    align: "left",
-    disablePadding: false,
-    label: "Company",
-    sort: true,
-  },
-  {
     id: "email",
     align: "right",
     disablePadding: false,
@@ -72,6 +65,13 @@ const rows = [
     align: "right",
     disablePadding: false,
     label: "Comment",
+    sort: true,
+  },
+  {
+    id: "action",
+    align: "right",
+    disablePadding: false,
+    label: "Action",
     sort: true,
   },
 ];

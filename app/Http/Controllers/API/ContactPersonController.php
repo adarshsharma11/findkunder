@@ -11,7 +11,7 @@ class ContactPersonController extends Controller
 {
     public function index()
     {
-        $contactPersons = ContactPerson::with('company')->get();
+        $contactPersons = ContactPerson::all();
         return response()->json($contactPersons);
     }
 
@@ -33,7 +33,6 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
-            'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -58,7 +57,6 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
-            'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {

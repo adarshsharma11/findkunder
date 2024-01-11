@@ -4,7 +4,7 @@ import axios from "axios";
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
   async (productId) => {
-    const response = await axios.get(`/api/contact-person/${productId}`);
+    const response = await axios.get(`/api/customers/${productId}`);
     const data = await response.data;
     return data === undefined ? null : data;
   }
@@ -14,7 +14,7 @@ export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
   async (val, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp.product;
-    await axios.delete(`/api/contact-person/${id}`);
+    await axios.delete(`/api/customers/${id}`);
     return id;
   }
 );
@@ -23,7 +23,7 @@ export const saveProduct = createAsyncThunk(
   "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
     const response = await axios.put(
-      `/api/contact-person/${productData.id}`,
+      `/api/customers/${productData.id}`,
       productData
     );
     const data = await response.data;
@@ -34,7 +34,7 @@ export const saveProduct = createAsyncThunk(
 export const addNewPerson = createAsyncThunk(
   "eCommerceApp/product/addNewPerson",
   async (personData, { dispatch, getState }) => {
-    const response = await axios.post("/api/contact-person", personData);
+    const response = await axios.post("/api/customers", personData);
     const data = response.data;
     return data;
   }
@@ -49,13 +49,13 @@ const productSlice = createSlice({
       reducer: (state, action) => action.payload,
       prepare: (event) => ({
         payload: {
-          title: "",
+          company_id: "",
+          person_id: "",
           first_name: "",
-          last_name: "",
+          postal_code: "",
           email: "",
           phone: "",
-          linkedin: "",
-          comment: "",
+          region: "",
         },
       }),
     },

@@ -21,11 +21,4 @@ class Company extends Model
         'facebook',
     ];
 
-    /**
-     * Get the contact persons for the company.
-     */
-    public function contactPersons()
-    {
-        return $this->hasMany(ContactPerson::class);
-    }
 }

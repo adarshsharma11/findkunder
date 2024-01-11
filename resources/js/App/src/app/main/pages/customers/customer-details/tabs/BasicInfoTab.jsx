@@ -1,57 +1,74 @@
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { t } = useTranslation("contactPerson");
-  const { companies } = props;
+  const { companies, contacts } = props;
   const { control, formState } = methods;
   const { errors } = formState;
-  const titleOptions = [
-    {
-      value: "approved_auditor",
-      label: t("approved_auditor"),
-    },
-    {
-      value: "bookkeeper",
-      label: t("bookkeeper"),
-    },
-    {
-      value: "other",
-      label: t("other"),
-    },
-  ];
 
   return (
     <div>
       <Controller
-        name="title"
+        name="company_id"
         control={control}
         render={({ field }) => (
           <>
-            <InputLabel id="demo-simple-select-label">Title</InputLabel>
+            <InputLabel id="demo-simple-select-label">
+              Select Company
+            </InputLabel>
             <Select
               {...field}
               className="mt-8 mb-16"
-              error={!!errors.title}
+              error={!!errors.company_name}
               required
-              helperText={errors?.title?.message}
-              id="title"
+              helperText={errors?.company_name?.message}
+              id="first_name"
               variant="outlined"
               fullWidth
             >
-              {titleOptions &&
-                titleOptions?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+              {companies &&
+                companies?.map((company) => (
+                  <MenuItem key={company.id} value={company.id}>
+                    {company.company_name}
                   </MenuItem>
                 ))}
               <MenuItem value="" disabled>
-                Select Title
+                Select Company
+              </MenuItem>
+            </Select>
+          </>
+        )}
+      />
+      <Controller
+        name="person_id"
+        control={control}
+        render={({ field }) => (
+          <>
+            <InputLabel id="demo-simple-select-label">
+              Select Contact
+            </InputLabel>
+            <Select
+              {...field}
+              className="mt-8 mb-16"
+              error={!!errors.person_id}
+              required
+              helperText={errors?.person_id?.message}
+              id="person_id"
+              variant="outlined"
+              fullWidth
+            >
+              {contacts &&
+                contacts?.map((contact) => (
+                  <MenuItem key={contact.id} value={contact.id}>
+                    {contact.first_name}
+                  </MenuItem>
+                ))}
+              <MenuItem value="" disabled>
+                Select Contact
               </MenuItem>
             </Select>
           </>
@@ -77,16 +94,16 @@ function BasicInfoTab(props) {
       />
 
       <Controller
-        name="last_name"
+        name="region"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="last_name"
-            error={!!errors.last_name}
-            helperText={errors?.last_name?.message}
-            label="Last Name"
+            id="region"
+            error={!!errors.region}
+            helperText={errors?.region?.message}
+            label="Region"
             type="text"
             required
             variant="outlined"
@@ -131,36 +148,17 @@ function BasicInfoTab(props) {
         )}
       />
       <Controller
-        name="linkedin"
+        name="postal_code"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="linkedin"
-            error={!!errors.linkedin}
-            helperText={errors?.linkedin?.message}
-            label="Linkedin"
+            id="postal_code"
+            error={!!errors.postal_code}
+            helperText={errors?.postal_code?.message}
+            label="Postal Code"
             type="text"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
-      <Controller
-        name="comment"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            id="city"
-            error={!!errors.comment}
-            helperText={errors?.comment?.message}
-            label="Comment"
-            type="text"
-            rows={3}
-            multiline
             variant="outlined"
             fullWidth
           />
