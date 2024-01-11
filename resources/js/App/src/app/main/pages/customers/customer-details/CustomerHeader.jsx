@@ -29,14 +29,14 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
       dispatch(showMessage({ message: "Customer added successfully!" }));
-      navigate("/contact-person");
+      navigate("/customers");
     });
   }
 
   function handleRemoveProduct() {
     dispatch(removeProduct()).then(() => {
       dispatch(showMessage({ message: "Customer deleted successfully!" }));
-      navigate("/contact-person");
+      navigate("/customers");
     });
   }
 
