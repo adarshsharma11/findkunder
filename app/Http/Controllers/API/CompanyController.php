@@ -58,7 +58,10 @@ class CompanyController extends Controller
     {
         $company = Company::find($id);
         if (!$company) {
-            return response()->json(['error' => 'Company not found'], 404);
+            return response()->json(['message' => 'Company not found'], 404);
+        }
+        if ($company->customers()->exists()) {
+            return response()->json(['message' => 'Cannot delete company with associated customers'], 201);
         }
         $company->delete();
         return response()->json(['message' => 'Company deleted successfully']);

@@ -34,10 +34,8 @@ function ProductHeader(props) {
   }
 
   function handleRemoveProduct() {
-    dispatch(removeProduct()).then(() => {
-      dispatch(
-        showMessage({ message: "Contact person deleted successfully!" })
-      );
+    dispatch(removeProduct(id)).then(({ payload }) => {
+      dispatch(showMessage({ message: payload?.message }));
       navigate("/contact-person");
     });
   }

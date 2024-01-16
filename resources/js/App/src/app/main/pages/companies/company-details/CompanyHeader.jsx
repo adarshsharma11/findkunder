@@ -34,8 +34,8 @@ function ProductHeader(props) {
   }
 
   function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(() => {
-      dispatch(showMessage({ message: "Company deleted successfully!" }));
+    dispatch(removeProduct(id)).then(({ payload }) => {
+      dispatch(showMessage({ message: payload?.message }));
       navigate("/companies");
     });
   }

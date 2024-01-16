@@ -68,7 +68,7 @@ const schema = yup.object().shape({
     .transform((curr, orig) => (orig === "" ? null : curr))
     .matches(
       /^(https?:\/\/)?(www\.)?facebook\.com\/.*$/,
-      "Invalid LinkedIn URL. Please enter a valid Facebook URL"
+      "Invalid Facebook URL. Please enter a valid Facebook URL"
     ),
 });
 

@@ -19,5 +19,10 @@ class ContactPerson extends Model
         'linkedin',
         'comment',
     ];
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, 'person_id', 'id');
+    }
     
 }

@@ -12,10 +12,10 @@ export const getProduct = createAsyncThunk(
 
 export const removeProduct = createAsyncThunk(
   "contact/removeContact",
-  async (val, { dispatch, getState }) => {
-    const { id } = getState().eCommerceApp.product;
-    await axios.delete(`/api/contact-person/${id}`);
-    return id;
+  async (id, { dispatch, getState }) => {
+    const response = await axios.delete(`/api/contact-person/${id}`);
+    const data = await response.data;
+    return data;
   }
 );
 

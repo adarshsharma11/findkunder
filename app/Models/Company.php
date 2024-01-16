@@ -21,4 +21,8 @@ class Company extends Model
         'facebook',
     ];
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, 'company_id', 'id');
+    }
 }
