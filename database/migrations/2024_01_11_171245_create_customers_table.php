@@ -15,11 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained();
             $table->foreignId('person_id')->references('id')->on('contact_person');
-            $table->string('first_name');
-            $table->string('region');
-            $table->string('postal_code');
-            $table->string('email');
-            $table->string('phone');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

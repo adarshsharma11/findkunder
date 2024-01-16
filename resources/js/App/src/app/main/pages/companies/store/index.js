@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import product from "./companySlice";
-import products from "./companiesSlice";
+import company from "./companySlice";
+import companies from "./companiesSlice";
 
 const reducer = combineReducers({
-  products,
-  product,
+  companies,
+  company,
 });
 
 export default reducer;

@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
-  selectProductsSearchText,
-  setProductsSearchText,
+  selectCompaniesSearchText,
+  setCompaniesSearchText,
 } from "./store/companiesSlice";
 
 function CompaniesHeader(props) {
   const dispatch = useDispatch();
-  const searchText = useSelector(selectProductsSearchText);
+  const searchText = useSelector(selectCompaniesSearchText);
 
   return (
     <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
@@ -45,7 +45,7 @@ function CompaniesHeader(props) {
             inputProps={{
               "aria-label": "Search",
             }}
-            onChange={(ev) => dispatch(setProductsSearchText(ev))}
+            onChange={(ev) => dispatch(setCompaniesSearchText(ev))}
           />
         </Paper>
         <motion.div

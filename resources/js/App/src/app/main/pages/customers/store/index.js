@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import product from "./customerSlice";
-import products from "./customersSlice";
+import customer from "./customerSlice";
+import customers from "./customersSlice";
 
 const reducer = combineReducers({
-  products,
-  product,
+  customer,
+  customers,
 });
 
 export default reducer;

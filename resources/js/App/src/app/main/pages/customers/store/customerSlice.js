@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getProduct = createAsyncThunk(
-  "eCommerceApp/product/getProduct",
+  "eCommerceApp/customer/getProduct",
   async (productId) => {
     const response = await axios.get(`/api/customers/${productId}`);
     const data = await response.data;
@@ -11,16 +11,15 @@ export const getProduct = createAsyncThunk(
 );
 
 export const removeProduct = createAsyncThunk(
-  "eCommerceApp/product/removeProduct",
-  async (val, { dispatch, getState }) => {
-    const { id } = getState().eCommerceApp.product;
+  "eCommerceApp/customer/removeProduct",
+  async (id, { dispatch, getState }) => {
     await axios.delete(`/api/customers/${id}`);
     return id;
   }
 );
 
 export const saveProduct = createAsyncThunk(
-  "eCommerceApp/product/saveProduct",
+  "eCommerceApp/customer/saveProduct",
   async (productData, { dispatch, getState }) => {
     const response = await axios.put(
       `/api/customers/${productData.id}`,
@@ -32,7 +31,7 @@ export const saveProduct = createAsyncThunk(
 );
 
 export const addNewPerson = createAsyncThunk(
-  "eCommerceApp/product/addNewPerson",
+  "eCommerceApp/customer/addNewPerson",
   async (personData, { dispatch, getState }) => {
     const response = await axios.post("/api/customers", personData);
     const data = response.data;
@@ -41,7 +40,7 @@ export const addNewPerson = createAsyncThunk(
 );
 
 const productSlice = createSlice({
-  name: "eCommerceApp/product",
+  name: "eCommerceApp/customer",
   initialState: null,
   reducers: {
     resetProduct: () => null,
@@ -51,11 +50,6 @@ const productSlice = createSlice({
         payload: {
           company_id: "",
           person_id: "",
-          first_name: "",
-          postal_code: "",
-          email: "",
-          phone: "",
-          region: "",
         },
       }),
     },

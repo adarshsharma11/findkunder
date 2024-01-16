@@ -19,24 +19,31 @@ import { removeProducts } from "./store/customersSlice";
 
 const rows = [
   {
-    id: "first_name",
-    align: "left",
-    disablePadding: false,
-    label: "First Name",
-    sort: true,
-  },
-  {
     id: "company_id",
     align: "left",
     disablePadding: false,
-    label: "Company",
+    label: "Company Name",
     sort: true,
   },
   {
-    id: "person_id",
+    id: "postal_code",
     align: "left",
     disablePadding: false,
-    label: "Contact Person",
+    label: "Postal Code",
+    sort: true,
+  },
+  {
+    id: "region",
+    align: "left",
+    disablePadding: false,
+    label: "Region",
+    sort: true,
+  },
+  {
+    id: "first_name",
+    align: "right",
+    disablePadding: false,
+    label: "First Name",
     sort: true,
   },
   {
@@ -54,17 +61,10 @@ const rows = [
     sort: true,
   },
   {
-    id: "postal_code",
+    id: "notes",
     align: "right",
     disablePadding: false,
-    label: "Postal Code",
-    sort: true,
-  },
-  {
-    id: "region",
-    align: "right",
-    disablePadding: false,
-    label: "Region",
+    label: "Notes",
     sort: true,
   },
   {

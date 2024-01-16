@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getProduct = createAsyncThunk(
-  "eCommerceApp/product/getProduct",
+  "contact/getContact",
   async (productId) => {
     const response = await axios.get(`/api/contact-person/${productId}`);
     const data = await response.data;
@@ -11,7 +11,7 @@ export const getProduct = createAsyncThunk(
 );
 
 export const removeProduct = createAsyncThunk(
-  "eCommerceApp/product/removeProduct",
+  "contact/removeContact",
   async (val, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp.product;
     await axios.delete(`/api/contact-person/${id}`);
@@ -20,7 +20,7 @@ export const removeProduct = createAsyncThunk(
 );
 
 export const saveProduct = createAsyncThunk(
-  "eCommerceApp/product/saveProduct",
+  "contact/saveContact",
   async (productData, { dispatch, getState }) => {
     const response = await axios.put(
       `/api/contact-person/${productData.id}`,
@@ -32,7 +32,7 @@ export const saveProduct = createAsyncThunk(
 );
 
 export const addNewPerson = createAsyncThunk(
-  "eCommerceApp/product/addNewPerson",
+  "contact/addNewPerson",
   async (personData, { dispatch, getState }) => {
     const response = await axios.post("/api/contact-person", personData);
     const data = response.data;
@@ -40,8 +40,8 @@ export const addNewPerson = createAsyncThunk(
   }
 );
 
-const productSlice = createSlice({
-  name: "eCommerceApp/product",
+const contactSlice = createSlice({
+  name: "contact/contact",
   initialState: null,
   reducers: {
     resetProduct: () => null,
@@ -68,8 +68,8 @@ const productSlice = createSlice({
   },
 });
 
-export const { newProduct, resetProduct } = productSlice.actions;
+export const { newProduct, resetProduct } = contactSlice.actions;
 
-export const selectProduct = ({ eCommerceApp }) => eCommerceApp.product;
+export const selectProduct = ({ contact }) => contact.contact;
 
-export default productSlice.reducer;
+export default contactSlice.reducer;

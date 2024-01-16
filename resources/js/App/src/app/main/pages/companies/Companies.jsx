@@ -17,4 +17,4 @@ function Companies() {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Companies);
+export default withReducer("company", reducer)(Companies);

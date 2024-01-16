@@ -17,4 +17,4 @@ function ContactPerson() {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(ContactPerson);
+export default withReducer("contact", reducer)(ContactPerson);

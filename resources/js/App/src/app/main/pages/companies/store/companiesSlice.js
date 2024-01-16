@@ -5,18 +5,17 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getProducts = createAsyncThunk(
-  "eCommerceApp/products/getProducts",
+export const getCompanies = createAsyncThunk(
+  "company/getCompanies",
   async () => {
     const response = await axios.get("/api/companies");
     const data = await response.data;
-
     return data;
   }
 );
 
 export const removeProducts = createAsyncThunk(
-  "eCommerceApp/products",
+  "company/products",
   async (productIds, { dispatch, getState }) => {
     await axios.delete("/api/ecommerce/products", { data: productIds });
 
@@ -24,18 +23,18 @@ export const removeProducts = createAsyncThunk(
   }
 );
 
-const productsAdapter = createEntityAdapter({});
+const companiesAdapter = createEntityAdapter({});
 
-export const { selectAll: selectProducts, selectById: selectProductById } =
-  productsAdapter.getSelectors((state) => state.eCommerceApp.products);
+export const { selectAll: selectCompanies, selectById: selectCompanyById } =
+  companiesAdapter.getSelectors((state) => state.company.companies);
 
-const productsSlice = createSlice({
-  name: "eCommerceApp/products",
-  initialState: productsAdapter.getInitialState({
+const companiesSlice = createSlice({
+  name: "company/companies",
+  initialState: companiesAdapter.getInitialState({
     searchText: "",
   }),
   reducers: {
-    setProductsSearchText: {
+    setCompaniesSearchText: {
       reducer: (state, action) => {
         state.searchText = action.payload;
       },
@@ -43,15 +42,15 @@ const productsSlice = createSlice({
     },
   },
   extraReducers: {
-    [getProducts.fulfilled]: productsAdapter.setAll,
+    [getCompanies.fulfilled]: companiesAdapter.setAll,
     [removeProducts.fulfilled]: (state, action) =>
-      productsAdapter.removeMany(state, action.payload),
+      companiesAdapter.removeMany(state, action.payload),
   },
 });
 
-export const { setProductsSearchText } = productsSlice.actions;
+export const { setCompaniesSearchText } = companiesSlice.actions;
 
-export const selectProductsSearchText = ({ eCommerceApp }) =>
-  eCommerceApp.products.searchText;
+export const selectCompaniesSearchText = ({ company }) =>
+  company.companies.searchText;
 
-export default productsSlice.reducer;
+export default companiesSlice.reducer;

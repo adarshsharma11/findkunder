@@ -6,7 +6,7 @@ import {
 import axios from "axios";
 
 export const getProducts = createAsyncThunk(
-  "eCommerceApp/products/getProducts",
+  "contact/getContactPersons",
   async () => {
     const response = await axios.get("/api/contact-person");
     const data = await response.data;
@@ -15,21 +15,21 @@ export const getProducts = createAsyncThunk(
 );
 
 export const removeProducts = createAsyncThunk(
-  "eCommerceApp/products",
+  "eCommerceApp/contacts",
   async (productIds, { dispatch, getState }) => {
     await axios.delete("/api/ecommerce/products", { data: productIds });
     return productIds;
   }
 );
 
-const productsAdapter = createEntityAdapter({});
+const contactsAdapter = createEntityAdapter({});
 
 export const { selectAll: selectProducts, selectById: selectProductById } =
-  productsAdapter.getSelectors((state) => state.eCommerceApp.products);
+  contactsAdapter.getSelectors((state) => state.contact.contacts);
 
-const productsSlice = createSlice({
-  name: "eCommerceApp/products",
-  initialState: productsAdapter.getInitialState({
+const contactsSlice = createSlice({
+  name: "contact/contacts",
+  initialState: contactsAdapter.getInitialState({
     searchText: "",
   }),
   reducers: {
@@ -41,15 +41,15 @@ const productsSlice = createSlice({
     },
   },
   extraReducers: {
-    [getProducts.fulfilled]: productsAdapter.setAll,
+    [getProducts.fulfilled]: contactsAdapter.setAll,
     [removeProducts.fulfilled]: (state, action) =>
-      productsAdapter.removeMany(state, action.payload),
+      contactsAdapter.removeMany(state, action.payload),
   },
 });
 
-export const { setProductsSearchText } = productsSlice.actions;
+export const { setProductsSearchText } = contactsSlice.actions;
 
-export const selectProductsSearchText = ({ eCommerceApp }) =>
-  eCommerceApp.products.searchText;
+export const selectProductsSearchText = ({ contact }) =>
+  contact.contacts.searchText;
 
-export default productsSlice.reducer;
+export default contactsSlice.reducer;

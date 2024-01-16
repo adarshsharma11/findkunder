@@ -31,11 +31,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'company_id' => 'required|exists:companies,id',
             'person_id' => 'required|exists:contact_person,id',
-            'first_name' => 'required|string',
-            'region' => 'required|string',
-            'postal_code' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
+            'notes' => 'string',
         ]);
 
         if ($validator->fails()) {
@@ -68,23 +64,49 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'company_id' => 'exists:companies,id',
             'person_id' => 'exists:contact_person,id',
+            'notes' => 'nullable|string',
             'first_name' => 'string',
+            'email' => 'email',
             'region' => 'string',
             'postal_code' => 'string',
-            'email' => 'email',
             'phone' => 'string',
         ]);
 
+    
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 422);
         }
-
-        $customer->update($request->all());
+        try {
+            $customer = Customer::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['status' => 'error', 'message' => 'Customer not found.'], 404);
+        }
+    
+        $customer->update([
+            'company_id' => $request->input('company_id'),
+            'person_id' => $request->input('person_id'),
+            'notes' => $request->input('notes'),
+        ]);
+        if ($customer->person) {
+            $customer->person->update([
+                'first_name' => $request->input('first_name'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+            ]);
+        }
+    
+        if ($customer->company) {
+            $customer->company->update([
+                'location' => $request->input('region'),
+                'postal_code' => $request->input('postal_code'),
+            ]);
+        }
+    
         return response()->json($customer);
     }
 

@@ -16,16 +16,16 @@ import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
-  getProducts,
-  selectProducts,
-  selectProductsSearchText,
+  getCompanies,
+  selectCompanies,
+  selectCompaniesSearchText,
 } from "./store/companiesSlice";
 import CompaniesTableHead from "./CompaniesTableHead";
 
 function CompaniesTable(props) {
   const dispatch = useDispatch();
-  const products = useSelector(selectProducts);
-  const searchText = useSelector(selectProductsSearchText);
+  const products = useSelector(selectCompanies);
+  const searchText = useSelector(selectCompaniesSearchText);
 
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
@@ -38,7 +38,7 @@ function CompaniesTable(props) {
   });
 
   useEffect(() => {
-    dispatch(getProducts()).then(() => setLoading(false));
+    dispatch(getCompanies()).then(() => setLoading(false));
   }, [dispatch]);
 
   useEffect(() => {

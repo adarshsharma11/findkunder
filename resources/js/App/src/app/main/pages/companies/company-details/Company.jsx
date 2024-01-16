@@ -72,7 +72,7 @@ const schema = yup.object().shape({
     ),
 });
 
-function Product(props) {
+function Company(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -209,4 +209,4 @@ function Product(props) {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Product);
+export default withReducer("company", reducer)(Company);

@@ -21,7 +21,7 @@ import {
   resetProduct,
   selectProduct,
 } from "../store/customerSlice";
-import { getProducts } from "../../companies/store/companiesSlice";
+import { getCompanies } from "../../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
 import reducer from "../store";
 import ProductHeader from "./CustomerHeader";
@@ -31,10 +31,6 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  first_name: yup
-    .string()
-    .required("You must enter a first name")
-    .max(255, "First name must not exceed 255 characters"),
   company_id: yup
     .string()
     .required("You must enter a company")
@@ -43,26 +39,9 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a contact person")
     .max(255, "Last name must not exceed 255 characters"),
-  email: yup
-    .string()
-    .required("You must enter a email")
-    .email("Invalid email format")
-    .max(255, "Email must not exceed 255 characters"),
-  phone: yup
-    .string()
-    .required("You must enter a phone")
-    .max(20, "Phone must not exceed 20 characters"),
-  postal_code: yup
-    .string()
-    .required("You must enter a phone")
-    .max(20, "Phone must not exceed 20 characters"),
-  region: yup
-    .string()
-    .nullable()
-    .max(255, "Comment must not exceed 255 characters"),
 });
 
-function Product(props) {
+function Customer(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -108,7 +87,7 @@ function Product(props) {
   }, [dispatch, routeParams]);
 
   useEffect(() => {
-    dispatch(getProducts()).then((action) => {
+    dispatch(getCompanies()).then((action) => {
       if (action.payload) {
         setCompanies(action.payload);
       }
@@ -223,14 +202,7 @@ function Product(props) {
   /**
    * Wait while product data is loading and form is setted
    */
-  if (
-    _.isEmpty(form) ||
-    (product &&
-      routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new") ||
-    !companies ||
-    !contact
-  ) {
+  if (routeParams.productId !== "new" || !companies || !contact) {
     return <FuseLoading />;
   }
 
@@ -264,4 +236,4 @@ function Product(props) {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Product);
+export default withReducer("eCommerceApp", reducer)(Customer);

@@ -25,6 +25,7 @@ import CustomersTableHead from "./CustomersTableHead";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
+  const { handleOpenDialog, handleDialogData } = props;
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
@@ -47,7 +48,9 @@ function CutomersTable(props) {
     if (searchText.length !== 0) {
       setData(
         _.filter(products, (item) =>
-          item.first_name.toLowerCase().includes(searchText.toLowerCase())
+          item.person.first_name
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
         )
       );
       setPage(0);
@@ -83,7 +86,7 @@ function CutomersTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/customers/${item.id}`);
+    handleOpenDialog(item);
   }
 
   function handleCheck(event, id) {
@@ -189,36 +192,26 @@ function CutomersTable(props) {
                         onChange={(event) => handleCheck(event, n.id)}
                       />
                     </TableCell>
-
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                     >
-                      {n.first_name || "N/A"}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.company.company_name}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16 truncate"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.person.first_name}
+                      {n.company?.company_name}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
                     >
-                      {n.email}
+                      {n.company?.postal_code}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.company?.location}
                     </TableCell>
 
                     <TableCell
@@ -227,7 +220,7 @@ function CutomersTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.phone}
+                      {n.person?.first_name}
                     </TableCell>
 
                     <TableCell
@@ -236,16 +229,23 @@ function CutomersTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.postal_code}
+                      {n.person?.email}
                     </TableCell>
-
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                       align="right"
                     >
-                      {n.region}
+                      {n.person?.phone}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
+                      {n?.notes || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -264,7 +264,7 @@ function CutomersTable(props) {
                           </FuseSvgIcon>
                         }
                       >
-                        View/Edit
+                        See More
                       </Button>
                     </TableCell>
                   </TableRow>

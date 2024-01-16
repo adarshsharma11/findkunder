@@ -6,7 +6,7 @@ import {
 import axios from "axios";
 
 export const getProducts = createAsyncThunk(
-  "eCommerceApp/products/getProducts",
+  "eCommerceApp/customers/getProducts",
   async () => {
     const response = await axios.get("/api/customers");
     const data = await response.data;
@@ -25,10 +25,10 @@ export const removeProducts = createAsyncThunk(
 const productsAdapter = createEntityAdapter({});
 
 export const { selectAll: selectProducts, selectById: selectProductById } =
-  productsAdapter.getSelectors((state) => state.eCommerceApp.products);
+  productsAdapter.getSelectors((state) => state.eCommerceApp.customers);
 
 const productsSlice = createSlice({
-  name: "eCommerceApp/products",
+  name: "eCommerceApp/customers",
   initialState: productsAdapter.getInitialState({
     searchText: "",
   }),
@@ -50,6 +50,6 @@ const productsSlice = createSlice({
 export const { setProductsSearchText } = productsSlice.actions;
 
 export const selectProductsSearchText = ({ eCommerceApp }) =>
-  eCommerceApp.products.searchText;
+  eCommerceApp.customers.searchText;
 
 export default productsSlice.reducer;
