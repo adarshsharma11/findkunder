@@ -70,11 +70,6 @@ class CustomerController extends Controller
             'company_id' => 'exists:companies,id',
             'person_id' => 'exists:contact_person,id',
             'notes' => 'nullable|string',
-            'first_name' => 'string',
-            'email' => 'email',
-            'region' => 'string',
-            'postal_code' => 'string',
-            'phone' => 'string',
         ]);
 
     
@@ -92,20 +87,6 @@ class CustomerController extends Controller
             'person_id' => $request->input('person_id'),
             'notes' => $request->input('notes'),
         ]);
-        if ($customer->person) {
-            $customer->person->update([
-                'first_name' => $request->input('first_name'),
-                'email' => $request->input('email'),
-                'phone' => $request->input('phone'),
-            ]);
-        }
-    
-        if ($customer->company) {
-            $customer->company->update([
-                'location' => $request->input('region'),
-                'postal_code' => $request->input('postal_code'),
-            ]);
-        }
     
         return response()->json($customer);
     }

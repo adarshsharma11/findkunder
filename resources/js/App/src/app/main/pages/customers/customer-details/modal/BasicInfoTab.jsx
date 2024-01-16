@@ -3,15 +3,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
-const regions = [
-  "North Jutland",
-  "Central Jutland",
-  "Southern Denmark",
-  "Zealand",
-  "Capital Region",
-  "Greenland",
-  "Faroe Islands",
-];
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { companies, contacts } = props;
@@ -80,91 +71,6 @@ function BasicInfoTab(props) {
               </MenuItem>
             </Select>
           </>
-        )}
-      />
-      <Controller
-        name="first_name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="First Name"
-            variant="outlined"
-            fullWidth
-            id="first_name"
-          />
-        )}
-      />
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="Email"
-            variant="outlined"
-            fullWidth
-            id="email"
-          />
-        )}
-      />
-      <Controller
-        name="postal_code"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="Postal Code"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
-      <Controller
-        name="region"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">
-              Select Location
-            </InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.region}
-              required
-              helperText={errors?.region?.message}
-              id="region"
-              variant="outlined"
-              fullWidth
-            >
-              {regions &&
-                regions?.map((region) => (
-                  <MenuItem key={region} value={region}>
-                    {region}
-                  </MenuItem>
-                ))}
-              <MenuItem value="" disabled>
-                Select Location
-              </MenuItem>
-            </Select>
-          </>
-        )}
-      />
-      <Controller
-        name="phone"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="Phone"
-            variant="outlined"
-            fullWidth
-          />
         )}
       />
       <Controller

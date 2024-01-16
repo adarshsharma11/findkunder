@@ -53,11 +53,6 @@ function Customers() {
       company_id: item?.company.id,
       person_id: item?.person.id,
       notes: item.notes || "",
-      first_name: item?.person.first_name,
-      email: item?.person.email,
-      region: item?.company.location,
-      postal_code: item?.company.postal_code,
-      phone: item?.person.phone,
     });
     setOpenDialog(!openDialog);
   }
