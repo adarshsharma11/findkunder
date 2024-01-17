@@ -64,7 +64,7 @@ function BasicInfoTab(props) {
               {contacts &&
                 contacts?.map((contact) => (
                   <MenuItem key={contact.id} value={contact.id}>
-                    {contact.first_name}
+                    {`${contact.first_name} ${contact.last_name}`}
                   </MenuItem>
                 ))}
               <MenuItem value="" disabled>

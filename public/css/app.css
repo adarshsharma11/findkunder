@@ -1671,6 +1671,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-3\/4 {
   width: 75%;
 }
+.w-4\/5 {
+  width: 85%;
+}
 .w-52 {
   width: 5.2rem;
 }

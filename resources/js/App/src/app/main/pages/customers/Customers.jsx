@@ -107,6 +107,7 @@ function Customers() {
         />
         <Dialog
           open={openDialog}
+          fullWidth
           onClose={handleCloseDialog}
           aria-labelledby="form-dialog-title"
         >

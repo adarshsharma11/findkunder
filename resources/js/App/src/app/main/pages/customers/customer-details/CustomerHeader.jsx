@@ -65,7 +65,7 @@ function ProductHeader(props) {
                 ? "heroicons-outline:arrow-sm-left"
                 : "heroicons-outline:arrow-sm-right"}
             </FuseSvgIcon>
-            <span className="flex mx-4 font-medium">Customers</span>
+            <span className="flex mx-4 font-medium">Back</span>
           </Typography>
         </motion.div>
       </div>
@@ -96,7 +96,7 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              {name || "New Contact Person"}
+              {name || "New Findkunder"}
             </Typography>
             <Typography variant="caption" className="font-medium">
               Customers Detail
@@ -109,20 +109,6 @@ function ProductHeader(props) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
       >
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          disabled={id === "new"}
-          onClick={handleRemoveProduct}
-          startIcon={
-            <FuseSvgIcon className="hidden sm:flex">
-              heroicons-outline:trash
-            </FuseSvgIcon>
-          }
-        >
-          Remove
-        </Button>
         <Button
           className="whitespace-nowrap mx-4"
           variant="contained"
