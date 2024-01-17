@@ -11,88 +11,92 @@ function BasicInfoTab(props) {
   const { errors } = formState;
 
   return (
-    <div>
-      <Controller
-        name="company_id"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">
-              Select Company
-            </InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.company_name}
-              required
-              helperText={errors?.company_name?.message}
-              id="first_name"
-              variant="outlined"
-              fullWidth
-            >
-              {companies &&
-                companies?.map((company) => (
-                  <MenuItem key={company.id} value={company.id}>
-                    {company.company_name}
-                  </MenuItem>
-                ))}
-              <MenuItem value="" disabled>
+    <div className="flex justify-between w-full space-x-8">
+      <div className="w-full">
+        <Controller
+          name="company_id"
+          control={control}
+          render={({ field }) => (
+            <>
+              <InputLabel id="demo-simple-select-label">
                 Select Company
-              </MenuItem>
-            </Select>
-          </>
-        )}
-      />
-      <Controller
-        name="person_id"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">
-              Select Contact
-            </InputLabel>
-            <Select
+              </InputLabel>
+              <Select
+                {...field}
+                className="mt-8 mb-16"
+                error={!!errors.company_name}
+                required
+                helperText={errors?.company_name?.message}
+                id="first_name"
+                variant="outlined"
+                fullWidth
+              >
+                {companies &&
+                  companies?.map((company) => (
+                    <MenuItem key={company.id} value={company.id}>
+                      {company.company_name}
+                    </MenuItem>
+                  ))}
+                <MenuItem value="" disabled>
+                  Select Company
+                </MenuItem>
+              </Select>
+            </>
+          )}
+        />
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <TextField
               {...field}
               className="mt-8 mb-16"
-              error={!!errors.person_id}
-              required
-              helperText={errors?.person_id?.message}
-              id="person_id"
+              id="notes"
+              multiline
+              rows={8}
+              error={!!errors.notes}
+              helperText={errors?.notes?.message}
+              label="Notes"
+              type="text"
               variant="outlined"
               fullWidth
-            >
-              {contacts &&
-                contacts?.map((contact) => (
-                  <MenuItem key={contact.id} value={contact.id}>
-                    {`${contact.first_name} ${contact.last_name}`}
-                  </MenuItem>
-                ))}
-              <MenuItem value="" disabled>
+            />
+          )}
+        />
+      </div>
+      <div className="w-full">
+        <Controller
+          name="person_id"
+          control={control}
+          render={({ field }) => (
+            <>
+              <InputLabel id="demo-simple-select-label">
                 Select Contact
-              </MenuItem>
-            </Select>
-          </>
-        )}
-      />
-      <Controller
-        name="notes"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            id="notes"
-            multiline
-            rows={4}
-            error={!!errors.notes}
-            helperText={errors?.notes?.message}
-            label="Notes"
-            type="text"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
+              </InputLabel>
+              <Select
+                {...field}
+                className="mt-8 mb-16"
+                error={!!errors.person_id}
+                required
+                helperText={errors?.person_id?.message}
+                id="person_id"
+                variant="outlined"
+                fullWidth
+              >
+                {contacts &&
+                  contacts?.map((contact) => (
+                    <MenuItem key={contact.id} value={contact.id}>
+                      {`${contact.first_name} ${contact.last_name}`}
+                    </MenuItem>
+                  ))}
+                <MenuItem value="" disabled>
+                  Select Contact
+                </MenuItem>
+              </Select>
+            </>
+          )}
+        />
+      </div>
     </div>
   );
 }
