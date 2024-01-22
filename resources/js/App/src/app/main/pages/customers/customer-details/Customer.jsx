@@ -39,6 +39,7 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a contact person")
     .max(255, "Last name must not exceed 255 characters"),
+  notes: yup.string().trim().default(""),
 });
 
 function Customer(props) {
@@ -56,7 +57,7 @@ function Customer(props) {
     defaultValues: {},
     resolver: yupResolver(schema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch, control, onChange, formState, setValue } = methods;
   const form = watch();
 
   useDeepCompareEffect(() => {
@@ -140,7 +141,7 @@ function Customer(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no such contact persons!
+          There is no such customer!
         </Typography>
         <Button
           className="mt-24"

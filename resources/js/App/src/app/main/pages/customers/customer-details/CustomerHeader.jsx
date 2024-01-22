@@ -7,11 +7,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import {
-  removeProduct,
-  saveProduct,
-  addNewPerson,
-} from "../store/customerSlice";
+import { saveProduct, addNewPerson } from "../store/customerSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
@@ -20,6 +16,7 @@ function ProductHeader(props) {
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
   const { isValid, dirtyFields } = formState;
+
   const featuredImageId = watch("featuredImageId");
   const images = watch("images");
   const name = watch("first_name");
@@ -29,13 +26,6 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
       dispatch(showMessage({ message: "Customer added successfully!" }));
-      navigate("/customers");
-    });
-  }
-
-  function handleRemoveProduct() {
-    dispatch(removeProduct()).then(() => {
-      dispatch(showMessage({ message: "Customer deleted successfully!" }));
       navigate("/customers");
     });
   }

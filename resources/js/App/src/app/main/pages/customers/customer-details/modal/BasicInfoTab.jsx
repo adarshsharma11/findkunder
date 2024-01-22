@@ -1,13 +1,37 @@
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
+import Autocomplete from "@mui/material/Autocomplete";
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { companies, contacts } = props;
-  const { control, formState } = methods;
+  const { control, formState, trigger, setValue } = methods;
   const { errors } = formState;
+
+  const handleAutocompleteChange = (event, newValue) => {
+    // Check if the entered value is not present in the available contacts
+    const isValid = contacts.some((contact) => contact.id === newValue?.id);
+    if (isValid) {
+      setInvalidContact(false);
+    } else {
+      setInvalidContact(true);
+    }
+    // Set the value in the form state
+    setValue("person_id", newValue?.id || null, { shouldDirty: true });
+    trigger("person_id");
+  };
+
+  const handleCompanyAutocompleteChange = (event, newValue) => {
+    // Check if the entered value is not present in the available contacts
+    const isValid = companies.some((company) => company.id === newValue?.id);
+    if (isValid) {
+      setInvalidCompany(false);
+    } else {
+      setInvalidCompany(true);
+    }
+    // Set the value in the form state
+    setValue("company_id", newValue?.id || null, { shouldDirty: true });
+    trigger("company_id");
+  };
 
   return (
     <div className="flex justify-between">
@@ -16,65 +40,75 @@ function BasicInfoTab(props) {
           <Controller
             name="company_id"
             control={control}
-            render={({ field }) => (
-              <>
-                <InputLabel id="demo-simple-select-label">
-                  Select Company
-                </InputLabel>
-                <Select
-                  {...field}
-                  className="mt-8 mb-16"
-                  error={!!errors.company_name}
-                  required
-                  helperText={errors?.company_name?.message}
-                  id="company_id"
-                  variant="outlined"
-                  fullWidth
-                >
-                  {companies &&
-                    companies?.map((company) => (
-                      <MenuItem key={company.id} value={company.id}>
-                        {company.company_name}
-                      </MenuItem>
-                    ))}
-                  <MenuItem value="" disabled>
-                    Select Company
-                  </MenuItem>
-                </Select>
-              </>
+            defaultValue={[]}
+            render={({ field: { onChange, value } }) => (
+              <Autocomplete
+                className="mt-8 mb-16"
+                //freeSolo
+                options={companies || []}
+                getOptionLabel={(company) => `${company.company_name}`}
+                value={
+                  companies.find((company) => company.id === value) || null
+                }
+                onChange={handleCompanyAutocompleteChange}
+                renderInput={(params) => (
+                  <>
+                    <TextField
+                      {...params}
+                      id="company_id"
+                      error={!!errors.company_id}
+                      required
+                      helperText={errors?.company_id?.message}
+                      placeholder="Select company"
+                      label="Select Company"
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </>
+                )}
+              />
             )}
           />
-          <Controller
-            name="person_id"
-            control={control}
-            render={({ field }) => (
-              <>
-                <InputLabel id="demo-simple-select-label">
-                  Select Contact
-                </InputLabel>
-                <Select
-                  {...field}
+          <div className="mt-64">
+            <Controller
+              name="person_id"
+              control={control}
+              defaultValue={[]}
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
                   className="mt-8 mb-16"
-                  error={!!errors.person_id}
-                  required
-                  helperText={errors?.person_id?.message}
-                  id="person_id"
-                  variant="outlined"
-                  fullWidth
-                >
-                  {contacts &&
-                    contacts?.map((contact) => (
-                      <MenuItem key={contact.id} value={contact.id}>
-                        {`${contact.first_name} ${contact.last_name}`}
-                      </MenuItem>
-                    ))}
-                  <MenuItem value="" disabled>
-                    Select Contact
-                  </MenuItem>
-                </Select>
-              </>
-            )}
-          />
+                  // freeSolo
+                  options={contacts || []}
+                  getOptionLabel={(contact) =>
+                    `${contact.first_name} ${contact.last_name}`
+                  }
+                  value={
+                    contacts.find((contact) => contact.id === value) || null
+                  }
+                  onChange={handleAutocompleteChange}
+                  renderInput={(params) => (
+                    <>
+                      <TextField
+                        {...params}
+                        id="person_id"
+                        error={!!errors.person_id}
+                        required
+                        helperText={errors?.person_id?.message}
+                        placeholder="Select contact"
+                        label="Select Contact"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </>
+                  )}
+                />
+              )}
+            />
+          </div>
         </div>
       </div>
       <div className="flex-col w-full">
