@@ -4,13 +4,36 @@ import AddContact from "../modal/AddCustomer";
 import AddCompany from "../modal/AddCompany";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { addNewCompany } from "../../../companies/store/companySlice";
+import { addNewPerson } from "../../../contact-person/store/contactPersonSlice";
+import { useDispatch } from "react-redux";
+import { showMessage } from "app/store/fuse/messageSlice";
+import {
+  companySchema,
+  contactSchema,
+} from "../../../../../schemas/validationSchemas";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { companies, contacts } = props;
+  const dispatch = useDispatch();
+  const companyMethods = useForm({
+    mode: "onChange",
+    defaultValues: {},
+    resolver: yupResolver(companySchema),
+  });
+  const contactMethods = useForm({
+    mode: "onChange",
+    defaultValues: {},
+    resolver: yupResolver(contactSchema),
+  });
+  const { companies, contacts, setCompanies, setContacts } = props;
   const { control, formState, setValue, trigger } = methods;
   const [invalidContact, setInvalidContact] = useState(false);
   const [invalidCompany, setInvalidCompany] = useState(false);
+  const [companyName, setCompany] = useState(false);
+  const [contactName, setContact] = useState(false);
   const { errors } = formState;
 
   const handleAutocompleteChange = (event, newValue) => {
@@ -19,10 +42,11 @@ function BasicInfoTab(props) {
     if (isValid) {
       setInvalidContact(false);
     } else {
+      setContact(newValue);
       setInvalidContact(true);
     }
     // Set the value in the form state
-    setValue("person_id", newValue?.id || null, { shouldDirty: true });
+    setValue("person_id", newValue?.id || newValue, { shouldDirty: true });
     trigger("person_id");
   };
 
@@ -32,11 +56,34 @@ function BasicInfoTab(props) {
     if (isValid) {
       setInvalidCompany(false);
     } else {
+      setCompany(newValue);
       setInvalidCompany(true);
     }
     // Set the value in the form state
-    setValue("company_id", newValue?.id || null, { shouldDirty: true });
+    setValue("company_id", newValue?.id || newValue, { shouldDirty: true });
     trigger("company_id");
+  };
+
+  const handleSaveCompany = (values) => {
+    dispatch(addNewCompany(values)).then((addedCompany) => {
+      const payload = addedCompany?.payload;
+      dispatch(showMessage({ message: "Company added successfully!" }));
+      setCompanies((prevCompanies) => [...prevCompanies, payload]);
+      setValue("company_id", payload.id, { shouldDirty: true });
+      trigger("company_id");
+      setInvalidCompany(false);
+    });
+  };
+
+  const handleSaveContact = (values) => {
+    dispatch(addNewPerson(values)).then((addedContact) => {
+      const payload = addedContact?.payload;
+      dispatch(showMessage({ message: "Contact added successfully!" }));
+      setContacts((prevContacts) => [...prevContacts, payload]);
+      setValue("person_id", payload.id, { shouldDirty: true });
+      trigger("person_id");
+      setInvalidContact(false);
+    });
   };
 
   return (
@@ -49,10 +96,12 @@ function BasicInfoTab(props) {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               className="mt-8 mb-16"
-              //freeSolo
+              freeSolo
               options={companies || []}
-              getOptionLabel={(company) => `${company.company_name}`}
-              value={companies.find((company) => company.id === value) || null}
+              getOptionLabel={(option) =>
+                option ? `${option.company_name}` : ""
+              }
+              value={companies.find((company) => company.id === value) || ""}
               onChange={handleCompanyAutocompleteChange}
               renderInput={(params) => (
                 <>
@@ -68,10 +117,6 @@ function BasicInfoTab(props) {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                  />
-                  <AddCompany
-                    invalidCompany={invalidCompany}
-                    setInvalidCompany={setInvalidCompany}
                   />
                 </>
               )}
@@ -106,12 +151,12 @@ function BasicInfoTab(props) {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               className="mt-8 mb-16"
-              // freeSolo
+              freeSolo
               options={contacts || []}
               getOptionLabel={(contact) =>
-                `${contact.first_name} ${contact.last_name}`
+                contact ? `${contact.first_name} ${contact.last_name}` : ""
               }
-              value={contacts.find((contact) => contact.id === value) || null}
+              value={contacts.find((contact) => contact.id === value) || ""}
               onChange={handleAutocompleteChange}
               renderInput={(params) => (
                 <>
@@ -128,16 +173,28 @@ function BasicInfoTab(props) {
                       shrink: true,
                     }}
                   />
-                  <AddContact
-                    setInvalidContact={setInvalidContact}
-                    invalidContact={invalidContact}
-                  />
                 </>
               )}
             />
           )}
         />
       </div>
+      <FormProvider {...companyMethods}>
+        <AddCompany
+          invalidCompany={invalidCompany}
+          setInvalidCompany={setInvalidCompany}
+          companyName={companyName}
+          handleSaveCompany={handleSaveCompany}
+        />
+      </FormProvider>
+      <FormProvider {...contactMethods}>
+        <AddContact
+          setInvalidContact={setInvalidContact}
+          invalidContact={invalidContact}
+          contactName={contactName}
+          handleSaveContact={handleSaveContact}
+        />
+      </FormProvider>
     </div>
   );
 }

@@ -24,53 +24,7 @@ import {
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-
-/**
- * Form Validation Schema
- */
-const schema = yup.object().shape({
-  company_name: yup
-    .string()
-    .required("You must enter a company name")
-    .min(5, "The company name must be at least 5 characters"),
-  cvr: yup
-    .string()
-    .required("You must enter a CVR")
-    .max(20, "CVR must not exceed 20 characters"),
-  street: yup
-    .string()
-    .required("You must enter a street")
-    .max(255, "Street must not exceed 255 characters"),
-  postal_code: yup
-    .string()
-    .required("You must enter a postal code")
-    .max(20, "Postal code must not exceed 20 characters"),
-  city: yup
-    .string()
-    .required("You must enter a city")
-    .max(255, "City must not exceed 255 characters"),
-  location: yup
-    .string()
-    .required("You must enter a location")
-    .max(255, "Location must not exceed 255 characters"),
-  website: yup.string().nullable(),
-  linkedin: yup
-    .string()
-    .nullable()
-    .transform((curr, orig) => (orig === "" ? null : curr))
-    .matches(
-      /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
-      "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"
-    ),
-  facebook: yup
-    .string()
-    .nullable()
-    .transform((curr, orig) => (orig === "" ? null : curr))
-    .matches(
-      /^(https?:\/\/)?(www\.)?facebook\.com\/.*$/,
-      "Invalid Facebook URL. Please enter a valid Facebook URL"
-    ),
-});
+import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
   const dispatch = useDispatch();
@@ -83,7 +37,7 @@ function Company(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(schema),
+    resolver: yupResolver(companySchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();

@@ -8,7 +8,6 @@ import { Controller, useFormContext } from "react-hook-form";
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
-  const { companies } = props;
   const { control, formState } = methods;
   const { errors } = formState;
   const titleOptions = [
@@ -43,6 +42,7 @@ function BasicInfoTab(props) {
               id="title"
               variant="outlined"
               fullWidth
+              value={field.value || titleOptions[0].value}
             >
               {titleOptions &&
                 titleOptions?.map((option) => (

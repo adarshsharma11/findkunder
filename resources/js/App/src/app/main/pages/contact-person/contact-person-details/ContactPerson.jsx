@@ -24,45 +24,7 @@ import {
 import reducer from "../store";
 import ProductHeader from "./ContactPersonHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-
-/**
- * Form Validation Schema
- */
-const schema = yup.object().shape({
-  first_name: yup
-    .string()
-    .required("You must enter a first name")
-    .max(255, "First name must not exceed 255 characters"),
-  title: yup
-    .string()
-    .required("You must enter a title")
-    .max(255, "First name must not exceed 255 characters"),
-  last_name: yup
-    .string()
-    .required("You must enter a last name")
-    .max(255, "Last name must not exceed 255 characters"),
-  email: yup
-    .string()
-    .required("You must enter a email")
-    .email("Invalid email format")
-    .max(255, "Email must not exceed 255 characters"),
-  phone: yup
-    .string()
-    .required("You must enter a phone")
-    .max(20, "Phone must not exceed 20 characters"),
-  comment: yup
-    .string()
-    .nullable()
-    .max(255, "Comment must not exceed 255 characters"),
-  linkedin: yup
-    .string()
-    .nullable()
-    .transform((curr, orig) => (orig === "" ? null : curr))
-    .matches(
-      /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
-      "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"
-    ),
-});
+import { contactSchema } from "../../../../schemas/validationSchemas";
 
 function Contact(props) {
   const dispatch = useDispatch();
@@ -75,7 +37,7 @@ function Contact(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(schema),
+    resolver: yupResolver(contactSchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();

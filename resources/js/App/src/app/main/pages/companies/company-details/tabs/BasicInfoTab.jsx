@@ -3,16 +3,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
-
-const regions = [
-  "North Jutland",
-  "Central Jutland",
-  "Southern Denmark",
-  "Zealand",
-  "Capital Region",
-  "Greenland",
-  "Faroe Islands",
-];
+import { regions } from "../../../../../store/constants";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -129,6 +120,7 @@ function BasicInfoTab(props) {
               id="location"
               variant="outlined"
               fullWidth
+              value={field.value || regions[0]}
             >
               {regions &&
                 regions?.map((region) => (
