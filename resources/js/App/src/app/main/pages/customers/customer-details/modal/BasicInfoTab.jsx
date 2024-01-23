@@ -8,26 +8,12 @@ function BasicInfoTab(props) {
   const { errors } = formState;
 
   const handleAutocompleteChange = (event, newValue) => {
-    // Check if the entered value is not present in the available contacts
-    const isValid = contacts.some((contact) => contact.id === newValue?.id);
-    if (isValid) {
-      setInvalidContact(false);
-    } else {
-      setInvalidContact(true);
-    }
     // Set the value in the form state
     setValue("person_id", newValue?.id || null, { shouldDirty: true });
     trigger("person_id");
   };
 
   const handleCompanyAutocompleteChange = (event, newValue) => {
-    // Check if the entered value is not present in the available contacts
-    const isValid = companies.some((company) => company.id === newValue?.id);
-    if (isValid) {
-      setInvalidCompany(false);
-    } else {
-      setInvalidCompany(true);
-    }
     // Set the value in the form state
     setValue("company_id", newValue?.id || null, { shouldDirty: true });
     trigger("company_id");
