@@ -7,7 +7,7 @@ import { regions } from "../../../../../store/constants";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { control, formState } = methods;
+  const { control, formState, setValue } = methods;
   const { errors } = formState;
 
   return (
@@ -116,25 +116,26 @@ function BasicInfoTab(props) {
               className="mt-8 mb-16"
               error={!!errors.location}
               required
+              displayEmpty
               helperText={errors?.location?.message}
               id="location"
               variant="outlined"
               fullWidth
-              value={field.value || regions[0]}
             >
+              <MenuItem value="" disabled>
+                Select Location
+              </MenuItem>
               {regions &&
-                regions?.map((region) => (
+                regions.map((region) => (
                   <MenuItem key={region} value={region}>
                     {region}
                   </MenuItem>
                 ))}
-              <MenuItem value="" disabled>
-                Select Location
-              </MenuItem>
             </Select>
           </>
         )}
       />
+
       <Controller
         name="website"
         control={control}

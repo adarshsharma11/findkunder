@@ -137,17 +137,17 @@ const AddCompany = ({
                     id="location"
                     variant="outlined"
                     fullWidth
-                    value={field.value || regions[0]}
+                    displayEmpty
                   >
+                    <MenuItem value="" disabled>
+                      Select Location
+                    </MenuItem>
                     {regions &&
                       regions?.map((region) => (
                         <MenuItem key={region} value={region}>
                           {region}
                         </MenuItem>
                       ))}
-                    <MenuItem value="" disabled>
-                      Select Location
-                    </MenuItem>
                   </Select>
                 </>
               )}

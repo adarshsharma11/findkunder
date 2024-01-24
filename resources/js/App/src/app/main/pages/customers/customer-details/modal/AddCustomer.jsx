@@ -58,17 +58,17 @@ const AddContact = ({
                     id="title"
                     variant="outlined"
                     fullWidth
-                    value={field.value || titleOptions[0].value}
+                    displayEmpty
                   >
+                    <MenuItem value="" disabled>
+                      Select Title
+                    </MenuItem>
                     {titleOptions &&
                       titleOptions?.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
                       ))}
-                    <MenuItem value="" disabled>
-                      Select Title
-                    </MenuItem>
                   </Select>
                 </>
               )}

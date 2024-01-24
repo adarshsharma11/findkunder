@@ -36,7 +36,9 @@ function Company(props) {
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues: {
+      location: "",
+    },
     resolver: yupResolver(companySchema),
   });
   const { reset, watch, control, onChange, formState } = methods;

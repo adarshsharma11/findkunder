@@ -38,21 +38,21 @@ function BasicInfoTab(props) {
               className="mt-8 mb-16"
               error={!!errors.title}
               required
+              displayEmpty
               helperText={errors?.title?.message}
               id="title"
               variant="outlined"
               fullWidth
-              value={field.value || titleOptions[0].value}
             >
+              <MenuItem value="" disabled>
+                Select Title
+              </MenuItem>
               {titleOptions &&
                 titleOptions?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
                 ))}
-              <MenuItem value="" disabled>
-                Select Title
-              </MenuItem>
             </Select>
           </>
         )}
