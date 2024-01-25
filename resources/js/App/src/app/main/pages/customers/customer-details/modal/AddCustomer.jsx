@@ -18,10 +18,18 @@ const AddContact = ({
   handleSaveContact,
 }) => {
   const methods = useFormContext();
-  const { control, formState, getValues } = methods;
+  const { control, formState, getValues, setValue } = methods;
   const namesArray = (contactName && contactName?.split(" ")) || null;
   const firstName = namesArray && namesArray[0];
   const lastName = namesArray && namesArray[1];
+
+  React.useEffect(() => {
+    if (firstName && lastName) {
+      setValue("first_name", firstName);
+      setValue("last_name", lastName);
+    }
+  }, [firstName, lastName]);
+
   const { errors, isValid, dirtyFields } = formState;
   const titleOptions = [
     {
@@ -46,6 +54,7 @@ const AddContact = ({
             <Controller
               name="title"
               control={control}
+              defaultValue=""
               render={({ field }) => (
                 <>
                   <InputLabel id="demo-simple-select-label">Title</InputLabel>
@@ -53,12 +62,12 @@ const AddContact = ({
                     {...field}
                     className="mt-8 mb-16"
                     error={!!errors.title}
+                    displayEmpty
                     required
                     helperText={errors?.title?.message}
                     id="title"
                     variant="outlined"
                     fullWidth
-                    displayEmpty
                   >
                     <MenuItem value="" disabled>
                       Select Title
@@ -76,7 +85,6 @@ const AddContact = ({
             <Controller
               name="first_name"
               control={control}
-              defaultValue={firstName}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -96,7 +104,6 @@ const AddContact = ({
             <Controller
               name="last_name"
               control={control}
-              defaultValue={lastName}
               render={({ field }) => (
                 <TextField
                   {...field}

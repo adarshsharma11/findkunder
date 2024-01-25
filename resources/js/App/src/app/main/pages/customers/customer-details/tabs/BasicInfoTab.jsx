@@ -2,7 +2,7 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import AddContact from "../modal/AddCustomer";
 import AddCompany from "../modal/AddCompany";
-import Autocomplete from "@mui/material/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,7 +14,7 @@ import {
   companySchema,
   contactSchema,
 } from "../../../../../schemas/validationSchemas";
-
+const filter = createFilterOptions();
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const dispatch = useDispatch();
@@ -35,34 +35,6 @@ function BasicInfoTab(props) {
   const [companyName, setCompany] = useState(false);
   const [contactName, setContact] = useState(false);
   const { errors } = formState;
-
-  const handleAutocompleteChange = (event, newValue) => {
-    // Check if the entered value is not present in the available contacts
-    const isValid = contacts.some((contact) => contact.id === newValue?.id);
-    if (isValid) {
-      setInvalidContact(false);
-    } else {
-      setContact(newValue);
-      setInvalidContact(true);
-    }
-    // Set the value in the form state
-    setValue("person_id", newValue?.id || newValue, { shouldDirty: true });
-    trigger("person_id");
-  };
-
-  const handleCompanyAutocompleteChange = (event, newValue) => {
-    // Check if the entered value is not present in the available contacts
-    const isValid = companies.some((company) => company.id === newValue?.id);
-    if (isValid) {
-      setInvalidCompany(false);
-    } else {
-      setCompany(newValue);
-      setInvalidCompany(true);
-    }
-    // Set the value in the form state
-    setValue("company_id", newValue?.id || newValue, { shouldDirty: true });
-    trigger("company_id");
-  };
 
   const handleSaveCompany = (values) => {
     dispatch(addNewCompany(values)).then((addedCompany) => {
@@ -96,13 +68,52 @@ function BasicInfoTab(props) {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               className="mt-8 mb-16"
-              freeSolo
-              options={companies || []}
-              getOptionLabel={(option) =>
-                option ? `${option.company_name}` : ""
-              }
               value={companies.find((company) => company.id === value) || ""}
-              onChange={handleCompanyAutocompleteChange}
+              onChange={(event, newValue) => {
+                if (typeof newValue === "string") {
+                  // timeout to avoid instant validation of the dialog's form.
+                  setTimeout(() => {
+                    setInvalidCompany(true);
+                    setCompany(newValue);
+                  });
+                } else if (newValue && newValue.inputValue) {
+                  setInvalidCompany(true);
+                  setCompany(newValue.inputValue);
+                } else {
+                  onChange(newValue?.id);
+                }
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+
+                if (params.inputValue !== "") {
+                  filtered.push({
+                    inputValue: params.inputValue,
+                    company_name: `Add "${params.inputValue}"`,
+                  });
+                }
+
+                return filtered;
+              }}
+              id="free-solo-dialog-demo"
+              options={companies || []}
+              getOptionLabel={(option) => {
+                // e.g. value selected with enter, right from the input
+                if (typeof option === "string") {
+                  return option;
+                }
+                if (option.inputValue) {
+                  return option.inputValue;
+                }
+                return option.company_name;
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              renderOption={(props, option) => (
+                <li {...props}>{option.company_name}</li>
+              )}
+              freeSolo
               renderInput={(params) => (
                 <>
                   <TextField
@@ -151,13 +162,53 @@ function BasicInfoTab(props) {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               className="mt-8 mb-16"
-              freeSolo
-              options={contacts || []}
-              getOptionLabel={(contact) =>
-                contact ? `${contact.first_name} ${contact.last_name}` : ""
-              }
               value={contacts.find((contact) => contact.id === value) || ""}
-              onChange={handleAutocompleteChange}
+              onChange={(event, newValue) => {
+                if (typeof newValue === "string") {
+                  // timeout to avoid instant validation of the dialog's form.
+                  setTimeout(() => {
+                    setInvalidContact(true);
+                    setContact(newValue);
+                  });
+                } else if (newValue && newValue.inputValue) {
+                  setInvalidContact(true);
+                  setContact(newValue.inputValue);
+                } else {
+                  onChange(newValue?.id);
+                }
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                if (params.inputValue !== "") {
+                  filtered.push({
+                    inputValue: params.inputValue,
+                    first_name: `Add "${params.inputValue}"`,
+                    last_name: "",
+                  });
+                }
+                return filtered;
+              }}
+              id="free-solo-dialog-demo"
+              options={contacts || []}
+              getOptionLabel={(option) => {
+                // e.g. value selected with enter, right from the input
+                if (typeof option === "string") {
+                  return option;
+                }
+                if (option.inputValue) {
+                  return option.inputValue;
+                }
+                return `${option.first_name} ${option.last_name}`?.trim();
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              renderOption={(props, contact) => (
+                <li
+                  {...props}
+                >{`${contact.first_name} ${contact.last_name}`}</li>
+              )}
+              freeSolo
               renderInput={(params) => (
                 <>
                   <TextField
@@ -179,14 +230,12 @@ function BasicInfoTab(props) {
           )}
         />
       </div>
-      <FormProvider {...companyMethods}>
-        <AddCompany
-          invalidCompany={invalidCompany}
-          setInvalidCompany={setInvalidCompany}
-          companyName={companyName}
-          handleSaveCompany={handleSaveCompany}
-        />
-      </FormProvider>
+      <AddCompany
+        invalidCompany={invalidCompany}
+        setInvalidCompany={setInvalidCompany}
+        companyName={companyName}
+        handleSaveCompany={handleSaveCompany}
+      />
       <FormProvider {...contactMethods}>
         <AddContact
           setInvalidContact={setInvalidContact}
