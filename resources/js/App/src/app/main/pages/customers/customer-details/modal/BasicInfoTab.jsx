@@ -30,7 +30,6 @@ function BasicInfoTab(props) {
             render={({ field: { onChange, value } }) => (
               <Autocomplete
                 className="mt-8 mb-16"
-                //freeSolo
                 options={companies || []}
                 getOptionLabel={(company) => `${company.company_name}`}
                 value={
@@ -65,7 +64,6 @@ function BasicInfoTab(props) {
               render={({ field: { onChange, value } }) => (
                 <Autocomplete
                   className="mt-8 mb-16"
-                  // freeSolo
                   options={contacts || []}
                   getOptionLabel={(contact) =>
                     `${contact.first_name} ${contact.last_name}`

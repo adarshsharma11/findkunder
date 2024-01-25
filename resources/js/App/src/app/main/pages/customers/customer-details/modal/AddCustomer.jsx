@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -24,8 +24,10 @@ const AddContact = ({
   const lastName = namesArray && namesArray[1];
 
   React.useEffect(() => {
-    if (firstName && lastName) {
+    if (firstName) {
       setValue("first_name", firstName);
+    }
+    if (lastName) {
       setValue("last_name", lastName);
     }
   }, [firstName, lastName]);
