@@ -19,6 +19,13 @@ import { removeProducts } from "./store/contactPersonsSlice";
 
 const rows = [
   {
+    id: "image",
+    align: "left",
+    disablePadding: true,
+    label: "Image",
+    sort: false,
+  },
+  {
     id: "title",
     align: "left",
     disablePadding: false,

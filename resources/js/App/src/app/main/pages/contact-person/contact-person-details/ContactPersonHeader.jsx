@@ -20,8 +20,7 @@ function ProductHeader(props) {
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
   const { isValid, dirtyFields } = formState;
-  const featuredImageId = watch("featuredImageId");
-  const images = watch("images");
+  const image = watch("image");
   const name = watch("first_name");
   const theme = useTheme();
   const navigate = useNavigate();
@@ -78,10 +77,16 @@ function ProductHeader(props) {
             initial={{ scale: 0 }}
             animate={{ scale: 1, transition: { delay: 0.3 } }}
           >
-            {images?.length > 0 && featuredImageId ? (
+            {image ? (
               <img
                 className="w-32 sm:w-48 rounded"
-                src={_.find(images, { id: featuredImageId }).url}
+                src={
+                  image
+                    ? typeof image === "string"
+                      ? `assets/images/contact-person/${image}`
+                      : URL.createObjectURL(new Blob([image]))
+                    : null
+                }
                 alt={name}
               />
             ) : (

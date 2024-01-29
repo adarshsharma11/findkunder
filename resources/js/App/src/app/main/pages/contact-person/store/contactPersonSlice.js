@@ -34,7 +34,19 @@ export const saveProduct = createAsyncThunk(
 export const addNewPerson = createAsyncThunk(
   "contact/addNewPerson",
   async (personData, { dispatch, getState }) => {
-    const response = await axios.post("/api/contact-person", personData);
+    const formData = new FormData();
+    formData.append("image", personData.image);
+    // Append other person data to the form data
+    Object.keys(personData).forEach((key) => {
+      if (key !== "image") {
+        formData.append(key, personData[key]);
+      }
+    });
+    const response = await axios.post("/api/contact-person", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     const data = response.data;
     return data;
   }
@@ -54,6 +66,7 @@ const contactSlice = createSlice({
           last_name: "",
           email: "",
           phone: "",
+          image: "",
           linkedin: "",
           comment: "",
         },

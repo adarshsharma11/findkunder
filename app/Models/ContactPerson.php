@@ -18,6 +18,7 @@ class ContactPerson extends Model
         'phone',
         'linkedin',
         'comment',
+        'image'
     ];
 
     public function customers()

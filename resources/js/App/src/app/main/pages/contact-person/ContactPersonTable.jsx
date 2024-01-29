@@ -189,6 +189,22 @@ function ContactPersonTable(props) {
                         onChange={(event) => handleCheck(event, n.id)}
                       />
                     </TableCell>
+                    <TableCell
+                      className="w-52 px-4 md:px-0"
+                      component="th"
+                      scope="row"
+                      padding="none"
+                    >
+                      <img
+                        className="w-full block rounded"
+                        src={
+                          n.image
+                            ? `assets/images/contact-person/${n.image}`
+                            : "assets/images/apps/ecommerce/product-image-placeholder.png"
+                        }
+                        alt={t(n.title)}
+                      />
+                    </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"

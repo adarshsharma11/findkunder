@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\ContactPerson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ContactPersonController extends Controller
@@ -33,13 +35,21 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
+        $data = $request->all();
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = time().'.'.$image->extension();  
+            $image->move(public_path('assets/images/contact-person'), $image_name);
+            $data['image'] = $image_name;
+        }
 
-        $contactPerson = ContactPerson::create($request->all());
+        $contactPerson = ContactPerson::create($data);
         return response()->json($contactPerson, 201);
     }
 
@@ -49,6 +59,7 @@ class ContactPersonController extends Controller
         if (!$contactPerson) {
             return response()->json(['error' => 'Contact person not found'], 404);
         }
+        $oldImagePath = $contactPerson->image;
 
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
@@ -57,12 +68,22 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
+        $data = $request->all();
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = time().'.'.$image->extension();  
+            $image->move(public_path('assets/images/contact-person'), $image_name);
+            $data['image'] = $image_name;
+            if ($oldImagePath && File::exists(public_path($oldImagePath))) {
+                File::delete(public_path($oldImagePath));
+            }
+        }
         $contactPerson->update($request->all());
         return response()->json($contactPerson);
     }
@@ -76,8 +97,12 @@ class ContactPersonController extends Controller
         if ($contactPerson->customers()->exists()) {
             return response()->json(['message' => 'Cannot delete contact with associated customers'], 201);
         }
+        $imagePath = $contactPerson->image;
 
         $contactPerson->delete();
+        if ($imagePath && File::exists(public_path($imagePath))) {
+            File::delete(public_path($imagePath));
+        }
         return response()->json(['message' => 'Contact person deleted successfully']);
     }
 }
