@@ -242,4 +242,4 @@ function Customer(props) {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Customer);
+export default withReducer("customer", reducer)(Customer);

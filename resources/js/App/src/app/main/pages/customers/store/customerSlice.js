@@ -64,6 +64,6 @@ const productSlice = createSlice({
 
 export const { newProduct, resetProduct } = productSlice.actions;
 
-export const selectProduct = ({ eCommerceApp }) => eCommerceApp.product;
+export const selectProduct = ({ customer }) => customer.customer;
 
 export default productSlice.reducer;

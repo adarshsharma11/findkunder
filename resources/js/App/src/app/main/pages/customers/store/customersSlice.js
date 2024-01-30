@@ -25,10 +25,10 @@ export const removeProducts = createAsyncThunk(
 const productsAdapter = createEntityAdapter({});
 
 export const { selectAll: selectProducts, selectById: selectProductById } =
-  productsAdapter.getSelectors((state) => state.eCommerceApp.customers);
+  productsAdapter.getSelectors((state) => state.customer.customers);
 
 const productsSlice = createSlice({
-  name: "eCommerceApp/customers",
+  name: "customer/customers",
   initialState: productsAdapter.getInitialState({
     searchText: "",
   }),
@@ -49,7 +49,7 @@ const productsSlice = createSlice({
 
 export const { setProductsSearchText } = productsSlice.actions;
 
-export const selectProductsSearchText = ({ eCommerceApp }) =>
-  eCommerceApp.customers.searchText;
+export const selectProductsSearchText = ({ customer }) =>
+  customer.customers.searchText;
 
 export default productsSlice.reducer;

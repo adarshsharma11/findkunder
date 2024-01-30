@@ -144,4 +144,4 @@ function Customers() {
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Customers);
+export default withReducer("customer", reducer)(Customers);
