@@ -13,7 +13,6 @@ import { Link, useParams } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import {
   getProduct,
@@ -24,6 +23,7 @@ import {
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
+import CompanyImageTab from "./tabs/CompanyImageTab";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
@@ -36,9 +36,7 @@ function Company(props) {
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {
-      location: "",
-    },
+    defaultValues: {},
     resolver: yupResolver(companySchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
@@ -151,10 +149,14 @@ function Company(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
+              <Tab className="h-64" label="Company Logo" />
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab />
+              </div>
+              <div className={tabValue !== 1 ? "hidden" : ""}>
+                <CompanyImageTab />
               </div>
             </div>
           </>

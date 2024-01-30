@@ -19,6 +19,13 @@ import { removeProducts } from "./store/companiesSlice";
 
 const rows = [
   {
+    id: "image",
+    align: "left",
+    disablePadding: true,
+    label: "Image",
+    sort: false,
+  },
+  {
     id: "company_name",
     align: "left",
     disablePadding: false,

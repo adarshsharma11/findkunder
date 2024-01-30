@@ -76,10 +76,10 @@ function ProductHeader(props) {
             initial={{ scale: 0 }}
             animate={{ scale: 1, transition: { delay: 0.3 } }}
           >
-            {images?.length > 0 && featuredImageId ? (
+            {images?.length > 0 ? (
               <img
                 className="w-32 sm:w-48 rounded"
-                src={_.find(images, { id: featuredImageId }).url}
+                src={images.url}
                 alt={name}
               />
             ) : (

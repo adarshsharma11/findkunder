@@ -7,7 +7,7 @@ import { regions } from "../../../../../store/constants";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { control, formState, setValue } = methods;
+  const { control, formState } = methods;
   const { errors } = formState;
 
   return (

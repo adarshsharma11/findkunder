@@ -187,7 +187,18 @@ function CompaniesTable(props) {
                         onChange={(event) => handleCheck(event, n.id)}
                       />
                     </TableCell>
-
+                    <TableCell
+                      className="w-52 px-4 md:px-0"
+                      component="th"
+                      scope="row"
+                      padding="none"
+                    >
+                      <img
+                        className="w-full block rounded"
+                        src="assets/images/apps/ecommerce/braies-lake.jpg"
+                        alt={n.company_name}
+                      />
+                    </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"

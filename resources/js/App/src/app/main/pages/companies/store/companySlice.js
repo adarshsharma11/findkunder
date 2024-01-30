@@ -58,6 +58,7 @@ const companySlice = createSlice({
           website: "",
           linkedin: "",
           facebook: "",
+          image: "",
         },
       }),
     },
