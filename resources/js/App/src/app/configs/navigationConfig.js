@@ -17,15 +17,15 @@ const navigationConfig = [
     icon: "heroicons-outline:home",
     children: [
       {
-        id: "apps.virksomhed",
-        title: "Virksomhed",
+        id: "apps.companies",
+        title: "Companies",
         type: "item",
         icon: "heroicons-outline:collection",
         url: "/companies",
       },
       {
         id: "apps.person",
-        title: "Contact Person",
+        title: "Contact Persons",
         type: "item",
         icon: "heroicons-outline:user-circle",
         url: "/contact-person",
