@@ -195,7 +195,11 @@ function CompaniesTable(props) {
                     >
                       <img
                         className="w-full block rounded"
-                        src="assets/images/apps/ecommerce/braies-lake.jpg"
+                        src={
+                          n.image
+                            ? `assets/images/company-logo/${n.image}`
+                            : "assets/images/apps/ecommerce/product-image-placeholder.png"
+                        }
                         alt={n.company_name}
                       />
                     </TableCell>

@@ -4028,7 +4028,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 
   .md\:p-16 {
-    padding: 1.6rem;
+    padding: 1.6rem !important;
   }
 
   .md\:p-40 {
