@@ -68,7 +68,7 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'image' => $request->hasFile('image') ? 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048' : 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +84,7 @@ class ContactPersonController extends Controller
                 File::delete(public_path($oldImagePath));
             }
         }
-        $contactPerson->update($request->all());
+        $contactPerson->update($data);
         return response()->json($contactPerson);
     }
 

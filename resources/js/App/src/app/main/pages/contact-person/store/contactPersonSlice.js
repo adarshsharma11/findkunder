@@ -22,9 +22,23 @@ export const removeProduct = createAsyncThunk(
 export const saveProduct = createAsyncThunk(
   "contact/saveContact",
   async (productData, { dispatch, getState }) => {
-    const response = await axios.put(
-      `/api/contact-person/${productData.id}`,
-      productData
+    const formData = new FormData();
+    if (productData.image) {
+      formData.append("image", productData.image);
+    }
+    Object.keys(productData).forEach((key) => {
+      if (key !== "image" && productData[key] !== null) {
+        formData.append(key, productData[key]);
+      }
+    });
+    const response = await axios.post(
+      `/api/contact-person/${productData.id}?_method=PUT`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     const data = await response.data;
     return data;

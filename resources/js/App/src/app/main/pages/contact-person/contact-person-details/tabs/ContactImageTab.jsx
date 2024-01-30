@@ -84,24 +84,21 @@ function ContactImageTab(props) {
         />
         {image && (
           <div
-            onClick={() => onChange(image.id)}
-            onKeyDown={() => onChange(image.id)}
             role="button"
             tabIndex={0}
             className={clsx(
               "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg"
             )}
           >
-            <FuseSvgIcon className="productImageFeaturedStar">
-              heroicons-solid:star
-            </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full"
               src={
                 image
                   ? typeof image === "string"
                     ? `assets/images/contact-person/${image}`
-                    : URL.createObjectURL(new Blob([image]))
+                    : URL.createObjectURL(
+                        image instanceof File ? image : new Blob([image])
+                      )
                   : null
               }
               alt="product"

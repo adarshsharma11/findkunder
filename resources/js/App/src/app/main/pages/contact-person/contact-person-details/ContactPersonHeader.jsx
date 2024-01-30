@@ -84,7 +84,9 @@ function ProductHeader(props) {
                   image
                     ? typeof image === "string"
                       ? `assets/images/contact-person/${image}`
-                      : URL.createObjectURL(new Blob([image]))
+                      : URL.createObjectURL(
+                          image instanceof File ? image : new Blob([image])
+                        )
                     : null
                 }
                 alt={name}
