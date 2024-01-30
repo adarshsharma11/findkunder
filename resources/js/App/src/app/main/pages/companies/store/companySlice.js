@@ -53,7 +53,7 @@ export const addNewCompany = createAsyncThunk(
       formData.append("image", companyData.image);
     }
     Object.keys(companyData).forEach((key) => {
-      if (key !== "image") {
+      if (key !== "image" && companyData[key] !== null) {
         formData.append(key, companyData[key]);
       }
     });

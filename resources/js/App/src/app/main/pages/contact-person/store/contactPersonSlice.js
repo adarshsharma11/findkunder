@@ -49,10 +49,12 @@ export const addNewPerson = createAsyncThunk(
   "contact/addNewPerson",
   async (personData, { dispatch, getState }) => {
     const formData = new FormData();
-    formData.append("image", personData.image);
+    if (personData.image) {
+      formData.append("image", personData.image);
+    }
     // Append other person data to the form data
     Object.keys(personData).forEach((key) => {
-      if (key !== "image") {
+      if (key !== "image" && productData[key] !== null) {
         formData.append(key, personData[key]);
       }
     });
