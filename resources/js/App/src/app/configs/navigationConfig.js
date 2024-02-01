@@ -12,7 +12,7 @@ i18next.addResourceBundle("ar", "navigation", ar);
 const navigationConfig = [
   {
     id: "apps",
-    title: "Admin",
+    title: "Contacts",
     type: "group",
     icon: "heroicons-outline:home",
     children: [
@@ -25,7 +25,7 @@ const navigationConfig = [
       },
       {
         id: "apps.person",
-        title: "Contact Persons",
+        title: "Persons",
         type: "item",
         icon: "heroicons-outline:user-circle",
         url: "/contact-person",
@@ -33,6 +33,7 @@ const navigationConfig = [
       {
         id: "apps.findkunder",
         title: "Findkunder",
+        subtitle: "Profiles",
         type: "item",
         icon: "search",
         url: "/customers",
