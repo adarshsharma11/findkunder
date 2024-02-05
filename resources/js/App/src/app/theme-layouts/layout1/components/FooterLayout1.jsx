@@ -5,9 +5,6 @@ import { memo } from "react";
 import { useSelector } from "react-redux";
 import { selectFooterTheme } from "app/store/fuse/settingsSlice";
 import clsx from "clsx";
-import PoweredByLinks from "../../shared-components/PoweredByLinks";
-import DocumentationButton from "../../shared-components/DocumentationButton";
-import PurchaseButton from "../../shared-components/PurchaseButton";
 
 function FooterLayout1(props) {
   const footerTheme = useSelector(selectFooterTheme);
@@ -27,14 +24,12 @@ function FooterLayout1(props) {
       >
         <Toolbar className="min-h-48 md:min-h-64 px-8 sm:px-12 py-0 flex items-center overflow-x-auto">
           <div className="flex grow shrink-0">
-            <p class="text-center text-gray-600">
+            <p className="text-center text-gray-600">
               &copy; 2023-2024 Findkunder. All Rights Reserved.
             </p>
           </div>
 
-          <div className="flex grow shrink-0 px-12 justify-end">
-            {/* <PoweredByLinks /> */}
-          </div>
+          <div className="flex grow shrink-0 px-12 justify-end" />
         </Toolbar>
       </AppBar>
     </ThemeProvider>
