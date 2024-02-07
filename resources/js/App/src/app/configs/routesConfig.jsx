@@ -6,6 +6,7 @@ import userInterfaceConfigs from "../main/user-interface/UserInterfaceConfigs";
 import SignInConfig from "../main/sign-in/SignInConfig";
 import SignUpConfig from "../main/sign-up/SignUpConfig";
 import SignOutConfig from "../main/sign-out/SignOutConfig";
+import ForgotPasswordConfig from "../main/forgot-password/ForgotPasswordConfig";
 import dashboardsConfigs from "../main/dashboards/dashboardsConfigs";
 import appsConfigs from "../main/apps/appsConfigs";
 import pagesConfigs from "../main/pages/pagesConfigs";
@@ -26,6 +27,7 @@ const routeConfigs = [
   CompaniesConfig,
   ContactPersonConfig,
   CustomersConfig,
+  ForgotPasswordConfig,
 ];
 
 const routes = [

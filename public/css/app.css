@@ -1281,7 +1281,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-top: 1.2rem;
 }
 .mt-32 {
-  margin-top: 3.2rem;
+  margin-top: 3.2rem !important;
 }
 .mt-16 {
   margin-top: 1.6rem;

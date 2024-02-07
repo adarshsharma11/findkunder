@@ -1,6 +1,5 @@
-import ECommerceAppConfig from "./e-commerce/ECommerceAppConfig";
 import ProfileAppConfig from "./profile/profileAppConfig";
 
-const appsConfigs = [ECommerceAppConfig, ProfileAppConfig];
+const appsConfigs = [ProfileAppConfig];
 
 export default appsConfigs;
