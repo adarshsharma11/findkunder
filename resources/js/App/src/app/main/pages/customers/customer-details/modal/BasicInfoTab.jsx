@@ -32,10 +32,10 @@ function BasicInfoTab(props) {
                 className="mt-8 mb-16"
                 options={companies || []}
                 getOptionLabel={(company) => `${company.company_name}`}
-                value={
-                  companies.find((company) => company.id === value) || null
-                }
-                onChange={handleCompanyAutocompleteChange}
+                value={companies.find((company) => company.id === value) || ""}
+                onChange={(event, newValue) => {
+                  onChange(newValue?.id);
+                }}
                 renderInput={(params) => (
                   <>
                     <TextField
@@ -68,10 +68,12 @@ function BasicInfoTab(props) {
                   getOptionLabel={(contact) =>
                     `${contact.first_name} ${contact.last_name}`
                   }
-                  value={
-                    contacts.find((contact) => contact.id === value) || null
-                  }
-                  onChange={handleAutocompleteChange}
+                  value={contacts.find((contact) => contact.id === value) || ""}
+                  onChange={(event, newValue) => {
+                    if (typeof newValue !== "string") {
+                      onChange(newValue?.id);
+                    }
+                  }}
                   renderInput={(params) => (
                     <>
                       <TextField

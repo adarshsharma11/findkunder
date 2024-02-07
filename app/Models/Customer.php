@@ -13,6 +13,7 @@ class Customer extends Model
         'company_id',
         'person_id',
         'notes',
+        'user_id'
     ];
 
     public function company()
@@ -23,5 +24,9 @@ class Customer extends Model
     public function person()
     {
         return $this->belongsTo(ContactPerson::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

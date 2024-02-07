@@ -19,6 +19,7 @@ import { getProducts as getContactPerson } from "../contact-person/store/contact
 import { getProducts as getUpdatedCustomers } from "./store/customersSlice";
 import { saveProduct, removeProduct } from "./store/customerSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
+import _ from "@lodash";
 import { useDispatch } from "react-redux";
 
 const schema = yup.object().shape({
@@ -46,6 +47,7 @@ function Customers() {
   });
   const { reset, watch, control, onChange, formState, getValues } = methods;
   const form = watch();
+  const { isValid, dirtyFields } = formState;
 
   function handleOpenDialog(item) {
     setSelected(item.id);
@@ -126,6 +128,7 @@ function Customers() {
             <Button
               color="secondary"
               variant="contained"
+              disabled={_.isEmpty(dirtyFields) || !isValid}
               onClick={handleUpdateCustomer}
             >
               Save

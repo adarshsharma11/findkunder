@@ -5,9 +5,12 @@ import AuthService from "../../auth/services/AuthService";
 
 function SignOutPage() {
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       AuthService.logout();
     }, 1000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return (

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -16,7 +17,16 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::with(['company', 'person'])->get();
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            $customers = Customer::with(['company', 'person'])->get();
+        } else {
+            $contactPersons = $user->contact_person;
+            $customerIds = $contactPersons->pluck('id');
+            $customers = Customer::with(['company', 'person'])
+            ->whereIn('person_id', $customerIds)
+            ->get();
+        }
         return response()->json($customers);
     }
 
@@ -37,8 +47,14 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 422);
         }
-
-        $customer = Customer::create($request->all());
+        $user = Auth::user();
+        $data = $request->all();
+        if ($user->hasRole('admin')) {
+            $data['user_id'] = $user->id;
+            $customer = Customer::create($data);
+        } else {
+            $customer = $user->customers()->create($data);
+        }
         return response()->json(['status' => 'success', 'data' => $customer]);
     }
 

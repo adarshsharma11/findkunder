@@ -1,7 +1,6 @@
 import FuseUtils from "@fuse/utils/FuseUtils";
 import axios from "axios";
 import authServiceConfig from "./authServiceConfig";
-
 /* eslint-disable camelcase */
 
 class AuthService extends FuseUtils.EventEmitter {
@@ -48,6 +47,42 @@ class AuthService extends FuseUtils.EventEmitter {
       this.setSession(null);
       this.emit("onAutoLogout", "access_token expired");
     }
+  };
+
+  createUser = (data) => {
+    return new Promise((resolve, reject) => {
+      axios.post(authServiceConfig.signUp, data).then((response) => {
+        if (response.data.user) {
+          const userInfo = response.data.user;
+          if (
+            userInfo &&
+            response.data.accessToken &&
+            response.data.expirationTime
+          ) {
+            this.setSession(
+              response.data.accessToken,
+              response.data.expirationTime
+            );
+            const newUser = {
+              uuid: userInfo.id,
+              from: "custom-db",
+              role: response.data.role,
+              data: {
+                displayName: userInfo.name,
+                photoURL: "assets/images/avatars/brian-hughes.jpg",
+                email: userInfo.email,
+                settings: {},
+                shortcuts: [],
+              },
+            };
+            resolve(newUser);
+            this.emit("onLogin", newUser);
+          }
+        } else {
+          reject(response.data.error);
+        }
+      });
+    });
   };
 
   signInWithEmailAndPassword = (email, password) => {
@@ -138,26 +173,36 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   logout = () => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post(authServiceConfig.signOut)
-        .then((response) => {
-          if (response.data.status) {
-            this.setSession(null);
-            this.emit("onLogout", "Logged out");
-          } else {
-            this.setSession(null);
-            this.emit("onLogout", "Logged out");
-            reject(new Error("Failed to login with token."));
-          }
-        })
-        .catch((error) => {
-          this.setSession(null);
-          this.emit("onLogout", "Logged out");
-          reject(new Error("Failed to login with token."));
-        });
-    });
+    this.setSession(null);
+    this.emit("onLogout", "Logged out");
   };
+
+  // logout = () => {
+  //   return new Promise((resolve, reject) => {
+  //     axios
+  //       .post(authServiceConfig.signOut)
+  //       .then((response) => {
+  //         if (response.data.status) {
+  //           this.setSession(null);
+  //           this.emit("onLogout", "Logged out");
+  //           const pastDate = new Date(0).toUTCString();
+  //           document.cookie = "XSRF-TOKEN=; expires=" + pastDate + "; path=/";
+  //           document.cookie =
+  //             "laravel_session=; expires=" + pastDate + "; path=/";
+  //           return;
+  //         } else {
+  //           this.setSession(null);
+  //           this.emit("onLogout", "Logged out");
+  //           reject(new Error("Failed to login with token."));
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         this.setSession(null);
+  //         this.emit("onLogout", "Logged out");
+  //         reject(new Error("Failed to login with token."));
+  //       });
+  //   });
+  // };
 
   isAuthTokenValid = (access_token, expirationTime) => {
     if (!access_token || !expirationTime) {

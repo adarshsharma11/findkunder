@@ -17,16 +17,13 @@ use App\Http\Controllers\API\CustomerController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 
-        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/logout', [AuthController::class, 'logoutUser']);
         Route::post('/me', [AuthController::class, 'me']);
     });
 

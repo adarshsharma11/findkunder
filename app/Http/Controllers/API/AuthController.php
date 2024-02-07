@@ -8,9 +8,53 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
+
+    /**
+ * Register a new user.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function register(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+        ]);
+        // If validation fails, return an error response
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            // Check if the email is the reason for the validation error
+            if ($errors->has('email') && $errors->first('email') === 'The email has already been taken.') {
+                return response()->json(['status' => false, 'message' => 'Email address is already registered. Please use a different email.'], 401);
+            }
+            // If it's not an email-related error, return the original validation error
+            return response()->json(['status' => false, 'message' => 'Something went wrong!'], 401);
+        }
+        // Create a new user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+        Auth::login($user);
+        // Assign the "user" role to the new user
+        $role = Role::where('name', 'user')->first();
+        $user->assignRole($role);
+        $expirationTime = now()->addDay();
+        $token = $user->createToken('auth-token', ['*'], $expirationTime)->accessToken->token;
+        $actualRoleName = $role->name;
+        // Return the user information and a success message
+        return response()->json(['status' => true, 'user' => $user,  'accessToken' => $token,'expirationTime' => $expirationTime,
+        'role' => $actualRoleName, 'message' => 'User registered successfully']);
+    }
+
     /**
      * Attempt to authenticate the user with email and password.
      *
@@ -51,18 +95,21 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout(Request $request)
+    public function logoutUser(Request $request)
     {
-        // Log the user out
-        auth('web')->logout();
-
-        // Invalidate the session
+       
+        Auth::guard('web')->logout();
+        // Invalidate the session\
+        $request->user()->tokens()->delete();
         $request->session()->invalidate();
 
         // Regenerate the CSRF token
         $request->session()->regenerateToken();
-
-        return response()->json(['status' => true, 'message' => 'Logged out']);
+        $cookie = Cookie::forget('XSRF-TOKEN');
+        return response()->json([
+            'status' => true,
+            'message' => 'Logged out'
+        ])->withCookie($cookie);
     }
 
     /**
@@ -70,10 +117,10 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me(Request $request)
     {
         // Return the authenticated user information
-        $user = Auth::user();
+        $user = $request->user();
         $accessToken = $user->tokens->first();
         $role = $user->roles()->pluck('name')[0];
         //print_r($accessToken->expire_at); die;

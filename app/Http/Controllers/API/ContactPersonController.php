@@ -8,12 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ContactPersonController extends Controller
 {
     public function index()
     {
-        $contactPersons = ContactPerson::all();
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            $contactPersons = ContactPerson::all();
+        } else {
+            $contactPersons = $user->contact_person;
+        }
         return response()->json($contactPersons);
     }
 
@@ -41,6 +47,7 @@ class ContactPersonController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
+        $user = Auth::user();
         $data = $request->all();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -48,8 +55,13 @@ class ContactPersonController extends Controller
             $image->move(public_path('assets/images/contact-person'), $image_name);
             $data['image'] = $image_name;
         }
+        if ($user->hasRole('admin')) {
+            $data['user_id'] = $user->id;
+            $contactPerson = ContactPerson::create($data);
+        } else {
+            $contactPerson = $user->contact_person()->create($data);
+        }
 
-        $contactPerson = ContactPerson::create($data);
         return response()->json($contactPerson, 201);
     }
 

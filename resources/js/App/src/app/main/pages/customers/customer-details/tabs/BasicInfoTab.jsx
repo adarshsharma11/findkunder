@@ -10,19 +10,11 @@ import { addNewCompany } from "../../../companies/store/companySlice";
 import { addNewPerson } from "../../../contact-person/store/contactPersonSlice";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
-import {
-  companySchema,
-  contactSchema,
-} from "../../../../../schemas/validationSchemas";
+import { contactSchema } from "../../../../../schemas/validationSchemas";
 const filter = createFilterOptions();
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const dispatch = useDispatch();
-  const companyMethods = useForm({
-    mode: "onChange",
-    defaultValues: {},
-    resolver: yupResolver(companySchema),
-  });
   const contactMethods = useForm({
     mode: "onChange",
     defaultValues: {},

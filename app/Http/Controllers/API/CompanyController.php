@@ -7,12 +7,18 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $companies = Company::all();
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            $companies = Company::all();
+        } else {
+            $companies = $user->companies;
+        }
         return response()->json($companies);
     }
 
@@ -42,6 +48,7 @@ class CompanyController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $user = Auth::user();
         $data = $request->all();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -49,13 +56,23 @@ class CompanyController extends Controller
             $image->move(public_path('assets/images/company-logo'), $image_name);
             $data['image'] = $image_name;
         }
-        $company = Company::create($data);
+        if ($user->hasRole('admin')) {
+            $data['user_id'] = $user->id;
+            $company = Company::create($data);
+        } else {
+            $company = $user->companies()->create($data);
+        }
         return response()->json($company, 201);
     }
 
     public function update(Request $request, $id)
     {
-        $company = Company::find($id);
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            $company = Company::find($id);
+        } else {
+            $company = $user->companies()->find($id);
+        }
         if (!$company) {
             return response()->json(['error' => 'Company not found'], 404);
         }

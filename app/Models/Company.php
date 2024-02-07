@@ -20,10 +20,15 @@ class Company extends Model
         'linkedin',
         'facebook',
         'image',
+        'user_id',
     ];
 
     public function customers()
     {
         return $this->hasMany(Customer::class, 'company_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
