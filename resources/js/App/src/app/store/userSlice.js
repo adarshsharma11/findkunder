@@ -90,6 +90,9 @@ const initialState = {
     photoURL: "assets/images/avatars/brian-hughes.jpg",
     email: "johndoe@withinpixels.com",
     shortcuts: ["apps.calendar", "apps.mailbox", "apps.contacts", "apps.tasks"],
+    totalCompanies: 0,
+    totalContactPersons: 0,
+    totalProfiles: 0,
   },
 };
 

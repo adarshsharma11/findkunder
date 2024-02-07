@@ -50,6 +50,7 @@ class AuthController extends Controller
         $expirationTime = now()->addDay();
         $token = $user->createToken('auth-token', ['*'], $expirationTime)->accessToken->token;
         $actualRoleName = $role->name;
+        $user->loadCount('companies', 'contact_person', 'customers');
         // Return the user information and a success message
         return response()->json(['status' => true, 'user' => $user,  'accessToken' => $token,'expirationTime' => $expirationTime,
         'role' => $actualRoleName, 'message' => 'User registered successfully']);
@@ -79,6 +80,7 @@ class AuthController extends Controller
             // Authentication successful
             $user = Auth::user();
             $expirationTime = now()->addDay();
+            $user->loadCount('companies', 'contact_person', 'customers');
             $user->tokens()->delete();
             $token = $user->createToken('auth-token', ['*'],  $expirationTime)->accessToken->token;
             $role = $user->roles()->pluck('name')[0];
@@ -123,6 +125,7 @@ class AuthController extends Controller
         $user = $request->user();
         $accessToken = $user->tokens->first();
         $role = $user->roles()->pluck('name')[0];
+        $user->loadCount('companies', 'contact_person', 'customers');
         //print_r($accessToken->expire_at); die;
 
     if ($accessToken) {
