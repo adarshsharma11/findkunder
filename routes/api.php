@@ -21,6 +21,7 @@ use App\Http\Controllers\API\CustomerController;
     Route::post('/register', [AuthController::class, 'register']);
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
+        Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 
         Route::post('/logout', [AuthController::class, 'logoutUser']);

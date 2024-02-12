@@ -1,25 +1,21 @@
-import ImageListItem from "@mui/material/ImageListItem";
-import ImageListItemBar from "@mui/material/ImageListItemBar";
-import IconButton from "@mui/material/IconButton";
-import ListSubheader from "@mui/material/ListSubheader";
-import Typography from "@mui/material/Typography";
-import axios from "axios";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import _ from "@lodash";
+import TextField from "@mui/material/TextField";
+import React from "react";
+import Button from "@mui/material/Button";
+import { Controller, useFormContext } from "react-hook-form";
 
-function EditProfileTab() {
-  const [data, setData] = useState(null);
+function EditProfileTab(props) {
+  const methods = useFormContext();
+  const { user, handleUpdateProfile } = props;
+  const { control, formState, setValue, getValues } = methods;
+  const { dirtyFields, isValid, errors } = formState;
 
-  useEffect(() => {
-    axios.get("/api/profile/photos-videos").then((res) => {
-      setData(res.data);
-    });
-  }, []);
-
-  if (!data) {
-    return null;
-  }
+  React.useEffect(() => {
+    if (user.data.displayName) {
+      setValue("name", user.data.displayName);
+    }
+  }, [user]);
 
   const container = {
     show: {
@@ -27,11 +23,6 @@ function EditProfileTab() {
         staggerChildren: 0.05,
       },
     },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0 },
   };
 
   return (
@@ -42,7 +33,37 @@ function EditProfileTab() {
       className="w-full"
     >
       <div className="md:flex">
-        <div className="flex flex-col flex-1 md:ltr:pr-32 md:rtl:pl-32"></div>
+        <div className="flex flex-col flex-1 md:ltr:pr-32 md:rtl:pl-32">
+          <div className="w-1/2">
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mt-8 mb-16"
+                  error={!!errors.name}
+                  required
+                  helperText={errors?.name?.message}
+                  label="Name"
+                  autoFocus
+                  id="first_name"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+            <Button
+              className="whitespace-nowrap mx-4"
+              variant="contained"
+              color="secondary"
+              disabled={_.isEmpty(dirtyFields) || !isValid}
+              onClick={() => handleUpdateProfile(getValues())}
+            >
+              Update
+            </Button>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

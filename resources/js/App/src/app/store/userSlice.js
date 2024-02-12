@@ -5,6 +5,7 @@ import _ from "@lodash";
 import { setInitialSettings } from "app/store/fuse/settingsSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 import settingsConfig from "app/configs/settingsConfig";
+import AuthService from "../auth/services/AuthService";
 
 export const setUser = createAsyncThunk(
   "user/setUser",
@@ -72,15 +73,13 @@ export const updateUserData = (user) => async (dispatch, getState) => {
     // is guest
     return;
   }
-
-  // jwtService
-  //   .updateUserData(user)
-  //   .then(() => {
-  //     dispatch(showMessage({ message: 'User data saved with api' }));
-  //   })
-  //   .catch((error) => {
-  //     dispatch(showMessage({ message: error.message }));
-  //   });
+  AuthService.updateUserData(user)
+    .then(() => {
+      dispatch(showMessage({ message: "User data saved with api" }));
+    })
+    .catch((error) => {
+      dispatch(showMessage({ message: error.message }));
+    });
 };
 
 const initialState = {

@@ -8,7 +8,18 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import AboutTab from "./tabs/AboutTab";
 import EditProfileTab from "./tabs/EditProfileTab";
+import UpdatePasswordTab from "./tabs/UpdatePasswordTab";
 import useThemeMediaQuery from "../../../../@fuse/hooks/useThemeMediaQuery";
+import { useForm, FormProvider } from "react-hook-form";
+import {
+  updateProfileSchema,
+  updateProfilePasswordSchema,
+} from "../../../schemas/validationSchemas";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from "app/store/userSlice";
+import AuthService from "../../../auth/services/AuthService";
+import { showMessage } from "app/store/fuse/messageSlice";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -21,11 +32,35 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 function ProfileApp() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const methods = useForm({
+    mode: "onChange",
+    defaultValues: {},
+    resolver: yupResolver(updateProfileSchema),
+  });
+  const securityMethods = useForm({
+    mode: "onChange",
+    defaultValues: {},
+    resolver: yupResolver(updateProfilePasswordSchema),
+  });
+  const { reset, watch, control, onChange, formState, setValue } = methods;
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   function handleTabChange(event, value) {
     setSelectedTab(value);
   }
+
+  const handleUpdateProfile = (values) => {
+    AuthService.updateUserData(values)
+      .then(() => {
+        dispatch(showMessage({ message: "Profile updated successfully!" }));
+      })
+      .catch((error) => {
+        const errorMessage = "Failed to update profile.";
+        dispatch(showMessage({ message: errorMessage, variant: "error" }));
+      });
+  };
 
   return (
     <Root
@@ -83,6 +118,11 @@ function ProfileApp() {
                   disableRipple
                   label="Edit Profile"
                 />
+                <Tab
+                  className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
+                  disableRipple
+                  label="Update Password"
+                />
               </Tabs>
             </div>
           </div>
@@ -90,8 +130,20 @@ function ProfileApp() {
       }
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-          {selectedTab === 0 && <AboutTab />}
-          {selectedTab === 1 && <EditProfileTab />}
+          {selectedTab === 0 && <AboutTab user={user} />}
+          {selectedTab === 1 && (
+            <FormProvider {...methods}>
+              <EditProfileTab
+                user={user}
+                handleUpdateProfile={handleUpdateProfile}
+              />
+            </FormProvider>
+          )}
+          {selectedTab === 2 && (
+            <FormProvider {...securityMethods}>
+              <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile} />
+            </FormProvider>
+          )}
         </div>
       }
       scroll={isMobile ? "normal" : "page"}

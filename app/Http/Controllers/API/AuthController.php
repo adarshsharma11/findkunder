@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Cookie;
+use App\Rules\PasswordCheck;
 
 class AuthController extends Controller
 {
@@ -147,4 +148,42 @@ class AuthController extends Controller
         'role' => $role
     ]);
     }
+
+    /**
+ * Update the authenticated user details.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function update(Request $request)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'name' => 'nullable|string',
+        'email' => 'nullable|email|unique:users,email,' . auth()->id(),
+        'password' => 'nullable|min:6',
+        'old_password' => ['nullable', 'min:6', new PasswordCheck],
+    ]);
+    // If validation fails, return an error response
+    if ($validator->fails()) {
+        return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()->first()], 422);
+    }
+    // Get the authenticated user
+    $user = $request->user();
+    // Update user details
+    $user->update([
+        'name' => $request->name ? $request->name : $user->name,
+        'email' => $request->email ? $request->email : $user->email,
+        'password' => $request->password ? bcrypt($request->password) : $user->password,
+    ]);
+    // Load updated counts
+    $user->loadCount('companies', 'contact_person', 'customers');
+    // Return the updated user information
+    return response()->json([
+        'status' => true,
+        'user' => $user,
+        'message' => 'User details updated successfully',
+    ]);
+}
+
 }

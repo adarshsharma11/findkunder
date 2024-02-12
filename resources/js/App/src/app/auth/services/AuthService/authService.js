@@ -49,6 +49,12 @@ class AuthService extends FuseUtils.EventEmitter {
     }
   };
 
+  updateUserData = (user) => {
+    return axios.put(authServiceConfig.updateUser, {
+      name: user.name || null,
+      old_password: user.oldPassword || null,
+    });
+  };
   createUser = (data) => {
     return new Promise((resolve, reject) => {
       axios.post(authServiceConfig.signUp, data).then((response) => {

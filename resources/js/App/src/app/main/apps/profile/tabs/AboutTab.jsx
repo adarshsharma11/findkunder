@@ -2,12 +2,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
 
-function AboutTab() {
-  const user = useSelector(selectUser);
+function AboutTab(props) {
+  const { user } = props;
 
   if (!user) {
     return null;

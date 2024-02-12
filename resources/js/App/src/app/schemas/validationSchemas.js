@@ -82,3 +82,39 @@ export const contactSchema = yup.object().shape({
       "Invalid LinkedIn URL. Please enter a valid LinkedIn URL"
     ),
 });
+
+export const signUpSchema = yup.object().shape({
+  displayName: yup.string().required("You must enter display name"),
+  email: yup
+    .string()
+    .email("You must enter a valid email")
+    .required("You must enter a email"),
+  password: yup
+    .string()
+    .required("Please enter your password.")
+    .min(8, "Password is too short - should be 8 chars minimum."),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+  acceptTermsConditions: yup
+    .boolean()
+    .oneOf([true], "The terms and conditions must be accepted."),
+});
+
+export const updateProfileSchema = yup.object().shape({
+  name: yup.string().required("You must enter display name"),
+});
+
+export const updateProfilePasswordSchema = yup.object().shape({
+  oldPassword: yup
+    .string()
+    .required("Please enter your old password.")
+    .min(8, "Password is too short - should be 8 chars minimum."),
+  password: yup
+    .string()
+    .required("Please enter your password.")
+    .min(8, "Password is too short - should be 8 chars minimum."),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+});
