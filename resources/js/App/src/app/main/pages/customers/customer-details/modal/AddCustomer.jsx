@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
+import ContactImageTab from "../../../contact-person/contact-person-details/tabs/ContactImageTab";
 import { Controller, useFormContext } from "react-hook-form";
 
 const AddContact = ({
@@ -157,6 +158,15 @@ const AddContact = ({
                 />
               )}
             />
+            <>
+              <div className="mt-8 mb-16">
+                <InputLabel id="demo-simple-select-label">
+                  Contact Image
+                </InputLabel>
+              </div>
+              <ContactImageTab />
+            </>
+
             <Controller
               name="linkedin"
               control={control}

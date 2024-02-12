@@ -4,20 +4,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { companies, contacts } = props;
-  const { control, formState, trigger, setValue } = methods;
+  const { control, formState } = methods;
   const { errors } = formState;
-
-  const handleAutocompleteChange = (event, newValue) => {
-    // Set the value in the form state
-    setValue("person_id", newValue?.id || null, { shouldDirty: true });
-    trigger("person_id");
-  };
-
-  const handleCompanyAutocompleteChange = (event, newValue) => {
-    // Set the value in the form state
-    setValue("company_id", newValue?.id || null, { shouldDirty: true });
-    trigger("company_id");
-  };
 
   return (
     <div className="flex justify-between">
@@ -32,7 +20,9 @@ function BasicInfoTab(props) {
                 className="mt-8 mb-16"
                 options={companies || []}
                 getOptionLabel={(company) => `${company.company_name}`}
-                value={companies.find((company) => company.id === value) || ""}
+                value={
+                  companies?.find((company) => company?.id === value) || ""
+                }
                 onChange={(event, newValue) => {
                   onChange(newValue?.id);
                 }}
@@ -68,7 +58,9 @@ function BasicInfoTab(props) {
                   getOptionLabel={(contact) =>
                     `${contact.first_name} ${contact.last_name}`
                   }
-                  value={contacts.find((contact) => contact.id === value) || ""}
+                  value={
+                    contacts?.find((contact) => contact?.id === value) || ""
+                  }
                   onChange={(event, newValue) => {
                     if (typeof newValue !== "string") {
                       onChange(newValue?.id);

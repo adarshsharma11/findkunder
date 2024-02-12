@@ -13,6 +13,7 @@ import { Controller, useForm, FormProvider } from "react-hook-form";
 import _ from "@lodash";
 import { regions } from "../../../../../store/constants";
 import { companySchema } from "../../../../../schemas/validationSchemas";
+import CompanyImageTab from "../../../companies/company-details/tabs/CompanyImageTab";
 
 const AddCompany = ({
   invalidCompany,
@@ -165,6 +166,14 @@ const AddCompany = ({
                   </>
                 )}
               />
+              <>
+                <div className="mt-8 mb-16">
+                  <InputLabel id="demo-simple-select-label">
+                    Company Logo
+                  </InputLabel>
+                </div>
+                <CompanyImageTab />
+              </>
 
               <Controller
                 name="website"
