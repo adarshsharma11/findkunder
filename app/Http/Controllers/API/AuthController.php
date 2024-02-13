@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Cookie;
 use App\Rules\PasswordCheck;
+use App\Mail\PasswordResetMail;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -184,6 +186,83 @@ public function update(Request $request)
         'user' => $user,
         'message' => 'User details updated successfully',
     ]);
+}
+
+/**
+ * Initiate the password reset process.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function forgotPassword(Request $request)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email|exists:users,email',
+    ]);
+
+    // If validation fails, return an error response
+    if ($validator->fails()) {
+        return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()], 422);
+    }
+    // Generate a unique token for password reset
+    $token = Str::random(60);
+    // Update the user's token in the database
+    User::where('email', $request->email)->update(['remember_token' => $token]);
+    $user = User::where('email', $request->email)->first();
+    $resetLink = url("/reset-password/{$token}");
+    $expirationTime = now()->addHours(24); // Set your desired expiration time
+    // Send an email to the user with a link to reset their password
+    try {
+        Mail::to($user->email)->send(new PasswordResetMail(
+            $resetLink,
+            $expirationTime->format('Y-m-d H:i:s'), // Format the expiration time as needed
+            config('mail.support_email'),
+            $user->name
+        ));
+    } catch (\Exception $e) {
+        return response()->json(['status' => false, 'message' => 'Error sending password reset email'], 500);
+    }
+    // Send an email to the user with a link to reset their password
+    // (You need to implement this part based on your email provider)
+    return response()->json(['status' => true, 'message' => 'Password reset link sent to your email']);
+}
+
+/**
+ * Reset the user's password.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function resetPassword(Request $request)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'token' => 'required|string|exists:users,remember_token',
+        'password' => 'required|string|min:6',
+    ]);
+
+    // If validation fails, return an error response
+    if ($validator->fails()) {
+        return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()], 422);
+    }
+
+    // Find the user by the password reset token
+    $user = User::where('remember_token', $request->token)->first();
+
+    // If the user is not found, return an error response
+    if (!$user) {
+        return response()->json(['status' => false, 'message' => 'Invalid or expired token'], 422);
+    }
+
+    // Update the user's password
+    $user->update([
+        'password' => bcrypt($request->password),
+        'remember_token' => null, // Clear the password reset token after successful reset
+    ]);
+
+    // Return a success response
+    return response()->json(['status' => true, 'message' => 'Password reset successfully']);
 }
 
 }

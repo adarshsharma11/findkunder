@@ -1,5 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import history from "@history";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -18,41 +21,52 @@ import { showMessage } from "app/store/fuse/messageSlice";
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  email: yup
+  password: yup
     .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
 const defaultValues = {
-  email: "",
+  password: "",
+  confirmPassword: "",
 };
 
-function ForgotPasswordPage() {
+function ResetPasswordPage() {
+  const { token } = useParams();
+  const dispatch = useDispatch();
   const { control, formState, handleSubmit, reset, getValues } = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(schema),
   });
-  const dispatch = useDispatch();
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = async () => {
     try {
-      const response = await AuthService.forgotPassword(getValues());
+      const { password } = getValues();
+      const response = await AuthService.resetPassword({ token, password });
       if (response.data.status) {
+        setResetSuccess(true);
         dispatch(
           showMessage({
             message: response.data.message,
           })
         );
-        reset(defaultValues);
+        history.push("/login");
       } else {
         // If the request fails, show an error message
+        setResetSuccess(false);
         dispatch(showMessage({ message: "Error resetting password:" }));
       }
     } catch (error) {
+      setResetSuccess(false);
+      dispatch(showMessage({ message: "Error resetting password:" }));
       console.error("Error resetting password:", error);
     }
   };
@@ -63,47 +77,12 @@ function ForgotPasswordPage() {
         <div className="w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
           <img className="w-48" src="assets/images/logo/logo.svg" alt="logo" />
           <Typography className="mt-32 text-4xl font-extrabold tracking-tight leading-tight">
-            Forgot password?
+            Reset Your Password
           </Typography>
           <div className="flex items-baseline mt-2 font-medium">
             <Typography>Fill the form to reset your password</Typography>
           </div>
-          <form
-            name="registerForm"
-            noValidate
-            className="flex flex-col justify-center w-full mt-32"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Email"
-                  type="email"
-                  error={!!errors.email}
-                  helperText={errors?.email?.message}
-                  variant="outlined"
-                  required
-                  fullWidth
-                />
-              )}
-            />
-
-            <Button
-              variant="contained"
-              color="secondary"
-              className=" w-full mt-4"
-              aria-label="Register"
-              disabled={_.isEmpty(dirtyFields) || !isValid}
-              type="submit"
-              size="large"
-            >
-              Send reset link
-            </Button>
-
+          {resetSuccess ? (
             <Typography
               className="mt-32 text-md font-medium"
               color="text.secondary"
@@ -113,7 +92,62 @@ function ForgotPasswordPage() {
                 sign in
               </Link>
             </Typography>
-          </form>
+          ) : (
+            <form
+              name="registerForm"
+              noValidate
+              className="flex flex-col justify-center w-full mt-32"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="mb-24"
+                    label="New Password"
+                    type="password"
+                    error={!!errors.password}
+                    helperText={errors?.password?.message}
+                    variant="outlined"
+                    required
+                    fullWidth
+                  />
+                )}
+              />
+
+              <Controller
+                name="confirmPassword"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="mb-24"
+                    label="Confirm Password"
+                    type="password"
+                    error={!!errors.confirmPassword}
+                    helperText={errors?.confirmPassword?.message}
+                    variant="outlined"
+                    required
+                    fullWidth
+                  />
+                )}
+              />
+
+              <Button
+                variant="contained"
+                color="secondary"
+                className=" w-full mt-4"
+                aria-label="Register"
+                disabled={_.isEmpty(dirtyFields) || !isValid}
+                type="submit"
+                size="large"
+              >
+                Reset Password
+              </Button>
+            </form>
+          )}
         </div>
       </Paper>
 
@@ -203,4 +237,4 @@ function ForgotPasswordPage() {
   );
 }
 
-export default ForgotPasswordPage;
+export default ResetPasswordPage;
