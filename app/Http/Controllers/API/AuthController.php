@@ -205,26 +205,32 @@ public function forgotPassword(Request $request)
     if ($validator->fails()) {
         return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()], 422);
     }
+
     // Generate a unique token for password reset
     $token = Str::random(60);
-    // Update the user's token in the database
-    User::where('email', $request->email)->update(['remember_token' => $token]);
+
+    // Use Eloquent to update the user's token
     $user = User::where('email', $request->email)->first();
+    $user->update(['remember_token' => $token]);
+
+    // Generate the reset link
     $resetLink = url("/reset-password/{$token}");
-    $expirationTime = now()->addHours(24); // Set your desired expiration time
+
+    // Set your desired expiration time
+    $expirationTime = now()->addHours(24);
+
     // Send an email to the user with a link to reset their password
     try {
         Mail::to($user->email)->send(new PasswordResetMail(
             $resetLink,
-            $expirationTime->format('Y-m-d H:i:s'), // Format the expiration time as needed
+            $expirationTime->format('Y-m-d H:i:s'),
             config('mail.support_email'),
             $user->name
         ));
     } catch (\Exception $e) {
         return response()->json(['status' => false, 'message' => 'Error sending password reset email'], 500);
     }
-    // Send an email to the user with a link to reset their password
-    // (You need to implement this part based on your email provider)
+
     return response()->json(['status' => true, 'message' => 'Password reset link sent to your email']);
 }
 

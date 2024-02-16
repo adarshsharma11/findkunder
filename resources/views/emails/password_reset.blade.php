@@ -34,7 +34,7 @@
 <body>
     <div class="container">
         <h1>Password Reset</h1>
-        <p>Hello {{ $user }},p>
+        <p>Hello {{ $user }}
         <p>We received a request to reset your password. If you did not make this request, please ignore this email.</p>
         <p>To reset your password, click the following link:</p>
         <p><a href="{{ $resetLink }}">Reset Password</a></p>

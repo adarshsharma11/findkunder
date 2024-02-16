@@ -53,6 +53,7 @@ class AuthService extends FuseUtils.EventEmitter {
     return axios.put(authServiceConfig.updateUser, {
       name: user.name || null,
       old_password: user.oldPassword || null,
+      password: user.password || null,
     });
   };
 

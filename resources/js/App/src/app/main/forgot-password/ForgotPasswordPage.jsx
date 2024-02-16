@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -34,12 +35,14 @@ function ForgotPasswordPage() {
     defaultValues,
     resolver: yupResolver(schema),
   });
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
       const response = await AuthService.forgotPassword(getValues());
       if (response.data.status) {
         dispatch(
@@ -52,7 +55,9 @@ function ForgotPasswordPage() {
         // If the request fails, show an error message
         dispatch(showMessage({ message: "Error resetting password:" }));
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error resetting password:", error);
     }
   };
@@ -97,11 +102,11 @@ function ForgotPasswordPage() {
               color="secondary"
               className=" w-full mt-4"
               aria-label="Register"
-              disabled={_.isEmpty(dirtyFields) || !isValid}
+              disabled={_.isEmpty(dirtyFields) || !isValid || loading}
               type="submit"
               size="large"
             >
-              Send reset link
+              {loading ? "Sending..." : "Send reset link"}
             </Button>
 
             <Typography
