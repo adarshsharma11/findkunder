@@ -264,7 +264,7 @@ function ContactPersonTable(props) {
                             <FuseSvgIcon
                               className="text-48"
                               size={24}
-                              color="blue"
+                              color="secondary"
                             >
                               heroicons-outline:information-circle
                             </FuseSvgIcon>
