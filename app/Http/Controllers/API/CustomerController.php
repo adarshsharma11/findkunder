@@ -7,6 +7,8 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Company;
+use App\Models\ContactPerson;
 
 class CustomerController extends Controller
 {
@@ -113,14 +115,36 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $customer = Customer::find($id);
+    
         if (!$customer) {
             return response()->json(['error' => 'Customer not found'], 404);
         }
-
+    
+        $deleteCompany = $request->input('deleteCompany', false);
+        $deleteContact = $request->input('deleteContact', false);
+    
+        // Delete the customer profile
         $customer->delete();
-        return response()->json(['message' => 'Customer deleted successfully']);
-    }
+    
+        // Delete associated company and contact if specified
+        if ($deleteCompany || $deleteContact) {
+            $customer->load(['company', 'person']);
+    
+            if ($deleteCompany && $customer->company) {
+                Company::where('id', $customer->company->id)->delete();
+            }
+    
+            if ($deleteContact && $customer->person) {
+                ContactPerson::where('id', $customer->person->id)->delete();
+            }
+    
+            return response()->json(['message' => 'Customer profile and associated company/contact deleted successfully']);
+        }
+    
+        // If no association deletion is specified, just delete the customer profile
+        return response()->json(['message' => 'Customer profile deleted successfully']);
+    }    
 }

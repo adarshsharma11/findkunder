@@ -12,8 +12,15 @@ export const getProduct = createAsyncThunk(
 
 export const removeProduct = createAsyncThunk(
   "eCommerceApp/customer/removeProduct",
-  async (id, { dispatch, getState }) => {
-    await axios.delete(`/api/customers/${id}`);
+  async ({ id, options }, { dispatch, getState }) => {
+    const { deleteCompany, deleteContact } = options;
+    await axios.delete(`/api/customers/${id}`, {
+      data: {
+        deleteProfile: true,
+        deleteCompany,
+        deleteContact,
+      },
+    });
     return id;
   }
 );

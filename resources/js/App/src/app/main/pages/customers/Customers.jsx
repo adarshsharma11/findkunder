@@ -21,6 +21,7 @@ import { saveProduct, removeProduct } from "./store/customerSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 import _ from "@lodash";
 import { useDispatch } from "react-redux";
+import DeleteConfirmationDialog from "./customer-details/modal/DeleteConfirmationDialog";
 
 const schema = yup.object().shape({
   company_id: yup
@@ -37,6 +38,7 @@ function Customers() {
   const dispatch = useDispatch();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [companies, setCompanies] = useState(false);
   const [contact, setContacts] = useState(false);
   const [selectedItem, setSelected] = useState(false);
@@ -61,6 +63,10 @@ function Customers() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const handleDeleteDialog = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
   };
 
   useEffect(() => {
@@ -90,11 +96,21 @@ function Customers() {
     });
   }
 
-  function handleRemoveCustomer() {
-    dispatch(removeProduct(selectedItem)).then(() => {
-      dispatch(showMessage({ message: "Customer deleted successfully!" }));
+  function handleRemoveCustomer(options) {
+    const payload = {
+      id: selectedItem,
+      options,
+    };
+    dispatch(removeProduct(payload)).then(() => {
+      const successMessage =
+        options.deleteCompany || options.deleteContact
+          ? "Customer profile and associated records deleted successfully!"
+          : "Customer profile deleted successfully!";
+
+      dispatch(showMessage({ message: successMessage }));
       setSelected(false);
       dispatch(getUpdatedCustomers());
+      handleDeleteDialog();
       handleCloseDialog();
     });
   }
@@ -136,12 +152,19 @@ function Customers() {
             <Button
               color="secondary"
               variant="contained"
-              onClick={handleRemoveCustomer}
+              onClick={handleDeleteDialog}
             >
               Delete
             </Button>
           </DialogActions>
         </Dialog>
+        {openDeleteDialog && (
+          <DeleteConfirmationDialog
+            open={handleDeleteDialog}
+            onClose={handleDeleteDialog}
+            onConfirm={handleRemoveCustomer}
+          />
+        )}
       </FormProvider>
     </>
   );

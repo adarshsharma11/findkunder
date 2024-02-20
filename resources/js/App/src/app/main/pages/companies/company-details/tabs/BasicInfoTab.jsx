@@ -107,7 +107,7 @@ function BasicInfoTab(props) {
         name="location"
         control={control}
         render={({ field }) => (
-          <>
+          <div>
             <InputLabel id="demo-simple-select-label">
               Select Location
             </InputLabel>
@@ -132,7 +132,7 @@ function BasicInfoTab(props) {
                   </MenuItem>
                 ))}
             </Select>
-          </>
+          </div>
         )}
       />
 
