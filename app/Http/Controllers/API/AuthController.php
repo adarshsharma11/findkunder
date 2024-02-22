@@ -211,8 +211,12 @@ public function forgotPassword(Request $request)
 
     // Use Eloquent to update the user's token
     $user = User::where('email', $request->email)->first();
-    $user->update(['remember_token' => $token]);
 
+    if ($user) {
+        $user->update(['remember_token' => $token]);
+    } else {
+        return response()->json(['status' => false, 'message' => 'User not found'], 404);
+    }
     // Generate the reset link
     $resetLink = url("/reset-password/{$token}");
 
@@ -233,6 +237,8 @@ public function forgotPassword(Request $request)
 
     return response()->json(['status' => true, 'message' => 'Password reset link sent to your email']);
 }
+
+
 
 /**
  * Reset the user's password.
