@@ -168,7 +168,7 @@ public function update(Request $request)
     ]);
     // If validation fails, return an error response
     if ($validator->fails()) {
-        return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()->first()], 422);
+        return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()->first()]);
     }
     // Get the authenticated user
     $user = $request->user();

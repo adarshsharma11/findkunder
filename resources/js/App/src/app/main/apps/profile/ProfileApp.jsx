@@ -53,7 +53,13 @@ function ProfileApp() {
 
   const handleUpdateProfile = (values) => {
     AuthService.updateUserData(values)
-      .then(() => {
+      .then((response) => {
+        const result = response?.data;
+        const errorMessage = result?.errors;
+        if (!result.status && errorMessage) {
+          dispatch(showMessage({ message: errorMessage }));
+          return;
+        }
         dispatch(showMessage({ message: "Profile updated successfully!" }));
       })
       .catch((error) => {
