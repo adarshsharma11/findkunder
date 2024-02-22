@@ -63,6 +63,10 @@ class AuthService extends FuseUtils.EventEmitter {
     });
   };
 
+  deleteProfile = (user) => {
+    return axios.post(authServiceConfig.deleteUser);
+  };
+
   resetPassword = (user) => {
     return axios.post(authServiceConfig.resetPassword, {
       token: user.token,

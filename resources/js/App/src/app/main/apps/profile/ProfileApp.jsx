@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import AuthService from "../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
+import DeleteAccountTab from "./tabs/DeleteAccountTab";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -33,6 +34,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 function ProfileApp() {
   const [selectedTab, setSelectedTab] = useState(0);
   const user = useSelector(selectUser);
+  const isAdmin = user?.role === "admin";
   const dispatch = useDispatch();
   const methods = useForm({
     mode: "onChange",
@@ -64,6 +66,24 @@ function ProfileApp() {
       })
       .catch((error) => {
         const errorMessage = "Failed to update profile.";
+        dispatch(showMessage({ message: errorMessage, variant: "error" }));
+      });
+  };
+
+  const handleDeleteProfile = () => {
+    AuthService.deleteProfile()
+      .then((response) => {
+        const result = response?.data;
+        const errorMessage = result?.errors;
+        if (!result.status && errorMessage) {
+          dispatch(showMessage({ message: errorMessage }));
+          return;
+        }
+        dispatch(showMessage({ message: "Profile deleted successfully!" }));
+        AuthService.logout();
+      })
+      .catch((error) => {
+        const errorMessage = "Failed to delete profile.";
         dispatch(showMessage({ message: errorMessage, variant: "error" }));
       });
   };
@@ -129,6 +149,13 @@ function ProfileApp() {
                   disableRipple
                   label="Update Password"
                 />
+                {!isAdmin && (
+                  <Tab
+                    className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
+                    disableRipple
+                    label="Delete Account"
+                  />
+                )}
               </Tabs>
             </div>
           </div>
@@ -149,6 +176,9 @@ function ProfileApp() {
             <FormProvider {...securityMethods}>
               <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile} />
             </FormProvider>
+          )}
+          {selectedTab === 3 && (
+            <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} />
           )}
         </div>
       }

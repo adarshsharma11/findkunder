@@ -6,6 +6,7 @@ const authServiceConfig = {
   userInfo: apiPrefix + 'me',
   signOut: apiPrefix + 'logout',
   updateUser: apiPrefix + 'update-profile',
+  deleteUser: apiPrefix + 'delete-profile',
   forgotPassword: apiPrefix + 'forgot-password',
   resetPassword: apiPrefix + 'reset-password'
 };

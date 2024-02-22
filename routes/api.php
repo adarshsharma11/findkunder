@@ -23,6 +23,7 @@ use App\Http\Controllers\API\CustomerController;
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
+        Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
         Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 

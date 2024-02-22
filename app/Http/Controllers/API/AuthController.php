@@ -277,4 +277,23 @@ public function resetPassword(Request $request)
     return response()->json(['status' => true, 'message' => 'Password reset successfully']);
 }
 
+    /**
+     * Soft delete the authenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function softDeleteUser(Request $request)
+    {
+        // Get the authenticated user
+        $user = $request->user();
+
+        // Soft delete the user
+        $user->delete();
+
+        // Return a success response
+        return response()->json(['status' => true, 'message' => 'User soft deleted successfully']);
+    }
+
+
 }
