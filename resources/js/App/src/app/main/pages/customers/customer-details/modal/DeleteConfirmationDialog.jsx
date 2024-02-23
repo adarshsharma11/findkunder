@@ -31,6 +31,7 @@ function DeleteConfirmationDialog({ open, onClose, onConfirm }) {
     >
       <DialogTitle>Delete Confirmation</DialogTitle>
       <DialogContent>
+        <p className="mb-8">You are about to delete your FindKunder profile.</p>
         <p>Would you also like to delete related contact/company ?</p>
         <FormControlLabel
           control={
