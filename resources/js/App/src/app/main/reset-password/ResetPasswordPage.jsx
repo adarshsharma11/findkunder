@@ -58,7 +58,9 @@ function ResetPasswordPage() {
             message: response.data.message,
           })
         );
-        history.push("/login");
+        setTimeout(() => {
+          history.push("/login");
+        }, 1000);
       } else {
         // If the request fails, show an error message
         setResetSuccess(false);
