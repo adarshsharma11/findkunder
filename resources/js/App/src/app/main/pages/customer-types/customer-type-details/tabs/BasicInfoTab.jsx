@@ -10,11 +10,11 @@ function BasicInfoTab(props) {
   const { errors } = formState;
   const titleOptions = [
     {
-      value: 0,
+      value: "0",
       label: "Inactive",
     },
     {
-      value: 1,
+      value: "1",
       label: "Active",
     },
   ];
