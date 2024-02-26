@@ -35,7 +35,32 @@ class AuthController extends Controller
             $errors = $validator->errors();
             // Check if the email is the reason for the validation error
             if ($errors->has('email') && $errors->first('email') === 'The email has already been taken.') {
-                return response()->json(['status' => false, 'message' => 'Email address is already registered. Please use a different email.'], 401);
+                $softDeletedUser = User::onlyTrashed()->where('email', $request->email)->first();
+                if ($softDeletedUser) {
+                    // Restore the soft-deleted user
+                    $softDeletedUser->restore();
+                    $softDeletedUser->update([
+                        'password' => bcrypt($request->password),
+                        'name' => $request->name,
+                    ]);
+                    Auth::login($softDeletedUser);
+                    // Retrieve necessary information
+                    $accessToken = $softDeletedUser->createToken('auth-token')->accessToken->token;
+                    $expirationTime = now()->addDay();
+                    $role = $softDeletedUser->roles()->pluck('name')[0];
+    
+                    // Return the user information and a success message
+                    return response()->json([
+                        'status' => true,
+                        'user' => $softDeletedUser,
+                        'accessToken' => $accessToken,
+                        'expirationTime' => $expirationTime,
+                        'role' => $role,
+                        'message' => 'User registered successfully (soft-deleted user restored)',
+                    ]);
+                } else {
+                    return response()->json(['status' => false, 'message' => 'Email address is already registered. Please use a different email.'], 401);
+                }
             }
             // If it's not an email-related error, return the original validation error
             return response()->json(['status' => false, 'message' => 'Something went wrong!'], 401);

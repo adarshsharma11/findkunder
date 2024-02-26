@@ -105,6 +105,14 @@ export const updateProfileSchema = yup.object().shape({
   name: yup.string().required("You must enter display name"),
 });
 
+export const createCustomerTypeSchema = yup.object().shape({
+  name: yup.string().required("You must enter display name"),
+  status: yup
+    .number()
+    .required("Status is required")
+    .oneOf([0, 1], "Invalid status value"),
+});
+
 export const updateProfilePasswordSchema = yup.object().shape({
   oldPassword: yup
     .string()

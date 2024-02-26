@@ -15,6 +15,7 @@ import authRoleExamplesConfigs from "../main/auth/authRoleExamplesConfigs";
 import CompaniesConfig from "../main/pages/companies/CompaniesConfig";
 import ContactPersonConfig from "../main/pages/contact-person/ContactPersonConfig";
 import CustomersConfig from "../main/pages/customers/CustomersConfig";
+import CustomerTypeConfig from "../main/pages/customer-types/CustomerTypeConfig";
 
 const routeConfigs = [
   ...appsConfigs,
@@ -30,6 +31,7 @@ const routeConfigs = [
   CustomersConfig,
   ForgotPasswordConfig,
   ResetPasswordConfig,
+  CustomerTypeConfig,
 ];
 
 const routes = [

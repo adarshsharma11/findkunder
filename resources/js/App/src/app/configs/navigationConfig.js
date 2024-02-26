@@ -11,6 +11,22 @@ i18next.addResourceBundle("ar", "navigation", ar);
 
 const navigationConfig = [
   {
+    id: "admin",
+    title: "Admin",
+    type: "group",
+    auth: authRoles.admin,
+    icon: "heroicons-outline:check-circle",
+    children: [
+      {
+        id: "apps.customerTypes",
+        title: "Customer Types",
+        type: "item",
+        icon: "heroicons-outline:check-circle",
+        url: "/customer-types",
+      },
+    ],
+  },
+  {
     id: "apps",
     title: "Contacts",
     type: "group",

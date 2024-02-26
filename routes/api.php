@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\Admin\CustomerTypeController;
 use App\Http\Controllers\API\ContactPersonController;
 use App\Http\Controllers\API\CustomerController;
 
@@ -27,6 +28,7 @@ use App\Http\Controllers\API\CustomerController;
         Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 
+        Route::apiResource('customerTypes', CustomerTypeController::class);
         Route::post('/logout', [AuthController::class, 'logoutUser']);
         Route::post('/me', [AuthController::class, 'me']);
     });
