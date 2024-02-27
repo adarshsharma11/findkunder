@@ -17,7 +17,7 @@ import {
 } from "../../../schemas/validationSchemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser } from "app/store/userSlice";
+import { selectUser, updateUserData } from "app/store/userSlice";
 import AuthService from "../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
 import DeleteAccountTab from "./tabs/DeleteAccountTab";
@@ -62,7 +62,26 @@ function ProfileApp() {
           dispatch(showMessage({ message: errorMessage }));
           return;
         }
-        dispatch(showMessage({ message: "Profile updated successfully!" }));
+        const userInfo = result?.user;
+        if (userInfo) {
+          const newUser = {
+            uuid: userInfo.id,
+            from: "custom-db",
+            role: response.data.role,
+            data: {
+              displayName: userInfo.name,
+              photoURL: "assets/images/avatars/brian-hughes.jpg",
+              email: userInfo.email,
+              totalCompanies: userInfo.companies_count,
+              totalProfiles: userInfo.customers_count,
+              totalContactPersons: userInfo.contact_person_count,
+              settings: {},
+              shortcuts: [],
+            },
+          };
+          dispatch(updateUserData(newUser));
+          dispatch(showMessage({ message: "Profile updated successfully!" }));
+        }
       })
       .catch((error) => {
         const errorMessage = "Failed to update profile.";

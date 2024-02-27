@@ -73,13 +73,14 @@ export const updateUserData = (user) => async (dispatch, getState) => {
     // is guest
     return;
   }
-  AuthService.updateUserData(user)
-    .then(() => {
-      dispatch(showMessage({ message: "User data saved with api" }));
-    })
-    .catch((error) => {
-      dispatch(showMessage({ message: error.message }));
-    });
+  return dispatch(setUser(user));
+  // AuthService.updateUserData(user)
+  //   .then(() => {
+  //     dispatch(showMessage({ message: "User data saved with api" }));
+  //   })
+  //   .catch((error) => {
+  //     dispatch(showMessage({ message: error.message }));
+  //   });
 };
 
 const initialState = {

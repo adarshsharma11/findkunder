@@ -203,12 +203,14 @@ public function update(Request $request)
         'email' => $request->email ? $request->email : $user->email,
         'password' => $request->password ? bcrypt($request->password) : $user->password,
     ]);
+    $role = $user->roles()->pluck('name')->first();
     // Load updated counts
     $user->loadCount('companies', 'contact_person', 'customers');
     // Return the updated user information
     return response()->json([
         'status' => true,
         'user' => $user,
+        'role' => $role,
         'message' => 'User details updated successfully',
     ]);
 }
