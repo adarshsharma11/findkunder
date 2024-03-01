@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\Admin\CustomerTypeController;
 use App\Http\Controllers\API\ContactPersonController;
+use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\CustomerController;
 
 /*
@@ -29,6 +30,7 @@ use App\Http\Controllers\API\CustomerController;
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 
         Route::apiResource('customerTypes', CustomerTypeController::class);
+        Route::apiResource('categories', CategoryController::class);
         Route::post('/logout', [AuthController::class, 'logoutUser']);
         Route::post('/me', [AuthController::class, 'me']);
     });

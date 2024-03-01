@@ -113,6 +113,11 @@ export const createCustomerTypeSchema = yup.object().shape({
     .oneOf([0, 1], "Invalid status value"),
 });
 
+export const createCaterorySchema = yup.object().shape({
+  name: yup.string().required("You must enter display name"),
+  parent_id: yup.string().nullable(),
+});
+
 export const updateProfilePasswordSchema = yup.object().shape({
   oldPassword: yup
     .string()

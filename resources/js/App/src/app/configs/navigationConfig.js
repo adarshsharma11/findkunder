@@ -24,6 +24,13 @@ const navigationConfig = [
         icon: "heroicons-outline:check-circle",
         url: "/customer-types",
       },
+      {
+        id: "apps.categories",
+        title: "Categories",
+        type: "item",
+        icon: "heroicons-outline:academic-cap",
+        url: "/categories",
+      },
     ],
   },
   {

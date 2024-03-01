@@ -16,6 +16,7 @@ import CompaniesConfig from "../main/pages/companies/CompaniesConfig";
 import ContactPersonConfig from "../main/pages/contact-person/ContactPersonConfig";
 import CustomersConfig from "../main/pages/customers/CustomersConfig";
 import CustomerTypeConfig from "../main/pages/customer-types/CustomerTypeConfig";
+import CategoriesConfig from "../main/pages/categories/CategoriesConfig";
 
 const routeConfigs = [
   ...appsConfigs,
@@ -32,6 +33,7 @@ const routeConfigs = [
   ForgotPasswordConfig,
   ResetPasswordConfig,
   CustomerTypeConfig,
+  CategoriesConfig,
 ];
 
 const routes = [
