@@ -45,18 +45,38 @@ function CutomersTable(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchText.length !== 0) {
-      setData(
-        _.filter(products, (item) =>
-          item.person.first_name
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
-      );
-      setPage(0);
-    } else {
-      setData(products);
-    }
+    setData(
+      _.filter(products, (item) => {
+        const searchString = searchText.toLowerCase();
+        const firstNameMatch = item.person?.first_name
+          ?.toLowerCase()
+          ?.includes(searchString);
+        const postalCodeMatch = item.company?.postal_code
+          ?.toLowerCase()
+          ?.includes(searchString);
+        const regionMatch = item.company?.region
+          ?.toLowerCase()
+          ?.includes(searchString);
+        const categoriesMatch = item.categories?.some((category) =>
+          category.name?.toLowerCase()?.includes(searchString)
+        );
+        const customerTypesMatch = item.customer_types?.some((customerType) =>
+          customerType.name?.toLowerCase()?.includes(searchString)
+        );
+
+        // Add more criteria as needed
+
+        return (
+          firstNameMatch ||
+          postalCodeMatch ||
+          regionMatch ||
+          categoriesMatch ||
+          customerTypesMatch
+          // Add more conditions with logical OR (||) as needed
+        );
+      })
+    );
+    setPage(0);
   }, [products, searchText]);
 
   function handleRequestSort(event, property) {

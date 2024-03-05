@@ -23,6 +23,8 @@ import {
 } from "../store/customerSlice";
 import { getCompanies } from "../../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
+import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
+import { getProducts as getCustomerTypes } from "../../customer-types/store/customerTypesSlice";
 import reducer from "../store";
 import ProductHeader from "./CustomerHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
@@ -51,6 +53,8 @@ function Customer(props) {
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
   const [companies, setCompanies] = useState(false);
+  const [categories, setCategories] = useState(false);
+  const [customerTypes, setCustomerTypes] = useState(false);
   const [contact, setContacts] = useState(false);
   const methods = useForm({
     mode: "onChange",
@@ -99,6 +103,22 @@ function Customer(props) {
     dispatch(getContactPerson()).then((action) => {
       if (action.payload) {
         setContacts(action.payload);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCategories()).then((action) => {
+      if (action.payload) {
+        setCategories(action.payload);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCustomerTypes()).then((action) => {
+      if (action.payload) {
+        setCustomerTypes(action.payload);
       }
     });
   }, []);
@@ -203,7 +223,13 @@ function Customer(props) {
   /**
    * Wait while product data is loading and form is setted
    */
-  if (routeParams.productId !== "new" || !companies || !contact) {
+  if (
+    routeParams.productId !== "new" ||
+    !companies ||
+    !contact ||
+    !categories ||
+    !customerTypes
+  ) {
     return <FuseLoading />;
   }
 
@@ -231,6 +257,8 @@ function Customer(props) {
                   contacts={contact}
                   setCompanies={setCompanies}
                   setContacts={setContacts}
+                  categories={categories}
+                  customerTypes={customerTypes}
                 />
               </div>
             </div>

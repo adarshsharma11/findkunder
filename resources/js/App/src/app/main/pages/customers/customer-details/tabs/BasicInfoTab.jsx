@@ -1,6 +1,9 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import AddContact from "../modal/AddCustomer";
+import InputLabel from "@mui/material/InputLabel";
 import AddCompany from "../modal/AddCompany";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
@@ -20,7 +23,14 @@ function BasicInfoTab(props) {
     defaultValues: {},
     resolver: yupResolver(contactSchema),
   });
-  const { companies, contacts, setCompanies, setContacts } = props;
+  const {
+    companies,
+    contacts,
+    setCompanies,
+    setContacts,
+    categories,
+    customerTypes,
+  } = props;
   const { control, formState, setValue, trigger } = methods;
   const [invalidContact, setInvalidContact] = useState(false);
   const [invalidCompany, setInvalidCompany] = useState(false);
@@ -124,6 +134,103 @@ function BasicInfoTab(props) {
                 </>
               )}
             />
+          )}
+        />
+        <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
+        <Controller
+          name="customerTypes"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {customerTypes &&
+                customerTypes?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedCategories = isChecked
+                              ? [...value, category.id]
+                              : value.filter((id) => id !== category.id);
+                            onChange(updatedCategories);
+                          }}
+                          checked={value.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+        <InputLabel id="categories-label">I/We offer:</InputLabel>
+        <Controller
+          name="categories"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {categories &&
+                categories?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedCategories = isChecked
+                              ? [
+                                  ...value,
+                                  category.id,
+                                  ...category.subcategories.map(
+                                    (sub) => sub.id
+                                  ),
+                                ]
+                              : value.filter(
+                                  (id) =>
+                                    ![
+                                      ...category.subcategories.map(
+                                        (sub) => sub.id
+                                      ),
+                                      category.id,
+                                    ].includes(id)
+                                );
+                            onChange(updatedCategories);
+                          }}
+                          checked={value.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+
+                    {category.subcategories && (
+                      <div style={{ marginLeft: 20 }}>
+                        {category.subcategories.map((sub) => (
+                          <FormControlLabel
+                            key={sub.id}
+                            control={
+                              <Checkbox
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  const updatedCategories = isChecked
+                                    ? [...value, sub.id]
+                                    : value.filter((id) => id !== sub.id);
+                                  onChange(updatedCategories);
+                                }}
+                                checked={value.includes(sub.id)}
+                              />
+                            }
+                            label={sub.name}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
           )}
         />
         <Controller

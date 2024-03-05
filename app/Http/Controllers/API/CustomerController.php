@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use App\Models\ContactPerson;
+use App\Models\Category;
+use App\Models\CustomerType;
 
 class CustomerController extends Controller
 {
@@ -21,11 +23,11 @@ class CustomerController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('admin')) {
-            $customers = Customer::with(['company', 'person'])->get();
+            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
         } else {
             $contactPersons = $user->contact_person;
             $customerIds = $contactPersons->pluck('id');
-            $customers = Customer::with(['company', 'person'])
+            $customers = Customer::with(['company', 'person', 'categories'])
             ->whereIn('person_id', $customerIds)
             ->get();
         }
@@ -43,7 +45,9 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'company_id' => 'required|exists:companies,id',
             'person_id' => 'required|exists:contact_person,id',
-            'notes' => 'string',
+            'notes' => 'nullable|string',
+            'categories' => 'array',
+            'customerTypes' => 'array',
         ]);
 
         if ($validator->fails()) {
@@ -56,6 +60,17 @@ class CustomerController extends Controller
             $customer = Customer::create($data);
         } else {
             $customer = $user->customers()->create($data);
+        }
+
+        if (!empty($data['categories'])) {
+            $categories = Category::whereIn('id', $data['categories'])->get();
+            $customer->categories()->attach($categories);
+        }
+
+       // Attach customer types to the customer
+        if (!empty($data['customerTypes'])) {
+            $customerTypes = CustomerType::whereIn('id', $data['customerTypes'])->get();
+            $customer->customerTypes()->attach($customerTypes);
         }
         return response()->json(['status' => 'success', 'data' => $customer]);
     }

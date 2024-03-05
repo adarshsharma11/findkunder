@@ -57,6 +57,9 @@ const productSlice = createSlice({
         payload: {
           company_id: "",
           person_id: "",
+          categories: [],
+          customerTypes: [],
+          notes: "",
         },
       }),
     },
