@@ -213,32 +213,6 @@ function CustomerTypeTable(props) {
                     >
                       {n.name || "N/A"}
                     </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.status === 1 ? (
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="success"
-                          size="small"
-                        >
-                          Active
-                        </Button>
-                      ) : (
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="error"
-                          size="small"
-                        >
-                          InActive
-                        </Button>
-                      )}
-                    </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"

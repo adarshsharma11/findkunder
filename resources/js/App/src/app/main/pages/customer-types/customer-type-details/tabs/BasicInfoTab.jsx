@@ -22,36 +22,6 @@ function BasicInfoTab(props) {
   return (
     <div>
       <Controller
-        name="status"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">Status</InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.status}
-              required
-              displayEmpty
-              helperText={errors?.status?.message}
-              id="status"
-              variant="outlined"
-              fullWidth
-            >
-              <MenuItem value="" disabled>
-                Select Status
-              </MenuItem>
-              {titleOptions &&
-                titleOptions?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-            </Select>
-          </>
-        )}
-      />
-      <Controller
         name="name"
         control={control}
         render={({ field }) => (

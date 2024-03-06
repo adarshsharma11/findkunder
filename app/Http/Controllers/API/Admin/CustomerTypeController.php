@@ -33,7 +33,6 @@ class CustomerTypeController extends Controller
 
         $customerType = CustomerType::create([
             'name' => $request->input('name'),
-            'status' => $request->input('status'),
         ]);
 
         return response()->json($customerType, 201);
@@ -65,7 +64,6 @@ class CustomerTypeController extends Controller
 
         $customerType->update([
             'name' => $request->input('name'),
-            'status' => $request->input('status'),
         ]);
 
         return response()->json($customerType);

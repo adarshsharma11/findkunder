@@ -49,7 +49,6 @@ const customerTypeSlice = createSlice({
       reducer: (state, action) => action.payload,
       prepare: (event) => ({
         payload: {
-          status: "",
           name: "",
         },
       }),
