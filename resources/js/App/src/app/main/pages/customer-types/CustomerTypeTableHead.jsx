@@ -33,13 +33,6 @@ const rows = [
     sort: true,
   },
   {
-    id: "status",
-    align: "left",
-    disablePadding: false,
-    label: "Status",
-    sort: true,
-  },
-  {
     id: "action",
     align: "left",
     disablePadding: false,
