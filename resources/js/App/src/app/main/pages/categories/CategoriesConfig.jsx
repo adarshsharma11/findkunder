@@ -22,11 +22,11 @@ const CategoriesConfig = {
   auth: authRoles.admin,
   routes: [
     {
-      path: "categories",
+      path: "skills",
       element: <Categories />,
     },
     {
-      path: "categories/:productId/*",
+      path: "skills/:productId/*",
       element: <Category />,
     },
   ],

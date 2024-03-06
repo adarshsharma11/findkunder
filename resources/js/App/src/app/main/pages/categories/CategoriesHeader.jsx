@@ -24,7 +24,7 @@ function CategoriesHeader(props) {
         delay={300}
         className="text-24 md:text-32 font-extrabold tracking-tight"
       >
-        Categories
+        Skills
       </Typography>
 
       <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
@@ -35,7 +35,6 @@ function CategoriesHeader(props) {
           className="flex items-center w-full sm:max-w-256 space-x-8 px-16 rounded-full border-1 shadow-0"
         >
           <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
-
           <Input
             placeholder="Search categories"
             className="flex flex-1"

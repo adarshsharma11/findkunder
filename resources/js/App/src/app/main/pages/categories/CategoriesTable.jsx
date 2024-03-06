@@ -83,7 +83,7 @@ function CategoriesTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/categories/${item.id}`);
+    props.navigate(`/skills/${item.id}`);
   }
 
   function handleCheck(event, id) {

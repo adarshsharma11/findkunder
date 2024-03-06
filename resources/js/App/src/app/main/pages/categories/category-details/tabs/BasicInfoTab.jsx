@@ -48,7 +48,7 @@ function BasicInfoTab(props) {
           render={({ field }) => (
             <>
               <InputLabel id="demo-simple-select-label">
-                Parent Category
+                Parent Skill
               </InputLabel>
               <Select
                 {...field}
@@ -62,7 +62,7 @@ function BasicInfoTab(props) {
                 fullWidth
               >
                 <MenuItem value="" disabled>
-                  Select Parent Category
+                  Select Parent Skill
                 </MenuItem>
                 {categories &&
                   categories?.map((option) => (

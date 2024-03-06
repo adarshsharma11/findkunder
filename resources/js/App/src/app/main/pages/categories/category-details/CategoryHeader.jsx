@@ -28,14 +28,14 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewCustomerType(getValues())).then(() => {
       dispatch(showMessage({ message: "Category added successfully!" }));
-      navigate("/categories");
+      navigate("/skills");
     });
   }
 
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload?.message }));
-      navigate("/categories");
+      navigate("/skills");
     });
   }
 
@@ -56,7 +56,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/categories"
+            to="/skills"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -64,7 +64,7 @@ function ProductHeader(props) {
                 ? "heroicons-outline:arrow-sm-left"
                 : "heroicons-outline:arrow-sm-right"}
             </FuseSvgIcon>
-            <span className="flex mx-4 font-medium">Categories</span>
+            <span className="flex mx-4 font-medium">Skills</span>
           </Typography>
         </motion.div>
       </div>
@@ -103,10 +103,10 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              {name || "New Category"}
+              {name || "New Skill"}
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Category Details
+            Skill Details
             </Typography>
           </motion.div>
         </div>
