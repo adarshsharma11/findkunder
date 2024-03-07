@@ -89,7 +89,7 @@ function ProductHeader(props) {
               {name || "New Findkunder"}
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Customers Detail
+              Profile Detail
             </Typography>
           </motion.div>
         </div>
