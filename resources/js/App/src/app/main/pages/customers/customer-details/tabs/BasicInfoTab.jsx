@@ -36,6 +36,7 @@ function BasicInfoTab(props) {
   const [invalidCompany, setInvalidCompany] = useState(false);
   const [companyName, setCompany] = useState(false);
   const [contactName, setContact] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const { errors } = formState;
 
   const handleSaveCompany = (values) => {
@@ -179,48 +180,38 @@ function BasicInfoTab(props) {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const updatedCategories = isChecked
-                              ? [
-                                  ...value,
-                                  category.id,
-                                  ...category.subcategories.map(
-                                    (sub) => sub.id
-                                  ),
-                                ]
-                              : value.filter(
-                                  (id) =>
-                                    ![
-                                      ...category.subcategories.map(
-                                        (sub) => sub.id
-                                      ),
-                                      category.id,
-                                    ].includes(id)
-                                );
-                            onChange(updatedCategories);
-                          }}
-                          checked={value.includes(category.id)}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const updatedCategories = isChecked
+                            ? [...selectedCategories, category.id]
+                            : selectedCategories.filter(
+                                (id) => id !== category.id
+                              );
+                          setSelectedCategories(updatedCategories);
+                          onChange(updatedCategories);
+                        }}
+                        checked={selectedCategories.includes(category.id)}
                         />
                       }
                       label={category.name}
                     />
 
-                    {category.subcategories && (
+                    {category.subcategories && selectedCategories.includes(category.id) && (
                       <div style={{ marginLeft: 20 }}>
                         {category.subcategories.map((sub) => (
                           <FormControlLabel
                             key={sub.id}
                             control={
                               <Checkbox
-                                onChange={(e) => {
-                                  const isChecked = e.target.checked;
-                                  const updatedCategories = isChecked
-                                    ? [...value, sub.id]
-                                    : value.filter((id) => id !== sub.id);
-                                  onChange(updatedCategories);
-                                }}
-                                checked={value.includes(sub.id)}
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                const updatedCategories = isChecked
+                                  ? [...value, sub.id]
+                                  : value.filter((id) => id !== sub.id);
+                                setSelectedCategories(updatedCategories);
+                                onChange(updatedCategories);
+                              }}
+                              checked={value.includes(sub.id)}
                               />
                             }
                             label={sub.name}
