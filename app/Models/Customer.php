@@ -13,7 +13,8 @@ class Customer extends Model
         'company_id',
         'person_id',
         'notes',
-        'user_id'
+        'user_id',
+        'status',
     ];
 
     public function company()

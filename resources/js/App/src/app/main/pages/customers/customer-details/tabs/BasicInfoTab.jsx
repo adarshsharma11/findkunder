@@ -3,6 +3,8 @@ import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import AddContact from "../modal/AddCustomer";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import AddCompany from "../modal/AddCompany";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
@@ -30,6 +32,7 @@ function BasicInfoTab(props) {
     setContacts,
     categories,
     customerTypes,
+    isAdmin,
   } = props;
   const { control, formState, setValue, trigger } = methods;
   const [invalidContact, setInvalidContact] = useState(false);
@@ -137,6 +140,37 @@ function BasicInfoTab(props) {
             />
           )}
         />
+        {isAdmin &&
+         <>
+         <InputLabel id="status-label">Priority</InputLabel>
+         <Controller
+           name="status"
+           control={control}
+           defaultValue="0"
+           render={({ field }) => (
+             <Select
+               {...field}
+               labelId="status-label"
+               id="status"
+               className="mt-8 mb-16"
+               error={!!errors.status}
+               helperText={errors?.status?.message}
+               required
+               displayEmpty
+               variant="outlined"
+               fullWidth
+             >
+               <MenuItem value="" disabled>Select Priority</MenuItem>
+               <MenuItem value="3">High Priority</MenuItem>
+               <MenuItem value="2">Medium Priority</MenuItem>
+               <MenuItem value="1">Low Priority</MenuItem>
+               <MenuItem value="0">No Priority</MenuItem>
+             </Select>
+           )}
+         />
+         </>
+        }
+        
         <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
         <Controller
           name="customerTypes"

@@ -60,6 +60,7 @@ const productSlice = createSlice({
           categories: [],
           customerTypes: [],
           notes: "",
+          status: "0",
         },
       }),
     },

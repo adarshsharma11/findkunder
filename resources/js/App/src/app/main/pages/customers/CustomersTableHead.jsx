@@ -17,7 +17,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { lighten } from "@mui/material/styles";
 import { removeProducts } from "./store/customersSlice";
 
-const rows = [
+const userRows = [
   {
     id: "company_id",
     align: "left",
@@ -76,8 +76,75 @@ const rows = [
   },
 ];
 
+const adminRows = [
+  {
+    id: "company_id",
+    align: "left",
+    disablePadding: false,
+    label: "Company Name",
+    sort: true,
+  },
+  {
+    id: "postal_code",
+    align: "left",
+    disablePadding: false,
+    label: "Postal Code",
+    sort: true,
+  },
+  {
+    id: "region",
+    align: "left",
+    disablePadding: false,
+    label: "Region",
+    sort: true,
+  },
+  {
+    id: "first_name",
+    align: "right",
+    disablePadding: false,
+    label: "First Name",
+    sort: true,
+  },
+  {
+    id: "email",
+    align: "right",
+    disablePadding: false,
+    label: "Email",
+    sort: true,
+  },
+  {
+    id: "Phone",
+    align: "right",
+    disablePadding: false,
+    label: "Phone",
+    sort: true,
+  },
+  {
+    id: "notes",
+    align: "right",
+    disablePadding: false,
+    label: "Notes",
+    sort: true,
+  },
+  {
+    id: "status",
+    align: "right",
+    disablePadding: false,
+    label: "Priority",
+    sort: true,
+  },
+  {
+    id: "action",
+    align: "right",
+    disablePadding: false,
+    label: "Action",
+    sort: true,
+  },
+];
+
 function CustomersTableHead(props) {
-  const { selectedProductIds } = props;
+  const { selectedProductIds, isAdmin } = props;
+  const rows = isAdmin ? adminRows : userRows;
   const numSelected = selectedProductIds.length;
 
   const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);

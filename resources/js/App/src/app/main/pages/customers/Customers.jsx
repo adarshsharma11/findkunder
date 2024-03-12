@@ -18,10 +18,12 @@ import { getCompanies } from "../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../contact-person/store/contactPersonsSlice";
 import { getProducts as getUpdatedCustomers } from "./store/customersSlice";
 import { saveProduct, removeProduct } from "./store/customerSlice";
+import { selectUser } from "../../../store/userSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 import _ from "@lodash";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationDialog from "./customer-details/modal/DeleteConfirmationDialog";
+import { adminProfileSchema, profileSchema } from "../../../schemas/validationSchemas";
 
 const schema = yup.object().shape({
   company_id: yup
@@ -36,16 +38,19 @@ const schema = yup.object().shape({
 
 function Customers() {
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const isAdmin = user?.role === 'admin';
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [companies, setCompanies] = useState(false);
   const [contact, setContacts] = useState(false);
   const [selectedItem, setSelected] = useState(false);
+  const formSchema = isAdmin ? adminProfileSchema : profileSchema;
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(schema),
+    resolver: yupResolver(formSchema),
   });
   const { reset, watch, control, onChange, formState, getValues } = methods;
   const form = watch();
@@ -57,6 +62,7 @@ function Customers() {
       company_id: item?.company.id,
       person_id: item?.person.id,
       notes: item.notes || "",
+      status: item.status
     });
     setOpenDialog(!openDialog);
   }
@@ -120,7 +126,7 @@ function Customers() {
       <FormProvider {...methods}>
         <FusePageCarded
           header={<CutomersHeader />}
-          content={<CutomersTable handleOpenDialog={handleOpenDialog} />}
+          content={<CutomersTable handleOpenDialog={handleOpenDialog} isAdmin={isAdmin} />}
           scroll={isMobile ? "normal" : "content"}
         />
         <Dialog
@@ -131,7 +137,7 @@ function Customers() {
         >
           <DialogTitle className="">Profile Details</DialogTitle>
           <DialogContent className="">
-            <BasicInfoTab companies={companies} contacts={contact} />
+            <BasicInfoTab companies={companies} contacts={contact} isAdmin={isAdmin} />
           </DialogContent>
           <DialogActions>
             <Button

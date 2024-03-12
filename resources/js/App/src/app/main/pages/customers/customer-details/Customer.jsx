@@ -21,31 +21,20 @@ import {
   resetProduct,
   selectProduct,
 } from "../store/customerSlice";
+import { selectUser } from "../../../../store/userSlice";
 import { getCompanies } from "../../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
 import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
 import { getProducts as getCustomerTypes } from "../../customer-types/store/customerTypesSlice";
 import reducer from "../store";
+import { profileSchema, adminProfileSchema } from "../../../../schemas/validationSchemas";
 import ProductHeader from "./CustomerHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 
-/**
- * Form Validation Schema
- */
-const schema = yup.object().shape({
-  company_id: yup
-    .string()
-    .required("You must enter a company")
-    .max(255, "First name must not exceed 255 characters"),
-  person_id: yup
-    .string()
-    .required("You must enter a contact person")
-    .max(255, "Last name must not exceed 255 characters"),
-  notes: yup.string().trim().default(""),
-});
-
 function Customer(props) {
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const isAdmin = user?.role === "admin";
   const product = useSelector(selectProduct);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
@@ -56,10 +45,11 @@ function Customer(props) {
   const [categories, setCategories] = useState(false);
   const [customerTypes, setCustomerTypes] = useState(false);
   const [contact, setContacts] = useState(false);
+  const formSchema = isAdmin ? adminProfileSchema : profileSchema;
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(schema),
+    resolver: yupResolver(formSchema),
   });
   const { reset, watch, control, onChange, formState, setValue } = methods;
   const form = watch();
@@ -259,6 +249,7 @@ function Customer(props) {
                   setContacts={setContacts}
                   categories={categories}
                   customerTypes={customerTypes}
+                  isAdmin={isAdmin}
                 />
               </div>
             </div>

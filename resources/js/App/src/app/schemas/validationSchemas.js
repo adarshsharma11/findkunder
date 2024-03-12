@@ -126,3 +126,31 @@ export const updateProfilePasswordSchema = yup.object().shape({
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
+
+export const profileSchema = yup.object().shape({
+  company_id: yup
+    .string()
+    .required("You must enter a company")
+    .max(255, "First name must not exceed 255 characters"),
+  person_id: yup
+    .string()
+    .required("You must enter a contact person")
+    .max(255, "Last name must not exceed 255 characters"),
+  notes: yup.string().trim().default(""),
+});
+
+export const adminProfileSchema = yup.object().shape({
+  company_id: yup
+    .string()
+    .required("You must enter a company")
+    .max(255, "Company name must not exceed 255 characters"),
+  person_id: yup
+    .string()
+    .required("You must enter a contact person")
+    .max(255, "Contact person name must not exceed 255 characters"),
+  notes: yup.string().trim().default(""),
+  status: yup
+    .mixed()
+    .oneOf(['0', '1', '2', '3'], "Invalid status value")
+    .required("You must select a status"),
+});

@@ -25,7 +25,7 @@ import CustomersTableHead from "./CustomersTableHead";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
-  const { handleOpenDialog, handleDialogData } = props;
+  const { handleOpenDialog, handleDialogData, isAdmin } = props;
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
@@ -137,6 +137,33 @@ function CutomersTable(props) {
     setRowsPerPage(event.target.value);
   }
 
+  const renderPriorityStatus = (priority) => {
+    let buttonColor;
+    let buttonText;
+    switch (priority) {
+      case "3":
+        buttonColor = "success";
+        buttonText = "High";
+        break;
+      case "2":
+        buttonColor = "warning";
+        buttonText = "Medium";
+        break;
+      case "1":
+        buttonColor = "secondary";
+        buttonText = "Low";
+        break;
+      default:
+        buttonColor = "inherit";
+        buttonText = "None";
+    }
+    return (
+      <Button variant="contained" color={buttonColor} size="small">
+        {buttonText}
+      </Button>
+    );
+  }  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -170,6 +197,7 @@ function CutomersTable(props) {
             onRequestSort={handleRequestSort}
             rowCount={data.length}
             onMenuItemClick={handleDeselect}
+            isAdmin={isAdmin}
           />
 
           <TableBody>
@@ -267,6 +295,16 @@ function CutomersTable(props) {
                     >
                       {n?.notes || "N/A"}
                     </TableCell>
+                    {isAdmin && 
+                        <TableCell
+                        className="p-4 md:p-16"
+                        component="th"
+                        scope="row"
+                        align="right"
+                        >
+                        {renderPriorityStatus(n?.status)}
+                        </TableCell>
+                    }
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"

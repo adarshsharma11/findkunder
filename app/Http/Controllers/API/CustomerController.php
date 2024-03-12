@@ -48,6 +48,7 @@ class CustomerController extends Controller
             'notes' => 'nullable|string',
             'categories' => 'array',
             'customerTypes' => 'array',
+            'status' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -103,6 +104,7 @@ class CustomerController extends Controller
             'company_id' => 'exists:companies,id',
             'person_id' => 'exists:contact_person,id',
             'notes' => 'nullable|string',
+            'status' => 'nullable|string',
         ]);
 
     
@@ -118,6 +120,7 @@ class CustomerController extends Controller
         $customer->update([
             'company_id' => $request->input('company_id'),
             'person_id' => $request->input('person_id'),
+            'status' => $request->input('status'),
             'notes' => $request->input('notes'),
         ]);
     

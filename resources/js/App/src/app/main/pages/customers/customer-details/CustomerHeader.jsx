@@ -25,14 +25,14 @@ function ProductHeader(props) {
 
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
-      dispatch(showMessage({ message: "Customer added successfully!" }));
+      dispatch(showMessage({ message: "Findkunder profile added successfully!" }));
       navigate("/profiles");
     });
   }
 
   function handleUpdateProduct() {
     dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Customer updated successfully!" }));
+      dispatch(showMessage({ message: "Findkunder profile updated successfully!" }));
     });
   }
 

@@ -1,9 +1,12 @@
 import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 import Autocomplete from "@mui/material/Autocomplete";
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { companies, contacts } = props;
+  const { companies, contacts, isAdmin } = props;
   const { control, formState } = methods;
   const { errors } = formState;
 
@@ -46,7 +49,36 @@ function BasicInfoTab(props) {
               />
             )}
           />
-          <div className="mt-64">
+        {isAdmin &&
+         <>
+         <InputLabel id="status-label">Priority</InputLabel>
+         <Controller
+           name="status"
+           control={control}
+           render={({ field }) => (
+             <Select
+               {...field}
+               labelId="status-label"
+               id="status"
+               className="mt-8 mb-16"
+               error={!!errors.status}
+               helperText={errors?.status?.message}
+               required
+               displayEmpty
+               variant="outlined"
+               fullWidth
+             >
+               <MenuItem value="" disabled>Select Priority</MenuItem>
+               <MenuItem value="3">High Priority</MenuItem>
+               <MenuItem value="2">Medium Priority</MenuItem>
+               <MenuItem value="1">Low Priority</MenuItem>
+               <MenuItem value="0">No Priority</MenuItem>
+             </Select>
+           )}
+         />
+         </>
+        }
+          <div className={isAdmin ? 'mt-8' : 'mt-64'}>
             <Controller
               name="person_id"
               control={control}
@@ -90,7 +122,7 @@ function BasicInfoTab(props) {
         </div>
       </div>
       <div className="flex-col w-full">
-        <div className="mt-12">
+        <div>
           <Controller
             name="notes"
             control={control}
