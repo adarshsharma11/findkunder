@@ -1239,7 +1239,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-left: 0.4rem;
 }
 .mt-8 {
-  margin-top: 0.8rem;
+  margin-top: 0.8rem !important;
 }
 .ml-12 {
   margin-left: 1.2rem;

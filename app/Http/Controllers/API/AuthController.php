@@ -26,7 +26,6 @@ class AuthController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
@@ -67,7 +66,6 @@ class AuthController extends Controller
         }
         // Create a new user
         $user = User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
@@ -186,7 +184,6 @@ public function update(Request $request)
 {
     // Validate the request data
     $validator = Validator::make($request->all(), [
-        'name' => 'nullable|string',
         'email' => 'nullable|email|unique:users,email,' . auth()->id(),
         'password' => 'nullable|min:6',
         'old_password' => ['nullable', 'min:6', new PasswordCheck],
@@ -199,7 +196,6 @@ public function update(Request $request)
     $user = $request->user();
     // Update user details
     $user->update([
-        'name' => $request->name ? $request->name : $user->name,
         'email' => $request->email ? $request->email : $user->email,
         'password' => $request->password ? bcrypt($request->password) : $user->password,
     ]);

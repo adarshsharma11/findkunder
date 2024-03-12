@@ -42,12 +42,6 @@ function AboutTab(props) {
             <CardContent className="px-32 py-24">
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">
-                  Name
-                </Typography>
-                <Typography>{user.data.displayName}</Typography>
-              </div>
-              <div className="mb-24">
-                <Typography className="font-semibold mb-4 text-15">
                   Email
                 </Typography>
                 <Typography>{user.data.email}</Typography>

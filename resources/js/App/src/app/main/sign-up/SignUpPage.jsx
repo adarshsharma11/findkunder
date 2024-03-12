@@ -17,7 +17,6 @@ import AuthService from "../../auth/services/AuthService";
 import { signUpSchema } from "../../schemas/validationSchemas";
 
 const defaultValues = {
-  displayName: "",
   email: "",
   password: "",
   passwordConfirm: "",
@@ -33,9 +32,8 @@ function SignUpPage() {
 
   const { isValid, dirtyFields, errors, setError } = formState;
 
-  function onSubmit({ displayName, password, email }) {
+  function onSubmit({ password, email }) {
     AuthService.createUser({
-      name: displayName,
       password,
       email,
     })
@@ -74,25 +72,6 @@ function SignUpPage() {
             className="flex flex-col justify-center w-full mt-32"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <Controller
-              name="displayName"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Display name"
-                  autoFocus
-                  type="name"
-                  error={!!errors.displayName}
-                  helperText={errors?.displayName?.message}
-                  variant="outlined"
-                  required
-                  fullWidth
-                />
-              )}
-            />
-
             <Controller
               name="email"
               control={control}

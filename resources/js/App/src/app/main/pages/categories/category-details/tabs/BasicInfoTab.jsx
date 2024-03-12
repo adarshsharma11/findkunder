@@ -35,7 +35,7 @@ function BasicInfoTab(props) {
     setIsEditModalOpen(!isEditModalOpen);
   }
   const onEditCategories = (editedSubcategories) => {
-     setSubcategories(editedSubcategories);
+     setSubcategories(editedSubcategories.map((subcategory) => subcategory.id));
   }
   return (
     <div>

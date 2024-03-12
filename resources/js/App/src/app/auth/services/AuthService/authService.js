@@ -93,7 +93,6 @@ class AuthService extends FuseUtils.EventEmitter {
               from: "custom-db",
               role: response.data.role,
               data: {
-                displayName: userInfo.name,
                 photoURL: "assets/images/avatars/brian-hughes.jpg",
                 email: userInfo.email,
                 totalCompanies: userInfo.companies_count,
@@ -136,7 +135,6 @@ class AuthService extends FuseUtils.EventEmitter {
               from: "custom-db",
               role: response.data.role,
               data: {
-                displayName: userInfo.name,
                 photoURL: "assets/images/avatars/brian-hughes.jpg",
                 email: userInfo.email,
                 totalCompanies: userInfo.companies_count,
@@ -171,7 +169,6 @@ class AuthService extends FuseUtils.EventEmitter {
               from: "custom-db",
               role: response.data.role,
               data: {
-                displayName: userInfo.name,
                 photoURL: "assets/images/avatars/brian-hughes.jpg",
                 email: userInfo.email,
                 totalCompanies: userInfo.companies_count,

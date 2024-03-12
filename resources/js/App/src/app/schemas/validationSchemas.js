@@ -84,7 +84,6 @@ export const contactSchema = yup.object().shape({
 });
 
 export const signUpSchema = yup.object().shape({
-  displayName: yup.string().required("You must enter display name"),
   email: yup
     .string()
     .email("You must enter a valid email")

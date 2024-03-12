@@ -5,7 +5,6 @@ import Tabs from "@mui/material/Tabs";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import AboutTab from "./tabs/AboutTab";
-import EditProfileTab from "./tabs/EditProfileTab";
 import UpdatePasswordTab from "./tabs/UpdatePasswordTab";
 import useThemeMediaQuery from "../../../../@fuse/hooks/useThemeMediaQuery";
 import { useForm, FormProvider } from "react-hook-form";
@@ -67,7 +66,6 @@ function ProfileApp() {
             from: "custom-db",
             role: response.data.role,
             data: {
-              displayName: userInfo.name,
               photoURL: "assets/images/avatars/brian-hughes.jpg",
               email: userInfo.email,
               totalCompanies: userInfo.companies_count,
@@ -139,11 +137,6 @@ function ProfileApp() {
                 <Tab
                   className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
                   disableRipple
-                  label="Edit Profile"
-                />
-                <Tab
-                  className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-                  disableRipple
                   label="Update Password"
                 />
                 {!isAdmin && (
@@ -162,19 +155,11 @@ function ProfileApp() {
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
           {selectedTab === 0 && <AboutTab user={user} />}
           {selectedTab === 1 && (
-            <FormProvider {...methods}>
-              <EditProfileTab
-                user={user}
-                handleUpdateProfile={handleUpdateProfile}
-              />
-            </FormProvider>
-          )}
-          {selectedTab === 2 && (
             <FormProvider {...securityMethods}>
               <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile} />
             </FormProvider>
           )}
-          {selectedTab === 3 && (
+          {selectedTab === 2 && (
             <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} />
           )}
         </div>
