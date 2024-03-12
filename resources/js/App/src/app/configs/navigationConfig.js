@@ -41,10 +41,10 @@ const navigationConfig = [
     children: [
       {
         id: "apps.companies",
-        title: "Companies",
+        title: "Locations",
         type: "item",
         icon: "heroicons-outline:collection",
-        url: "/companies",
+        url: "/locations",
       },
       {
         id: "apps.person",
@@ -66,7 +66,7 @@ const navigationConfig = [
         title: "Profiles",
         type: "item",
         icon: "search",
-        url: "/customers",
+        url: "/profiles",
       },
     ],
   },

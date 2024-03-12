@@ -5,7 +5,15 @@ import InputLabel from "@mui/material/InputLabel";
 import Checkbox from "@mui/material/Checkbox";
 import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import Button from "@mui/material/Button";
+import { styled } from '@mui/material/styles';
+import CategoryEditModal from "../modal/CategotyEditModal";
 import { Controller, useFormContext } from "react-hook-form";
+
+const EditButton = styled(Button)({
+  border: 'none',
+});
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -13,6 +21,7 @@ function BasicInfoTab(props) {
   const { control, formState } = methods;
   const { errors } = formState;
   const [subcategories, setSubcategories] = React.useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (product && product.subcategories) {
@@ -21,6 +30,13 @@ function BasicInfoTab(props) {
       );
     }
   }, [product]);
+
+  const toggleEditModal = () => {
+    setIsEditModalOpen(!isEditModalOpen);
+  }
+  const onEditCategories = (editedSubcategories) => {
+     setSubcategories(editedSubcategories);
+  }
   return (
     <div>
       <Controller
@@ -76,17 +92,34 @@ function BasicInfoTab(props) {
         />
       )}
 
-      {categoryId && categoryId !== "new" && product?.subcategories && (
+      {categoryId && categoryId !== "new" && product?.subcategories?.length > 0 && (
         <Controller
           name="subcategories"
           control={control}
           render={({ field }) => (
             <div>
-              <InputLabel id="demo-checkbox-label">Subcategories</InputLabel>
+            <div className="flex items-center">
+              <InputLabel id="demo-checkbox-label">Subskills</InputLabel>
+              <EditButton
+                  className="whitespace-nowrap mx-4"
+                  variant="outlined"
+                  onClick={toggleEditModal}
+                 >
+                  <FuseSvgIcon className="hidden sm:flex">
+                      heroicons-outline:pencil-alt
+                    </FuseSvgIcon>
+                 </EditButton>
+                 <CategoryEditModal
+                    isOpen={isEditModalOpen}
+                    onClose={toggleEditModal}
+                    categories={product.subcategories}
+                    onEditCategories={onEditCategories}
+                  />
+                 </div>
               {product &&
                 product?.subcategories.map((subcategory) => (
+                  <div key={subcategory.id} className="flex items-center">
                   <FormControlLabel
-                    key={subcategory.id}
                     control={
                       <Checkbox
                         onChange={(e) => {
@@ -103,6 +136,7 @@ function BasicInfoTab(props) {
                     }
                     label={subcategory.name}
                   />
+                    </div>
                 ))}
             </div>
           )}

@@ -122,16 +122,16 @@ function Category(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no such contact persons!
+          There is no such skill!
         </Typography>
         <Button
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/contact-person"
+          to="/skills"
           color="inherit"
         >
-          Go to Contact Person Page
+          Go to Skills Page
         </Button>
       </motion.div>
     );

@@ -81,7 +81,7 @@ function CompaniesTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/companies/${item.id}`);
+    props.navigate(`/locations/${item.id}`);
   }
 
   function handleCheck(event, id) {
@@ -128,7 +128,7 @@ function CompaniesTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no companies!
+          There are no locations!
         </Typography>
       </motion.div>
     );

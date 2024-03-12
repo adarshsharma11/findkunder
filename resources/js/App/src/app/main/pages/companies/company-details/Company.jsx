@@ -107,16 +107,16 @@ function Company(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no such company!
+          There is no such location!
         </Typography>
         <Button
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/companies"
+          to="/locations"
           color="inherit"
         >
-          Go to company Page
+          Go to location Page
         </Button>
       </motion.div>
     );
@@ -149,7 +149,7 @@ function Company(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
-              <Tab className="h-64" label="Company Logo" />
+              <Tab className="h-64" label="Logo" />
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>

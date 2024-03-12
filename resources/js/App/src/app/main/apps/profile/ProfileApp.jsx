@@ -1,9 +1,7 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { styled } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import { motion } from "framer-motion";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import AboutTab from "./tabs/AboutTab";
@@ -111,27 +109,7 @@ function ProfileApp() {
     <Root
       header={
         <div className="flex flex-col shadow">
-          <img
-            className="h-160 lg:h-320 object-cover w-full"
-            src="assets/images/pages/profile/cover.jpg"
-            alt="Profile Cover"
-          />
-
           <div className="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-32 lg:h-72">
-            <div className="-mt-96 lg:-mt-88 rounded-full">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1, transition: { delay: 0.1 } }}
-              >
-                <Avatar
-                  sx={{ borderColor: "background.paper" }}
-                  className="w-128 h-128 border-4"
-                  src="assets/images/avatars/male-04.jpg"
-                  alt="User avatar"
-                />
-              </motion.div>
-            </div>
-
             <div className="flex flex-1 justify-end my-16 lg:my-0">
               <Tabs
                 value={selectedTab}

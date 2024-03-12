@@ -20,11 +20,11 @@ const CustomersConfig = {
   },
   routes: [
     {
-      path: "customers",
+      path: "profiles",
       element: <Customers />,
     },
     {
-      path: "customers/:productId/*",
+      path: "profiles/:productId/*",
       element: <CustomerDetails />,
     },
   ],

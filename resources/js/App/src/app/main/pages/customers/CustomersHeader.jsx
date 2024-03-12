@@ -37,7 +37,7 @@ function CutomersHeader(props) {
           <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
 
           <Input
-            placeholder="Search customers"
+            placeholder="Search profiles"
             className="flex flex-1"
             disableUnderline
             fullWidth

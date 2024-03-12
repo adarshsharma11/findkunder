@@ -28,14 +28,14 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewCompany(getValues())).then(() => {
       dispatch(showMessage({ message: "Company added successfully!" }));
-      navigate("/companies");
+      navigate("/locations");
     });
   }
 
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload?.message }));
-      navigate("/companies");
+      navigate("/locations");
     });
   }
 
@@ -56,7 +56,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/companies"
+            to="/locations"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -64,7 +64,7 @@ function ProductHeader(props) {
                 ? "heroicons-outline:arrow-sm-left"
                 : "heroicons-outline:arrow-sm-right"}
             </FuseSvgIcon>
-            <span className="flex mx-4 font-medium">Companies</span>
+            <span className="flex mx-4 font-medium">Locations</span>
           </Typography>
         </motion.div>
       </div>
@@ -103,10 +103,10 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              {name || "New Company"}
+              {name || "New Location"}
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Company Detail
+              Location Detail
             </Typography>
           </motion.div>
         </div>

@@ -26,7 +26,7 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
       dispatch(showMessage({ message: "Customer added successfully!" }));
-      navigate("/customers");
+      navigate("/profiles");
     });
   }
 
@@ -47,7 +47,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/customers"
+            to="/profiles"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -86,7 +86,7 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              {name || "New Findkunder"}
+              {name || "New Findkunder Profile"}
             </Typography>
             <Typography variant="caption" className="font-medium">
               Profile Detail

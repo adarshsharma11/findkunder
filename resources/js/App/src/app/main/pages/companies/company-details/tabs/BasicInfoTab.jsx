@@ -22,7 +22,7 @@ function BasicInfoTab(props) {
             error={!!errors.company_name}
             required
             helperText={errors?.company_name?.message}
-            label="Company Name"
+            label="Name"
             autoFocus
             id="company_name"
             variant="outlined"

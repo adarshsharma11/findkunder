@@ -129,7 +129,7 @@ function Customers() {
           onClose={handleCloseDialog}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle className="">Customer Details</DialogTitle>
+          <DialogTitle className="">Profile Details</DialogTitle>
           <DialogContent className="">
             <BasicInfoTab companies={companies} contacts={contact} />
           </DialogContent>
