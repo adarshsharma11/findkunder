@@ -43,7 +43,7 @@ const navigationConfig = [
         id: "apps.companies",
         title: "Locations",
         type: "item",
-        icon: "heroicons-outline:collection",
+        icon: "heroicons-outline:location-marker",
         url: "/locations",
       },
       {
