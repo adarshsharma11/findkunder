@@ -25,10 +25,8 @@ class CustomerController extends Controller
         if ($user->hasRole('admin')) {
             $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
         } else {
-            $contactPersons = $user->contact_person;
-            $customerIds = $contactPersons->pluck('id');
-            $customers = Customer::with(['company', 'person', 'categories'])
-            ->whereIn('person_id', $customerIds)
+            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
+            ->where('user_id', $user->id)
             ->get();
         }
         return response()->json($customers);
