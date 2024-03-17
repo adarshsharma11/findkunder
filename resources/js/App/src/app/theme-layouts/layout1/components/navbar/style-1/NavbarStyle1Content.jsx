@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import Logo from '../../../../shared-components/Logo';
 import NavbarToggleButton from '../../../../shared-components/NavbarToggleButton';
-import UserNavbarHeader from '../../../../shared-components/UserNavbarHeader';
 import Navigation from '../../../../shared-components/Navigation';
 
 const Root = styled('div')(({ theme }) => ({
@@ -47,7 +46,6 @@ function NavbarStyle1Content(props) {
         className="flex flex-1 flex-col min-h-0"
         option={{ suppressScrollX: true, wheelPropagation: false }}
       >
-        <UserNavbarHeader />
 
         <Navigation layout="vertical" />
 
