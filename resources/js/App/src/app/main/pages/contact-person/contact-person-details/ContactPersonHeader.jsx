@@ -34,7 +34,7 @@ function ProductHeader(props) {
 
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload?.message }));
+      dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
       navigate("/contact-person");
     });
   }
