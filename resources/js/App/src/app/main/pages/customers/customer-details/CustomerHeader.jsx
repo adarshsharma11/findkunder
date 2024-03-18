@@ -24,7 +24,7 @@ function ProductHeader(props) {
   const navigate = useNavigate();
 
   function handleSaveProduct() {
-    dispatch(addNewPerson(getValues())).then((payload) => {
+    dispatch(addNewPerson(getValues())).then(({payload}) => {
       dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
       navigate("/profiles");
     });
