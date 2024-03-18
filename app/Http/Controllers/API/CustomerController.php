@@ -54,6 +54,14 @@ class CustomerController extends Controller
         }
         $user = Auth::user();
         $data = $request->all();
+
+        $existingCustomer = Customer::where('company_id', $data['company_id'])
+        ->where('person_id', $data['person_id'])
+        ->first();
+
+        if ($existingCustomer) {
+            return response()->json(['status' => 'error', 'message' => 'Customer already exists with the same company and contact person','status' => false], 201);
+        }
         if ($user->hasRole('admin')) {
             $data['user_id'] = $user->id;
             $customer = Customer::create($data);
@@ -71,7 +79,7 @@ class CustomerController extends Controller
             $customerTypes = CustomerType::whereIn('id', $data['customerTypes'])->get();
             $customer->customerTypes()->attach($customerTypes);
         }
-        return response()->json(['status' => 'success', 'data' => $customer]);
+        return response()->json(['status' => true, 'data' => $customer]);
     }
 
     /**
