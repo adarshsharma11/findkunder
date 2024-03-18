@@ -8,7 +8,8 @@ const authServiceConfig = {
   updateUser: apiPrefix + 'update-profile',
   deleteUser: apiPrefix + 'delete-profile',
   forgotPassword: apiPrefix + 'forgot-password',
-  resetPassword: apiPrefix + 'reset-password'
+  resetPassword: apiPrefix + 'reset-password',
+  customersCount: apiPrefix + 'customers/count',
 };
 
 export default authServiceConfig;

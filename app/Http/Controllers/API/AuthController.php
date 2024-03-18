@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cookie;
 use App\Rules\PasswordCheck;
 use App\Mail\PasswordResetMail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Customer;
 
 class AuthController extends Controller
 {
@@ -316,6 +317,19 @@ public function resetPassword(Request $request)
 
         // Return a success response
         return response()->json(['status' => true, 'message' => 'User soft deleted successfully']);
+    }
+
+    /**
+     * Get the total count of profiles for all users.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function countAllProfiles()
+    {
+        // Count the total number of profiles
+        $profileCount = Customer::count();
+        // Return the count as a JSON response
+        return response()->json(['status' => true, 'profileCount' => $profileCount]);
     }
 
 

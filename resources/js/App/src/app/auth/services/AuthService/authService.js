@@ -63,6 +63,10 @@ class AuthService extends FuseUtils.EventEmitter {
     });
   };
 
+  getCustomersCount = () => {
+    return axios.get(authServiceConfig.customersCount);
+  };
+
   deleteProfile = (user) => {
     return axios.post(authServiceConfig.deleteUser);
   };
