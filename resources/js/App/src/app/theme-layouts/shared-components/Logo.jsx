@@ -1,4 +1,6 @@
 import { styled } from "@mui/material/styles";
+import { selectUser } from "../../store/userSlice";
+import { useSelector } from "react-redux";
 
 const Root = styled("div")(({ theme }) => ({
   "& > .logo-icon": {
@@ -16,6 +18,8 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 function Logo() {
+  const user = useSelector(selectUser);
+  const role = user?.role;
   return (
     <Root className="flex items-center">
       <img
@@ -28,7 +32,7 @@ function Logo() {
         className="badge flex items-center py-4 px-8 mx-8 rounded"
         style={{ backgroundColor: "#121212", color: "#61DAFB" }}
       >
-        <span className="react-text text-12 mx-4">Find Kunder - admin</span>
+        <span className="react-text text-12 mx-4">Find Kunder - {role}</span>
       </div>
     </Root>
   );
