@@ -61,6 +61,10 @@ export const selectNavigation = createSelector(
           item.title = i18next.t(`navigation:${item.translate}`);
         }
 
+        if ( item.children && item.children[0].id === 'apps.profiles' && userRole === 'user') {
+          item.children[0].title = 'My Profiles';
+        }
+
         // see if there is a children node
         if (item.children) {
           // run this function recursively on the children array
