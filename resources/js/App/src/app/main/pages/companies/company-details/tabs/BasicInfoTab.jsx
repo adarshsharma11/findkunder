@@ -4,6 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
 import { regions } from "../../../../../store/constants";
+import CompanyImageTab from "./CompanyImageTab";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -135,6 +136,8 @@ function BasicInfoTab(props) {
           </div>
         )}
       />
+
+      <CompanyImageTab />
 
       <Controller
         name="website"

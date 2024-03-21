@@ -4,6 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
+import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -130,6 +131,7 @@ function BasicInfoTab(props) {
           />
         )}
       />
+      <ContactImageTab />
       <Controller
         name="linkedin"
         control={control}

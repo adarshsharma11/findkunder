@@ -6,17 +6,17 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function CategoryEditModal({ isOpen, onClose, categories, onEditCategories }) {
   const [editedCategories, setEditedCategories] = useState([]);
 
   useEffect(() => {
-    // Initialize the editedCategories state with the initial categories
     setEditedCategories([...categories]);
   }, [categories]);
 
   const handleSave = () => {
-    // Perform any validation or data update logic here
     onEditCategories(editedCategories);
     onClose();
   };
@@ -27,13 +27,19 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories }) {
     setEditedCategories(updatedCategories);
   };
 
+  const handleDeleteCategory = (index) => {
+    const updatedCategories = [...editedCategories];
+    updatedCategories.splice(index, 1);
+    setEditedCategories(updatedCategories);
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Edit Sub Skills</DialogTitle>
       <DialogContent>
         {editedCategories.map((category, index) => (
+          <div key={category.id} className="flex items-center">
           <TextField
-            key={category.id}
             label={`Skill ${index + 1} Name`}
             variant="outlined"
             fullWidth
@@ -41,6 +47,10 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories }) {
             onChange={(e) => handleCategoryNameChange(index, e.target.value)}
             className="mt-8 mb-16"
           />
+          <IconButton onClick={() => handleDeleteCategory(index)} aria-label="delete">
+              <DeleteIcon />
+          </IconButton>
+          </div>
         ))}
       </DialogContent>
       <DialogActions>

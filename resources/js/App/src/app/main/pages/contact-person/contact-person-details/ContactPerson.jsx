@@ -13,7 +13,6 @@ import { Link, useParams } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ContactImageTab from "./tabs/ContactImageTab";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import {
   getProduct,
@@ -149,14 +148,10 @@ function Contact(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
-              <Tab className="h-64" label="Contact Image" />
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab />
-              </div>
-              <div className={tabValue !== 1 ? "hidden" : ""}>
-                <ContactImageTab />
               </div>
             </div>
           </>

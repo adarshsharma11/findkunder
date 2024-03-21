@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Controller, useFormContext } from "react-hook-form";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
 
 const Root = styled("div")(({ theme }) => ({
   "& .productImageFeaturedStar": {
@@ -54,6 +55,8 @@ function CompanyImageTab(props) {
           name="image"
           control={control}
           render={({ field: { onChange, value } }) => (
+            <div className="flex justify-center sm:justify-start flex-wrap flex-col">
+            <InputLabel id="demo-simple-select-label" className="mx-16 mb-16">Image</InputLabel>
             <Box
               sx={{
                 backgroundColor: (theme) =>
@@ -79,6 +82,7 @@ function CompanyImageTab(props) {
                 heroicons-outline:upload
               </FuseSvgIcon>
             </Box>
+            </div>
           )}
         />
         {image && (
@@ -86,7 +90,7 @@ function CompanyImageTab(props) {
             role="button"
             tabIndex={0}
             className={clsx(
-              "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg"
+              "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg mt-38"
             )}
           >
             <img

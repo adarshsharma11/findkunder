@@ -23,7 +23,6 @@ import {
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-import CompanyImageTab from "./tabs/CompanyImageTab";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
@@ -149,14 +148,10 @@ function Company(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
-              <Tab className="h-64" label="Logo" />
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab />
-              </div>
-              <div className={tabValue !== 1 ? "hidden" : ""}>
-                <CompanyImageTab />
               </div>
             </div>
           </>
