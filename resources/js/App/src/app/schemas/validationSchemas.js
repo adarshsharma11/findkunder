@@ -124,6 +124,7 @@ export const updateProfilePasswordSchema = yup.object().shape({
     .min(8, "Password is too short - should be 8 chars minimum."),
   passwordConfirm: yup
     .string()
+    .required("Please enter confirm password.")
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 

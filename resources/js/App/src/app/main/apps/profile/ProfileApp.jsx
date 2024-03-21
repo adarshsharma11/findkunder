@@ -5,7 +5,6 @@ import Tabs from "@mui/material/Tabs";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import AboutTab from "./tabs/AboutTab";
-import UpdatePasswordTab from "./tabs/UpdatePasswordTab";
 import useThemeMediaQuery from "../../../../@fuse/hooks/useThemeMediaQuery";
 import { useForm, FormProvider } from "react-hook-form";
 import {
@@ -17,7 +16,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUser, updateUserData } from "app/store/userSlice";
 import AuthService from "../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
-import DeleteAccountTab from "./tabs/DeleteAccountTab";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -134,18 +132,6 @@ function ProfileApp() {
                   disableRipple
                   label="About"
                 />
-                <Tab
-                  className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-                  disableRipple
-                  label="Update Password"
-                />
-                {!isAdmin && (
-                  <Tab
-                    className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-                    disableRipple
-                    label="Delete Account"
-                  />
-                )}
               </Tabs>
             </div>
           </div>
@@ -153,15 +139,7 @@ function ProfileApp() {
       }
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-          {selectedTab === 0 && <AboutTab user={user} />}
-          {selectedTab === 1 && (
-            <FormProvider {...securityMethods}>
-              <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile} />
-            </FormProvider>
-          )}
-          {selectedTab === 2 && (
-            <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} />
-          )}
+          {selectedTab === 0 && <FormProvider {...securityMethods}> <AboutTab user={user} isAdmin={isAdmin} /> </FormProvider>}
         </div>
       }
       scroll={isMobile ? "normal" : "page"}
