@@ -2,6 +2,7 @@ import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
 
 function BasicInfoTab(props) {
+  const { productId } = props;
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
@@ -23,7 +24,7 @@ function BasicInfoTab(props) {
             id="name"
             variant="outlined"
             fullWidth
-            InputProps={{ readOnly: field.value ? true : false }} 
+            InputProps={{ readOnly: field.value && productId !== 'new' ? true : false }} 
           />
         )}
       />
