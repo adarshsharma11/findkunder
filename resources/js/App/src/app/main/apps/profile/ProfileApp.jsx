@@ -1,9 +1,6 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { styled } from "@mui/material/styles";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import { useState } from "react";
-import Box from "@mui/material/Box";
 import AboutTab from "./tabs/AboutTab";
 import useThemeMediaQuery from "../../../../@fuse/hooks/useThemeMediaQuery";
 import { useForm, FormProvider } from "react-hook-form";
@@ -27,7 +24,6 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 function ProfileApp() {
-  const [selectedTab, setSelectedTab] = useState(0);
   const user = useSelector(selectUser);
   const isAdmin = user?.role === "admin";
   const dispatch = useDispatch();
@@ -43,10 +39,6 @@ function ProfileApp() {
   });
   const { reset, watch, control, onChange, formState, setValue } = methods;
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
-
-  function handleTabChange(event, value) {
-    setSelectedTab(value);
-  }
 
   const handleUpdateProfile = (values) => {
     AuthService.updateUserData(values)
@@ -103,43 +95,9 @@ function ProfileApp() {
 
   return (
     <Root
-      header={
-        <div className="flex flex-col shadow">
-          <div className="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-32 lg:h-72">
-            <div className="flex flex-1 justify-end my-16 lg:my-0">
-              <Tabs
-                value={selectedTab}
-                onChange={handleTabChange}
-                indicatorColor="primary"
-                textColor="inherit"
-                variant="scrollable"
-                scrollButtons={false}
-                className="-mx-4 min-h-40"
-                classes={{
-                  indicator: "flex justify-center bg-transparent w-full h-full",
-                }}
-                TabIndicatorProps={{
-                  children: (
-                    <Box
-                      sx={{ bgcolor: "text.disabled" }}
-                      className="w-full h-full rounded-full opacity-20"
-                    />
-                  ),
-                }}
-              >
-                <Tab
-                  className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-                  disableRipple
-                  label="About"
-                />
-              </Tabs>
-            </div>
-          </div>
-        </div>
-      }
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-          {selectedTab === 0 && <FormProvider {...securityMethods}> <AboutTab user={user} isAdmin={isAdmin} /> </FormProvider>}
+        <FormProvider {...securityMethods}> <AboutTab user={user} isAdmin={isAdmin} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleUpdateProfile} /> </FormProvider>
         </div>
       }
       scroll={isMobile ? "normal" : "page"}

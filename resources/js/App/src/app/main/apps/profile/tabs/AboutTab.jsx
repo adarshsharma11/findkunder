@@ -6,7 +6,7 @@ import DeleteAccountTab from "./DeleteAccountTab";
 import UpdatePasswordTab from "./UpdatePasswordTab";
 
 function AboutTab(props) {
-  const { user, isAdmin } = props;
+  const { user, isAdmin, handleDeleteProfile, handleUpdateProfile } = props;
 
   if (!user) {
     return null;
@@ -74,7 +74,7 @@ function AboutTab(props) {
         </div>
 
         <div className="flex flex-col md:w-320" >
-        {!isAdmin && <DeleteAccountTab /> }
+        {!isAdmin && <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} /> }
         </div>
       </div>
     </motion.div>
@@ -95,7 +95,7 @@ function AboutTab(props) {
 
             <CardContent className="px-32 py-24">
               <div className="mb-24">
-              <UpdatePasswordTab />
+              <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile}/>
               </div>
             </CardContent>
           </Card>

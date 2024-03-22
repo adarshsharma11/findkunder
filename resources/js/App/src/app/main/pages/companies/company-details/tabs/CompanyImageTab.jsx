@@ -56,7 +56,7 @@ function CompanyImageTab(props) {
           control={control}
           render={({ field: { onChange, value } }) => (
             <div className="flex justify-center sm:justify-start flex-wrap flex-col">
-            <InputLabel id="demo-simple-select-label" className="mx-16 mb-16">Image</InputLabel>
+            <InputLabel id="demo-simple-select-label" className="mx-16 mb-16">Logo</InputLabel>
             <Box
               sx={{
                 backgroundColor: (theme) =>
