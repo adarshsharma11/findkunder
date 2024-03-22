@@ -108,6 +108,11 @@ export const createCustomerTypeSchema = yup.object().shape({
   name: yup.string().required("You must enter display name"),
 });
 
+export const createUserAccountSchema = yup.object().shape({
+  email: yup.string().required("You must enter display name")
+  .email('Please enter a valid email address'),
+});
+
 export const createCaterorySchema = yup.object().shape({
   name: yup.string().required("You must enter display name"),
   parent_id: yup.string().nullable(),

@@ -18,6 +18,13 @@ const navigationConfig = [
     icon: "heroicons-outline:check-circle",
     children: [
       {
+        id: "apps.accounts",
+        title: "Accounts",
+        type: "item",
+        icon: "heroicons-outline:user-group",
+        url: "/accounts",
+      },
+      {
         id: "apps.customerTypes",
         title: "Customer Types",
         type: "item",
