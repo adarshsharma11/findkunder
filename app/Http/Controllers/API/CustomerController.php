@@ -60,7 +60,7 @@ class CustomerController extends Controller
         ->first();
 
         if ($existingCustomer) {
-            return response()->json(['status' => 'error', 'message' => 'Customer already exists with the same company and contact person','status' => false], 201);
+            return response()->json(['status' => 'error', 'message' => ' Profile already exists with the same company and contact person','status' => false], 201);
         }
         if ($user->hasRole('admin')) {
             $data['user_id'] = $user->id;
