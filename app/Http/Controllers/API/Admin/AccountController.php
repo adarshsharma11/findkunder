@@ -43,7 +43,19 @@ class AccountController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             if ($errors->has('email')) {
-                return response()->json(['message' => $errors->first('email'), 'status' => false], 201);
+                $softDeletedUser = User::onlyTrashed()->where('email', $request->email)->first();
+                if ($softDeletedUser) {
+                    // Restore the soft-deleted user
+                    $password = Str::random(12);
+                    $softDeletedUser->restore();
+                    $softDeletedUser->update([
+                        'password' => bcrypt($password),
+                    ]);
+                    Mail::to($softDeletedUser->email)->send(new WelcomeMail($softDeletedUser, $password));
+                    return response()->json(['message' => 'User account created successfully!', 'status' => true, 'user' => $softDeletedUser], 201);
+                } else {
+                    return response()->json(['status' => false, 'message' => 'Email address is already registered. Please use a different email.'], 201);
+                }
             }
             return response()->json(['message' => 'Something went wrong!', 'status' => false], 201);
         }

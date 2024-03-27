@@ -138,7 +138,7 @@ function Category(props) {
   }
   /**
    * Wait while product data is loading and form is setted
-   */
+  */
   if (
     _.isEmpty(form) ||
     (product &&

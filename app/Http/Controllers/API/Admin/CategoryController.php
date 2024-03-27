@@ -64,42 +64,47 @@ class CategoryController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'name' => 'required|string',
-            'parent_id' => 'nullable|exists:categories,id',
-            'subcategories' => 'array',
+            'categories' => 'nullable|array',
+            'categories.*.name' => 'required|string',
+            'categories.*.parent_id' => 'nullable|exists:categories,id',
         ]);
-    
-        // Ensure that the provided parent_id is not the same as the category's id
-        if ($request->has('parent_id') && $request->input('parent_id') == $category->id) {
-            return response()->json(['error' => 'Cannot set parent category to itself'], 422);
+
+        $updatedCategories = [];
+        if ($request->filled('name') && $request->input('name') !== $category->name) {
+            $category->update(['name' => $request->input('name')]);
         }
-    
-        // Update the category name
-        $category->update(['name' => $request->input('name')]);
-    
-        // If a new parent_id is provided, update the parent relationship
-        if ($request->has('parent_id')) {
-            $parentCategory = Category::find($request->input('parent_id'));
-            if ($parentCategory) {
-                $category->parent_id = $parentCategory->id;
-                $category->save();
-            }
-        }
-        if ($request->has('subcategories')) {
-            $newSubcategories = $request->input('subcategories');
-            $currentSubcategories = $category->subcategories;
-            // Update subcategories
-            foreach ($currentSubcategories as $currentSubcategory) {
-                // If the current subcategory is not in the new list, set its parent_id to null
-                if (!in_array($currentSubcategory->id, $newSubcategories)) {
-                    $currentSubcategory->update(['parent_id' => null]);
+        if ($request->input('categories')) {
+        foreach ($request->input('categories') as $updatedCategory) {
+            if (isset($updatedCategory['id'])) {
+                // If ID is provided, update existing category
+                $existingCategory = Category::findOrFail($updatedCategory['id']);
+                $existingCategory->update(['name' => $updatedCategory['name']]);
+                if (isset($updatedCategory['parent_id'])) {
+                    $parentCategory = Category::find($updatedCategory['parent_id']);
+                    if ($parentCategory) {
+                        $existingCategory->parent_id = $parentCategory->id;
+                        $existingCategory->save();
+                    }
                 }
+                $updatedCategories[] = $existingCategory;
+            } else {
+                // If ID is not provided, create new category
+                $newCategory = Category::create([
+                    'name' => $updatedCategory['name'],
+                    'parent_id' => $category->id,
+                ]);
+                $updatedCategories[] = $newCategory;
             }
         }
-        // Load subcategories for the updated category
-        $category->load('subcategories');
-        return response()->json($category);
+
     }
+
+        $category->load('subcategories');
+    
+        return response()->json($category);
+    
+    }
+
 
     /**
      * Remove the specified category from the database.

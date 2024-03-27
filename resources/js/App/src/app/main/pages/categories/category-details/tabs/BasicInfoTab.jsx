@@ -18,7 +18,7 @@ const EditButton = styled(Button)({
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { categories, categoryId, product } = props;
-  const { control, formState } = methods;
+  const { control, formState, setValue } = methods;
   const { errors } = formState;
   const [subcategories, setSubcategories] = React.useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
@@ -26,7 +26,7 @@ function BasicInfoTab(props) {
   React.useEffect(() => {
     if (product && product.subcategories) {
       setSubcategories(
-        product.subcategories.map((subcategory) => subcategory.id)
+        product.subcategories
       );
     }
   }, [product]);
@@ -34,8 +34,9 @@ function BasicInfoTab(props) {
   const toggleEditModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   }
+  
   const onEditCategories = (editedSubcategories) => {
-     setSubcategories(editedSubcategories.map((subcategory) => subcategory.id));
+     setSubcategories(editedSubcategories);
   }
   return (
     <div>
@@ -92,7 +93,7 @@ function BasicInfoTab(props) {
         />
       )}
 
-      {categoryId && categoryId !== "new" && product?.subcategories?.length > 0 && (
+      {categoryId && categoryId !== "new" && (
         <Controller
           name="subcategories"
           control={control}
@@ -112,33 +113,39 @@ function BasicInfoTab(props) {
                  <CategoryEditModal
                     isOpen={isEditModalOpen}
                     onClose={toggleEditModal}
-                    categories={product.subcategories}
+                    categories={subcategories}
                     onEditCategories={onEditCategories}
+                    categoryId={categoryId}
+                    setValue={setValue}
                   />
                  </div>
-              {product &&
-                product?.subcategories.map((subcategory) => (
-                  <div key={subcategory.id} className="flex items-center">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={(e) => {
-                          const updatedSubcategories = e.target.checked
-                            ? [...subcategories, subcategory.id]
-                            : subcategories.filter(
-                                (id) => id !== subcategory.id
-                              );
-                          setSubcategories(updatedSubcategories);
-                          field.onChange(updatedSubcategories);
-                        }}
-                        checked={subcategories.includes(subcategory.id)}
-                      />
+                 {subcategories &&
+        subcategories.map((subcategory) => (
+          <div key={subcategory.id} className="flex items-center">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    let updatedSubcategories;
+                    if (checked) {
+                      updatedSubcategories = [...subcategories, subcategory];
+                    } else {
+                      updatedSubcategories = subcategories.filter(
+                        (s) => s.id !== subcategory.id
+                      );
                     }
-                    label={subcategory.name}
-                  />
-                    </div>
-                ))}
-            </div>
+                    setSubcategories(updatedSubcategories);
+                    field.onChange(updatedSubcategories);
+                  }}
+                  checked={subcategories.some((s) => s.id === subcategory.id)}
+                />
+              }
+              label={subcategory.name}
+            />
+          </div>
+        ))}
+          </div>
           )}
         />
       )}
