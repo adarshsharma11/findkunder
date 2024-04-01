@@ -12,7 +12,6 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import BasicInfoTab from "./customer-details/modal/BasicInfoTab";
 import { getCompanies } from "../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../contact-person/store/contactPersonsSlice";

@@ -21,27 +21,50 @@ import {
   resetProduct,
   selectProduct,
 } from "../store/userAccountSlice";
+import { selectUser } from "../../../../store/userSlice";
 import reducer from "../store";
 import ProductHeader from "./UserAccountHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-import { createUserAccountSchema } from "../../../../schemas/validationSchemas";
+import { createUserAccountSchema, adminProfileSchema, profileSchema } from "../../../../schemas/validationSchemas";
 import Locations from "./tabs/Locations";
+import { getCompanies, getPersons, getProfiles } from "../store/userAccountsSlice";
 import Persons from "./tabs/Persons";
+import { showMessage } from "app/store/fuse/messageSlice";
+import EditProfileDialog from "../../../../shared-components/customer-profile/EditProfileDialog";
+import { saveProduct as saveProfile, removeProduct } from "../../customers/store/customerSlice";
+import DeleteConfirmationDialog from "../../customers/customer-details/modal/DeleteConfirmationDialog";
 
 function UserAccount(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
+  const user = useSelector(selectUser);
+  const isAdmin = user?.role === 'admin';
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedItem, setSelected] = useState(false);
+  const [companies, setCompanies] = useState(false);
+  const [contact, setContacts] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const editProfileFormSchema = isAdmin ? adminProfileSchema : profileSchema;
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
     resolver: yupResolver(createUserAccountSchema),
   });
+
+  const editProfileMethods = useForm({
+    mode: "onChange",
+    defaultValues: {},
+    resolver: yupResolver(editProfileFormSchema),
+  });
   const { reset, watch, control, onChange, formState } = methods;
+  const { reset: editReset, watch: editWatch, control: editControl, onChange: editOnChange, formState: editFormState, getValues } = editProfileMethods;
   const form = watch();
 
   useDeepCompareEffect(() => {
@@ -91,11 +114,86 @@ function UserAccount(props) {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getCompanies()).then((action) => {
+      if (action.payload) {
+        setCompanies(action.payload);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getPersons()).then((action) => {
+      if (action.payload) {
+        setContacts(action.payload);
+      }
+    });
+  }, []);
+
   /**
    * Tab Change
    */
   function handleTabChange(event, value) {
     setTabValue(value);
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDeleteDialog = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
+  };
+
+  function handleOpenDialog(item) {
+    setSelected(item.id);
+    editReset({
+      company_id: item?.company.id,
+      person_id: item?.person.id,
+      notes: item.notes || "",
+      status: item.status
+    });
+    setOpenDialog(!openDialog);
+  }
+
+  function handleUpdateCustomer() {
+    const values = getValues();
+    values.id = selectedItem;
+    dispatch(saveProfile(values)).then(() => {
+      dispatch(showMessage({ message: "Customer updated successfully!" }));
+      setSelected(false);
+      dispatch(getProfiles(routeParams?.productId)).then((action) => {
+        if (action.payload) {
+          setData(action.payload);
+          setFilteredData(action.payload);
+        }
+      });
+      handleCloseDialog();
+    });
+  }
+
+  function handleRemoveCustomer(options) {
+    const payload = {
+      id: selectedItem,
+      options,
+    };
+    dispatch(removeProduct(payload)).then(() => {
+      const successMessage =
+        options.deleteCompany || options.deleteContact
+          ? "Customer profile and associated records deleted successfully!"
+          : "Customer profile deleted successfully!";
+
+      dispatch(showMessage({ message: successMessage }));
+      setSelected(false);
+      dispatch(getProfiles(routeParams?.productId)).then((action) => {
+        if (action.payload) {
+          setData(action.payload);
+          setFilteredData(action.payload);
+        }
+      });
+      handleDeleteDialog();
+      handleCloseDialog();
+    });
   }
 
   /**
@@ -136,6 +234,7 @@ function UserAccount(props) {
   }
 
   return (
+    <>
     <FormProvider {...methods}>
       <FusePageCarded
         header={<ProductHeader id={routeParams?.productId} />}
@@ -172,12 +271,12 @@ function UserAccount(props) {
               }
               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 2 ? "hidden" : ""}>
-               <Persons userId={routeParams.productId} />
+               <Persons userId={routeParams.productId}  />
                </div>
               }
               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 3 ? "hidden" : ""}>
-               <Profiles userId={routeParams.productId} />
+               <Profiles userId={routeParams.productId} isAdmin={isAdmin} handleOpenDialog={handleOpenDialog} setData={setData} data={data} filteredData={filteredData} setFilteredData={setFilteredData} />
                </div>
               }
             </div>
@@ -186,6 +285,25 @@ function UserAccount(props) {
         scroll={isMobile ? "normal" : "content"}
       />
     </FormProvider>
+    <FormProvider {...editProfileMethods}>
+      <EditProfileDialog
+          open={openDialog}
+          handleClose={handleCloseDialog}
+          handleSave={handleUpdateCustomer}
+          handleDelete={handleDeleteDialog}
+          companies={companies}
+          contacts={contact}
+          isAdmin={isAdmin}
+      />
+      </FormProvider>
+      {openDeleteDialog && (
+          <DeleteConfirmationDialog
+            open={handleDeleteDialog}
+            onClose={handleDeleteDialog}
+            onConfirm={handleRemoveCustomer}
+          />
+      )}
+    </>
   );
 }
 

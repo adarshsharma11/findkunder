@@ -21,14 +21,12 @@ import CustomersTableHead from "./ProfileTableHead";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
-  const { handleOpenDialog, handleDialogData, isAdmin, userId } = props;
+  const { handleOpenDialog, isAdmin, userId, data, setData, filteredData, setFilteredData } = props;
   const { t } = useTranslation("contactPerson");
   const searchText = useSelector(selectProfileSearchText);
 
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
