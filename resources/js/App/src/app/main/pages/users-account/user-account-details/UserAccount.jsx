@@ -14,6 +14,7 @@ import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
+import Profiles from "./tabs/Profiles";
 import {
   getProduct,
   newProduct,
@@ -24,6 +25,8 @@ import reducer from "../store";
 import ProductHeader from "./UserAccountHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { createUserAccountSchema } from "../../../../schemas/validationSchemas";
+import Locations from "./tabs/Locations";
+import Persons from "./tabs/Persons";
 
 function UserAccount(props) {
   const dispatch = useDispatch();
@@ -148,11 +151,35 @@ function UserAccount(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
+              {routeParams?.productId !== 'new' && 
+               <Tab className="h-64" label="Locations" />
+              }
+              {routeParams?.productId !== 'new' && 
+               <Tab className="h-64" label="Persons" />
+              }
+              {routeParams?.productId !== 'new' && 
+               <Tab className="h-64" label="Profiles" />
+              }  
             </Tabs>
-            <div className="p-16 sm:p-24 max-w-3xl">
+            <div className="p-16 sm:p-24 max-w-full">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab productId={routeParams.productId} />
               </div>
+              {routeParams?.productId !== 'new' && 
+               <div className={tabValue !== 1 ? "hidden" : ""}>
+               <Locations userId={routeParams.productId} />
+               </div>
+              }
+              {routeParams?.productId !== 'new' && 
+               <div className={tabValue !== 2 ? "hidden" : ""}>
+               <Persons userId={routeParams.productId} />
+               </div>
+              }
+              {routeParams?.productId !== 'new' && 
+               <div className={tabValue !== 3 ? "hidden" : ""}>
+               <Profiles userId={routeParams.productId} />
+               </div>
+              }
             </div>
           </>
         }

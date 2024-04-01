@@ -9,18 +9,29 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ContactPersonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole('admin')) {
-            $contactPersons = ContactPerson::all();
+        $userId = $request->userId;
+        if ($userId) {
+            $reqUser = User::find($userId);
+            if (!$reqUser) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            $contactPersons = $reqUser->contact_person;
+            return response()->json($contactPersons);
         } else {
-            $contactPersons = $user->contact_person;
+            if ($user->hasRole('admin')) {
+                $contactPersons = ContactPerson::all();
+            } else {
+                $contactPersons = $user->contact_person;
+            }
+            return response()->json($contactPersons);
         }
-        return response()->json($contactPersons);
     }
 
     public function show($id)

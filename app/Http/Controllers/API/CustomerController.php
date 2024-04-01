@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use App\Models\ContactPerson;
 use App\Models\Category;
+use App\Models\User;
 use App\Models\CustomerType;
 
 class CustomerController extends Controller
@@ -19,15 +20,26 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole('admin')) {
-            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
-        } else {
+        $userId = $request->userId;
+        if ($userId) {
+            $user = User::find($userId);
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
             $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
-            ->where('user_id', $user->id)
+            ->where('user_id', $userId)
             ->get();
+        } else {
+            if ($user->hasRole('admin')) {
+                $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
+            } else {
+            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
+            ->where('user_id', $userId)
+            ->get();
+            }
         }
         return response()->json($customers);
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
@@ -14,11 +15,21 @@ class CompanyController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole('admin')) {
-            $companies = Company::all();
-        } else {
+        $userId = $request->userId;
+        if ($userId) {
+            $user = User::find($userId);
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
             $companies = $user->companies;
+        } else {
+            if ($user->hasRole('admin')) {
+                $companies = Company::all();
+            } else {
+                $companies = $user->companies;
+            }
         }
+    
         return response()->json($companies);
     }
 

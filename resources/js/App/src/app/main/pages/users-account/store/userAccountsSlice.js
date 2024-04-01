@@ -22,6 +22,45 @@ export const removeProducts = createAsyncThunk(
   }
 );
 
+export const getCompanies = createAsyncThunk(
+  "admin/userAccounts/getCompanies",
+  async (userId) => {
+    let url = "/api/companies";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
+    const data = await response.data;
+    return data;
+  }
+);
+
+export const getPersons = createAsyncThunk(
+  "admin/userAccounts/getPersons",
+  async (userId) => {
+    let url = "/api/contact-person";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
+    const data = await response.data;
+    return data;
+  }
+);
+
+export const getProfiles = createAsyncThunk(
+  "admin/userAccounts/getProfiles",
+  async (userId) => {
+    let url = "/api/customers";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
+    const data = await response.data;
+    return data;
+  }
+);
+
 const contactsAdapter = createEntityAdapter({});
 
 export const { selectAll: selectProducts, selectById: selectProductById } =
@@ -31,11 +70,32 @@ const customerTypesSlice = createSlice({
   name: "admin/userAccounts",
   initialState: contactsAdapter.getInitialState({
     searchText: "",
+    locationSearchText: "",
+    personSearchText: "",
+    profileSearchText: "",
   }),
   reducers: {
     setProductsSearchText: {
       reducer: (state, action) => {
         state.searchText = action.payload;
+      },
+      prepare: (event) => ({ payload: event.target.value || "" }),
+    },
+    setLocationSearchText: {
+      reducer: (state, action) => {
+        state.locationSearchText = action.payload;
+      },
+      prepare: (event) => ({ payload: event.target.value || "" }),
+    },
+    setPersonSearchText: {
+      reducer: (state, action) => {
+        state.personSearchText = action.payload;
+      },
+      prepare: (event) => ({ payload: event.target.value || "" }),
+    },
+    setProfileSearchText: {
+      reducer: (state, action) => {
+        state.profileSearchText = action.payload;
       },
       prepare: (event) => ({ payload: event.target.value || "" }),
     },
@@ -47,9 +107,18 @@ const customerTypesSlice = createSlice({
   },
 });
 
-export const { setProductsSearchText } = customerTypesSlice.actions;
+export const { setProductsSearchText, setLocationSearchText, setPersonSearchText, setProfileSearchText } = customerTypesSlice.actions;
 
 export const selectProductsSearchText = ({ userAccounts }) =>
 userAccounts.userAccounts.searchText;
+
+export const selectCompaniesSearchText = ({ userAccount }) =>
+userAccount.userAccounts.locationSearchText;
+
+export const selectPersonSearchText = ({ userAccount }) =>
+userAccount.userAccounts.personSearchText;
+
+export const selectProfileSearchText = ({ userAccount }) =>
+userAccount.userAccounts.profileSearchText;
 
 export default customerTypesSlice.reducer;

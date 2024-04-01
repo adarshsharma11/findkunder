@@ -25,17 +25,6 @@ import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationDialog from "./customer-details/modal/DeleteConfirmationDialog";
 import { adminProfileSchema, profileSchema } from "../../../schemas/validationSchemas";
 
-const schema = yup.object().shape({
-  company_id: yup
-    .string()
-    .required("You must enter a company")
-    .max(255, "First name must not exceed 255 characters"),
-  person_id: yup
-    .string()
-    .required("You must enter a contact person")
-    .max(255, "Last name must not exceed 255 characters"),
-});
-
 function Customers() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
