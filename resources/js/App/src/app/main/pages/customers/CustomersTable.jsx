@@ -1,4 +1,5 @@
 import FuseScrollbars from "@fuse/core/FuseScrollbars";
+import React from "react";
 import _ from "@lodash";
 import Checkbox from "@mui/material/Checkbox";
 import Table from "@mui/material/Table";
@@ -8,6 +9,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
@@ -29,6 +32,7 @@ function CutomersTable(props) {
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
+  const [expanded, setExpanded] = useState(null); 
 
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
@@ -78,6 +82,10 @@ function CutomersTable(props) {
     );
     setPage(0);
   }, [products, searchText]);
+
+  const handleExpand = (rowId) => {
+    setExpanded(expanded === rowId ? null : rowId);
+  };
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -221,13 +229,13 @@ function CutomersTable(props) {
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
+                  <React.Fragment key={n.id}>
                   <TableRow
                     className="h-72 cursor-pointer"
                     hover
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.id}
                     selected={isSelected}
                   >
                     <TableCell
@@ -302,6 +310,26 @@ function CutomersTable(props) {
                     >
                       {n?.notes || "N/A"}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => handleExpand(n.id)}
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                          { expanded === n.id ? 'heroicons-solid:arrow-circle-up' : 'heroicons-solid:arrow-circle-down' }
+                          </FuseSvgIcon>
+                        }
+                      >
+                        {expanded === n.id ? 'See Less' : 'See More'}
+                      </Button>
+                    </TableCell>
                     {isAdmin && 
                         <TableCell
                         className="p-4 md:p-16"
@@ -329,10 +357,44 @@ function CutomersTable(props) {
                           </FuseSvgIcon>
                         }
                       >
-                        See More
+                        Edit
                       </Button>
                     </TableCell>
                   </TableRow>
+                  <TableRow>
+                  <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+                    <Collapse in={expanded === n.id} timeout="auto" unmountOnExit>
+                      <Box margin={1}>
+                      <div className="flex justify-between">
+                        <div>
+                          <strong>Company:</strong> {n.company?.company_name}
+                          <br />
+                          <strong>CVR:</strong> {n.company?.cvr}
+                          <br />
+                          <strong>Location:</strong> {n.company?.location}, {n.company?.postal_code}{" "}
+                          {n.company?.city}
+                        </div>
+                        <div>
+                          <strong>Person:</strong> {n.person?.title} {n.person?.first_name}{" "}
+                          {n.person?.last_name}
+                          <br />
+                          <strong>Email:</strong> {n.person?.email}
+                          <br />
+                          <strong>Phone:</strong> {n.person?.phone}
+                        </div>
+                        <div>
+                          <strong>The customer can be:</strong>{" "}
+                          {n.customer_types.map((type) => type.name).join(", ") || "N/A"}
+                          <br />
+                          <strong>I/We offer:</strong>{" "}
+                          {n.categories.map((category) => category.name).join(", ") || "N/A"}
+                        </div>
+                      </div>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+                </React.Fragment>
                 );
               })}
           </TableBody>
