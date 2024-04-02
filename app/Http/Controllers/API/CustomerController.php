@@ -104,7 +104,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::find($id);
         if (!$customer) {
-            return response()->json(['error' => 'Customer not found'], 404);
+            return response()->json(['error' => 'Profile not found'], 404);
         }
         return response()->json($customer);
     }
@@ -156,7 +156,7 @@ class CustomerController extends Controller
         $customer = Customer::find($id);
     
         if (!$customer) {
-            return response()->json(['error' => 'Customer not found'], 404);
+            return response()->json(['error' => 'Profile not found'], 404);
         }
     
         $deleteCompany = $request->input('deleteCompany', false);
@@ -177,7 +177,7 @@ class CustomerController extends Controller
                 ContactPerson::where('id', $customer->person->id)->delete();
             }
     
-            return response()->json(['message' => 'Customer profile and associated company/contact deleted successfully']);
+            return response()->json(['message' => 'Profile and associated company/contact deleted successfully']);
         }
     
         // If no association deletion is specified, just delete the customer profile
