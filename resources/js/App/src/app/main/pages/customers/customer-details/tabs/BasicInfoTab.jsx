@@ -128,8 +128,8 @@ function BasicInfoTab(props) {
                     error={!!errors.company_id}
                     required
                     helperText={errors?.company_id?.message}
-                    placeholder="Select company"
-                    label="Select Company"
+                    placeholder="Select location"
+                    label="Select Location"
                     variant="outlined"
                     InputLabelProps={{
                       shrink: true,
