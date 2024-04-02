@@ -181,6 +181,6 @@ class CustomerController extends Controller
         }
     
         // If no association deletion is specified, just delete the customer profile
-        return response()->json(['message' => 'Customer profile deleted successfully']);
+        return response()->json(['message' => 'Profile deleted successfully']);
     }    
 }
