@@ -37,7 +37,7 @@ class CustomerController extends Controller
                 $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
             } else {
             $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
-            ->where('user_id', $userId)
+            ->where('user_id', $user->id)
             ->get();
             }
         }

@@ -118,7 +118,7 @@ class ContactPersonController extends Controller
             return response()->json(['message' => 'Contact person not found'], 404);
         }
         if ($contactPerson->customers()->exists()) {
-            return response()->json(['message' => 'Cannot delete contact with associated customers', 'status' => false], 201);
+            return response()->json(['message' => 'Cannot delete contact with associated profile', 'status' => false], 201);
         }
         $imagePath = $contactPerson->image;
 
