@@ -265,6 +265,13 @@ function CutomersTable(props) {
                     >
                       {n.company?.location}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.person?.title && n.person.title.charAt(0).toUpperCase() + n.person.title.slice(1)}
+                    </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"

@@ -40,6 +40,13 @@ const userRows = [
     sort: true,
   },
   {
+    id: "title",
+    align: "left",
+    disablePadding: false,
+    label: "Title",
+    sort: true,
+  },
+  {
     id: "first_name",
     align: "right",
     disablePadding: false,
@@ -96,6 +103,13 @@ const adminRows = [
     align: "left",
     disablePadding: false,
     label: "Region",
+    sort: true,
+  },
+  {
+    id: "title",
+    align: "left",
+    disablePadding: false,
+    label: "Title",
     sort: true,
   },
   {
