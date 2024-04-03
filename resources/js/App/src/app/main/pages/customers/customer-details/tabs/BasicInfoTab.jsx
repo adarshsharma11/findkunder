@@ -16,6 +16,7 @@ import { addNewPerson } from "../../../contact-person/store/contactPersonSlice";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { contactSchema } from "../../../../../schemas/validationSchemas";
+import FormControl from '@mui/material/FormControl';
 const filter = createFilterOptions();
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -65,6 +66,7 @@ function BasicInfoTab(props) {
   };
 
   return (
+    <div className="flex flex-col">
     <div className="flex justify-between w-full space-x-8">
       <div className="w-full">
         <Controller
@@ -137,143 +139,6 @@ function BasicInfoTab(props) {
                   />
                 </>
               )}
-            />
-          )}
-        />
-        {isAdmin &&
-         <>
-         <InputLabel id="status-label">Priority</InputLabel>
-         <Controller
-           name="status"
-           control={control}
-           defaultValue="0"
-           render={({ field }) => (
-             <Select
-               {...field}
-               labelId="status-label"
-               id="status"
-               className="mt-8 mb-16"
-               error={!!errors.status}
-               helperText={errors?.status?.message}
-               required
-               displayEmpty
-               variant="outlined"
-               fullWidth
-             >
-               <MenuItem value="" disabled>Select Priority</MenuItem>
-               <MenuItem value="3">High Priority</MenuItem>
-               <MenuItem value="2">Medium Priority</MenuItem>
-               <MenuItem value="1">Low Priority</MenuItem>
-               <MenuItem value="0">No Priority</MenuItem>
-             </Select>
-           )}
-         />
-         </>
-        }
-        
-        <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
-        <Controller
-          name="customerTypes"
-          control={control}
-          defaultValue={[]}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {customerTypes &&
-                customerTypes?.map((category) => (
-                  <div key={category.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const updatedCategories = isChecked
-                              ? [...value, category.id]
-                              : value.filter((id) => id !== category.id);
-                            onChange(updatedCategories);
-                          }}
-                          checked={value.includes(category.id)}
-                        />
-                      }
-                      label={category.name}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        <InputLabel id="categories-label">I/We offer:</InputLabel>
-        <Controller
-          name="categories"
-          control={control}
-          defaultValue={[]}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {categories &&
-                categories?.map((category) => (
-                  <div key={category.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const updatedCategories = isChecked
-                            ? [...selectedCategories, category.id]
-                            : selectedCategories.filter(
-                                (id) => id !== category.id
-                              );
-                          setSelectedCategories(updatedCategories);
-                          onChange(updatedCategories);
-                        }}
-                        checked={selectedCategories.includes(category.id)}
-                        />
-                      }
-                      label={category.name}
-                    />
-
-                    {category.subcategories && selectedCategories.includes(category.id) && (
-                      <div style={{ marginLeft: 20 }}>
-                        {category.subcategories.map((sub) => (
-                          <FormControlLabel
-                            key={sub.id}
-                            control={
-                              <Checkbox
-                              onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                const updatedCategories = isChecked
-                                  ? [...value, sub.id]
-                                  : value.filter((id) => id !== sub.id);
-                                setSelectedCategories(updatedCategories);
-                                onChange(updatedCategories);
-                              }}
-                              checked={value.includes(sub.id)}
-                              />
-                            }
-                            label={sub.name}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        <Controller
-          name="notes"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mt-8 mb-16"
-              id="notes"
-              multiline
-              rows={8}
-              error={!!errors.notes}
-              helperText={errors?.notes?.message}
-              label="Notes"
-              type="text"
-              variant="outlined"
-              fullWidth
             />
           )}
         />
@@ -354,6 +219,40 @@ function BasicInfoTab(props) {
           )}
         />
       </div>
+      <div className="w-full">
+      {isAdmin &&
+         <>
+         <Controller
+           name="status"
+           control={control}
+           defaultValue="0"
+           render={({ field }) => (
+            <FormControl fullWidth>
+            <InputLabel id="status-label">Priority</InputLabel>
+             <Select
+               {...field}
+               labelId="status-label"
+               id="status"
+               className="mt-8 mb-16"
+               error={!!errors.status}
+               helperText={errors?.status?.message}
+               required
+               displayEmpty
+               variant="outlined"
+               fullWidth
+             >
+               <MenuItem value="" disabled>Select Priority</MenuItem>
+               <MenuItem value="3">High Priority</MenuItem>
+               <MenuItem value="2">Medium Priority</MenuItem>
+               <MenuItem value="1">Low Priority</MenuItem>
+               <MenuItem value="0">No Priority</MenuItem>
+             </Select>
+             </FormControl>
+           )}
+         />
+         </>
+        }
+      </div>
       <AddCompany
         invalidCompany={invalidCompany}
         setInvalidCompany={setInvalidCompany}
@@ -368,6 +267,121 @@ function BasicInfoTab(props) {
           handleSaveContact={handleSaveContact}
         />
       </FormProvider>
+    </div>
+    <div className="flex justify-between w-full space-x-8">
+      <div className="w-full">
+        <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
+        <Controller
+          name="customerTypes"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {customerTypes &&
+                customerTypes?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedCategories = isChecked
+                              ? [...value, category.id]
+                              : value.filter((id) => id !== category.id);
+                            onChange(updatedCategories);
+                          }}
+                          checked={value.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+        </div>
+        <div className="w-full">
+        <InputLabel id="categories-label">I/We offer:</InputLabel>
+        <Controller
+          name="categories"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {categories &&
+                categories?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const updatedCategories = isChecked
+                            ? [...selectedCategories, category.id]
+                            : selectedCategories.filter(
+                                (id) => id !== category.id
+                              );
+                          setSelectedCategories(updatedCategories);
+                          onChange(updatedCategories);
+                        }}
+                        checked={selectedCategories.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+
+                    {category.subcategories && selectedCategories.includes(category.id) && (
+                      <div style={{ marginLeft: 20 }}>
+                        {category.subcategories.map((sub) => (
+                          <FormControlLabel
+                            key={sub.id}
+                            control={
+                              <Checkbox
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                const updatedCategories = isChecked
+                                  ? [...value, sub.id]
+                                  : value.filter((id) => id !== sub.id);
+                                setSelectedCategories(updatedCategories);
+                                onChange(updatedCategories);
+                              }}
+                              checked={value.includes(sub.id)}
+                              />
+                            }
+                            label={sub.name}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+        </div>
+      </div>
+      <div className="max-w-3xl">
+      <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="mt-8 mb-16"
+              id="notes"
+              multiline
+              rows={8}
+              error={!!errors.notes}
+              helperText={errors?.notes?.message}
+              label="Notes"
+              type="text"
+              variant="outlined"
+              fullWidth
+            />
+          )}
+        />
+      </div>
     </div>
   );
 }

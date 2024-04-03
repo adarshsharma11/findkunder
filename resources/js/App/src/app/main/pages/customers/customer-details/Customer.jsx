@@ -239,7 +239,7 @@ function Customer(props) {
             >
               <Tab className="h-64" label="Basic Info" />
             </Tabs>
-            <div className="p-16 sm:p-24 max-w-3xl">
+            <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab
                   companies={companies}

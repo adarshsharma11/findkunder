@@ -149,25 +149,6 @@ function BasicInfoTab(props) {
           />
         )}
       />
-      <Controller
-        name="comment"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            id="city"
-            error={!!errors.comment}
-            helperText={errors?.comment?.message}
-            label="Comment"
-            type="text"
-            rows={3}
-            multiline
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
     </div>
   );
 }
