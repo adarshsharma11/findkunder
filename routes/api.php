@@ -9,7 +9,7 @@ use App\Http\Controllers\API\ContactPersonController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\AccountController;
 use App\Http\Controllers\API\CustomerController;
-use App\Http\Controllers\Api\Admin\CustomerLocationController;
+use App\Http\Controllers\API\Admin\CustomerLocationController;
 
 /*
 |--------------------------------------------------------------------------
