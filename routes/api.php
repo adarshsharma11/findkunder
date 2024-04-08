@@ -9,6 +9,7 @@ use App\Http\Controllers\API\ContactPersonController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\AccountController;
 use App\Http\Controllers\API\CustomerController;
+use App\Http\Controllers\Api\Admin\CustomerLocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ use App\Http\Controllers\API\CustomerController;
         Route::apiResource('/accounts', AccountController::class); 
         Route::apiResource('customerTypes', CustomerTypeController::class);
         Route::apiResource('categories', CategoryController::class);
+        Route::apiResource('customerLocations', CustomerLocationController::class);
         Route::post('/logout', [AuthController::class, 'logoutUser']);
         Route::post('/me', [AuthController::class, 'me']);
     });

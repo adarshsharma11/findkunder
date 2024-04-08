@@ -18,6 +18,7 @@ import CustomersConfig from "../main/pages/customers/CustomersConfig";
 import CustomerTypeConfig from "../main/pages/customer-types/CustomerTypeConfig";
 import CategoriesConfig from "../main/pages/categories/CategoriesConfig";
 import UserAccountConfig from "../main/pages/users-account/UserAccountConfig";
+import CustomerLocationConfig from "../main/pages/customer-locations/CustomerLocationConfig";
 
 const routeConfigs = [
   ...appsConfigs,
@@ -36,6 +37,7 @@ const routeConfigs = [
   CustomerTypeConfig,
   CategoriesConfig,
   UserAccountConfig,
+  CustomerLocationConfig,
 ];
 
 const routes = [

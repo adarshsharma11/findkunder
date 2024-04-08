@@ -32,6 +32,13 @@ const navigationConfig = [
         url: "/customer-types",
       },
       {
+        id: "apps.customerLocations",
+        title: "Customer Locations",
+        type: "item",
+        icon: "material-solid:add_location_alt",
+        url: "/customer-locations",
+      },
+      {
         id: "apps.skills",
         title: "Skills",
         type: "item",
