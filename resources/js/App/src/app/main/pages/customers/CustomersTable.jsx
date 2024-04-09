@@ -170,7 +170,14 @@ function CutomersTable(props) {
         {buttonText}
       </Button>
     );
-  }  
+  } 
+  
+  function addUrlPrefix(url) {
+    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+      return "https://" + url;
+    }
+    return url;
+  }
 
   if (loading) {
     return (
@@ -365,31 +372,73 @@ function CutomersTable(props) {
                   <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
                     <Collapse in={expanded === n.id} timeout="auto" unmountOnExit>
                       <Box margin={1}>
-                      <div className="flex justify-between">
-                        <div>
-                          <strong>Company:</strong> {n.company?.company_name}
-                          <br />
-                          <strong>CVR:</strong> {n.company?.cvr}
-                          <br />
-                          <strong>Location:</strong> {n.company?.location}, {n.company?.postal_code}{" "}
-                          {n.company?.city}
+                        <div className="flex justify-between mb-8 mt-12">
+                          <div>
+                            <strong>LOCATION:</strong>
+                            <br />
+                            <strong>Company:</strong> {n.company?.company_name}
+                            <br />
+                            <strong>CVR:</strong> {n.company?.cvr}
+                            <br />
+                            <strong>Address:</strong> {n.company?.address}, {n.company?.postal_code} {n.company?.city}
+                            <br />
+                            <strong>Region:</strong> {n.company?.region}
+                            <br />
+                            <strong>Website:</strong> {n.company?.website ? <a href={addUrlPrefix(n.company?.website)} target="_blank" rel="noopener noreferrer">Visit Website</a> : "N/A"}
+                            <br />
+                            <strong>LinkedIn:</strong> {n.company?.linkedin ? <a href={addUrlPrefix(n.company?.linkedin)} target="_blank" rel="noopener noreferrer">Visit LinkedIn</a> : "N/A"}
+                            <br />
+                            <strong>Facebook:</strong> {n.company?.facebook ? <a href={addUrlPrefix(n.company?.facebook)} target="_blank" rel="noopener noreferrer">Visit Facebook</a> : "N/A"}
+                          </div>
+                          <div>
+                            <strong>CONTACT PERSON:</strong>
+                            <br />
+                            <strong>Title:</strong> {n.person?.title}
+                            <br />
+                            <strong>Name:</strong> {n.person?.first_name} {n.person?.last_name}
+                            <br />
+                            <strong>E-mail:</strong> {n.person?.email}
+                            <br />
+                            <strong>Phone:</strong> {n.person?.phone}
+                            <br />
+                            <strong>Website:</strong> {n.person?.website ? <a href={addUrlPrefix(n.person?.website)} target="_blank" rel="noopener noreferrer">Visit Website</a> : "N/A"}
+                            <br />
+                            <strong>LinkedIn:</strong> {n.person?.linkedin ? <a href={addUrlPrefix(n.person?.linkedin)} target="_blank" rel="noopener noreferrer">Visit LinkedIn</a> : "N/A"}
+                          </div>
+                          <div>
+                            <strong>INTERNAL COMMENTS:</strong>
+                            <br />
+                          </div>
                         </div>
-                        <div>
-                          <strong>Person:</strong> {n.person?.title} {n.person?.first_name}{" "}
-                          {n.person?.last_name}
-                          <br />
-                          <strong>Email:</strong> {n.person?.email}
-                          <br />
-                          <strong>Phone:</strong> {n.person?.phone}
+                        <div className="flex justify-between mb-8 mt-12">
+                          <div>
+                            <strong>The customer can be:</strong><br />
+                            {n.customer_types.map((type) => (
+                              <div key={type.id}>
+                                {type.name}
+                              </div>
+                            ))}
+                            {n.customer_types.length === 0 && <div>N/A</div>}
+                          </div>
+                          <div>
+                            <strong>I/we offer:</strong><br />
+                            {n.categories.map((category) => (
+                              <div key={category.id}>
+                                {category.name}
+                              </div>
+                            ))}
+                            {n.categories.length === 0 && <div>N/A</div>}
+                          </div>
+                          <div>
+                            <strong>Customer location:</strong><br />
+                            {n.customer_locations.map((location) => (
+                              <div key={location.id}>
+                                {location.name}
+                              </div>
+                            ))}
+                            {n.customer_locations.length === 0 && <div>N/A</div>}
+                          </div>
                         </div>
-                        <div>
-                          <strong>The customer can be:</strong>{" "}
-                          {n.customer_types.map((type) => type.name).join(", ") || "N/A"}
-                          <br />
-                          <strong>I/We offer:</strong>{" "}
-                          {n.categories.map((category) => category.name).join(", ") || "N/A"}
-                        </div>
-                      </div>
                       </Box>
                     </Collapse>
                   </TableCell>
