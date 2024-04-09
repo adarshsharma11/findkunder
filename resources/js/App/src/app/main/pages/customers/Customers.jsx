@@ -23,11 +23,12 @@ import _ from "@lodash";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationDialog from "./customer-details/modal/DeleteConfirmationDialog";
 import { adminProfileSchema, profileSchema } from "../../../schemas/validationSchemas";
+import authRoles from "../../../auth/authRoles";
 
 function Customers() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -113,7 +114,7 @@ function Customers() {
     <>
       <FormProvider {...methods}>
         <FusePageCarded
-          header={<CutomersHeader />}
+          header={<CutomersHeader isAdmin={isAdmin}/>}
           content={<CutomersTable handleOpenDialog={handleOpenDialog} isAdmin={isAdmin} />}
           scroll={isMobile ? "normal" : "content"}
         />
