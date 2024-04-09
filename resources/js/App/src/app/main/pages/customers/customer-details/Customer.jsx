@@ -25,6 +25,7 @@ import { getCompanies } from "../../companies/store/companiesSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
 import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
 import { getProducts as getCustomerTypes } from "../../customer-types/store/customerTypesSlice";
+import { getProducts as getCustomerLocations } from "../../customer-locations/store/customerLocationsSlice";
 import reducer from "../store";
 import { profileSchema, adminProfileSchema } from "../../../../schemas/validationSchemas";
 import ProductHeader from "./CustomerHeader";
@@ -43,6 +44,7 @@ function Customer(props) {
   const [companies, setCompanies] = useState(false);
   const [categories, setCategories] = useState(false);
   const [customerTypes, setCustomerTypes] = useState(false);
+  const [customerLocations, setCustomerLocation] = useState(false);
   const [contact, setContacts] = useState(false);
   const formSchema = isAdmin ? adminProfileSchema : profileSchema;
   const methods = useForm({
@@ -84,6 +86,14 @@ function Customer(props) {
     dispatch(getCompanies()).then((action) => {
       if (action.payload) {
         setCompanies(action.payload);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCustomerLocations()).then((action) => {
+      if (action.payload) {
+        setCustomerLocation(action.payload);
       }
     });
   }, []);
@@ -217,6 +227,7 @@ function Customer(props) {
     !companies ||
     !contact ||
     !categories ||
+    !customerLocations ||
     !customerTypes
   ) {
     return <FuseLoading />;
@@ -249,6 +260,7 @@ function Customer(props) {
                   categories={categories}
                   customerTypes={customerTypes}
                   isAdmin={isAdmin}
+                  customerLocations={customerLocations}
                 />
               </div>
             </div>

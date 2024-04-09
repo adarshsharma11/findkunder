@@ -12,6 +12,7 @@ use App\Models\ContactPerson;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\CustomerType;
+use App\Models\CustomerLocation;
 
 class CustomerController extends Controller
 {
@@ -29,14 +30,14 @@ class CustomerController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
+            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])
             ->where('user_id', $userId)
             ->get();
         } else {
             if ($user->hasRole('admin')) {
-                $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])->get();
+                $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])->get();
             } else {
-            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes'])
+            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])
             ->where('user_id', $user->id)
             ->get();
             }
@@ -58,6 +59,7 @@ class CustomerController extends Controller
             'notes' => 'nullable|string',
             'categories' => 'array',
             'customerTypes' => 'array',
+            'customerLocations' => 'array',
             'status' => 'nullable|string',
         ]);
 
@@ -72,7 +74,7 @@ class CustomerController extends Controller
         ->first();
 
         if ($existingCustomer) {
-            return response()->json(['status' => 'error', 'message' => ' Profile already exists with the same company and contact person','status' => false], 201);
+            return response()->json(['message' => ' Profile already exists with the same company and contact person','status' => false], 201);
         }
         if ($user->hasRole('admin')) {
             $data['user_id'] = $user->id;
@@ -86,12 +88,17 @@ class CustomerController extends Controller
             $customer->categories()->attach($categories);
         }
 
+        if (!empty($data['customerLocations'])) {
+            $locations = CustomerLocation::whereIn('id', $data['customerLocations'])->get();
+            $customer->customerLocations()->attach($locations);
+        }
+
        // Attach customer types to the customer
         if (!empty($data['customerTypes'])) {
             $customerTypes = CustomerType::whereIn('id', $data['customerTypes'])->get();
             $customer->customerTypes()->attach($customerTypes);
         }
-        return response()->json(['status' => true, 'data' => $customer]);
+        return response()->json(['status' => true, 'data' => $customer, 'message' => ' Profile created successfully!']);
     }
 
     /**

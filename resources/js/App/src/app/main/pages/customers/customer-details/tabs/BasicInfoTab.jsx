@@ -34,6 +34,7 @@ function BasicInfoTab(props) {
     categories,
     customerTypes,
     isAdmin,
+    customerLocations,
   } = props;
   const { control, formState, setValue, trigger } = methods;
   const [invalidContact, setInvalidContact] = useState(false);
@@ -279,6 +280,38 @@ function BasicInfoTab(props) {
             <div className="mt-8 mb-16">
               {customerTypes &&
                 customerTypes?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedCategories = isChecked
+                              ? [...value, category.id]
+                              : value.filter((id) => id !== category.id);
+                            onChange(updatedCategories);
+                          }}
+                          checked={value.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+        </div>
+        <div className="w-full">
+        <InputLabel id="customerTypes-label">The customer must be located in:</InputLabel>
+        <Controller
+          name="customerLocations"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {customerLocations &&
+                customerLocations?.map((category) => (
                   <div key={category.id}>
                     <FormControlLabel
                       control={
