@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { Link } from "react-router-dom";
 import { getProfiles as getProducts, selectProfileSearchText } from "../../../store/userAccountsSlice";
 import CustomersTableHead from "./ProfileTableHead";
 
@@ -181,11 +182,20 @@ function CutomersTable(props) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 0.1 } }}
-        className="flex flex-1 items-center justify-center h-full"
+        className="flex flex-1 flex-col items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
           There are no profiles!
         </Typography>
+        <Button
+        className="mt-24 mb-8"
+        component={Link}
+        variant="outlined"
+        to={`/account-profile/new/${userId}`}
+        color="inherit"
+        >
+        Go to profile page to add one!
+      </Button>
       </motion.div>
     );
   }

@@ -76,10 +76,14 @@ class CustomerController extends Controller
         if ($existingCustomer) {
             return response()->json(['message' => ' Profile already exists with the same company and contact person','status' => false], 201);
         }
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
             $customer = Customer::create($data);
-        } else {
+        } 
+        else if ($user->hasRole('admin') && $data['user_id']) {
+            $customer = Customer::create($data);
+        } 
+        else {
             $customer = $user->customers()->create($data);
         }
 

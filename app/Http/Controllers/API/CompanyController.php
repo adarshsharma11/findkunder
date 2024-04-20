@@ -67,10 +67,13 @@ class CompanyController extends Controller
             $image->move(public_path('assets/images/company-logo'), $image_name);
             $data['image'] = $image_name;
         }
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
             $company = Company::create($data);
-        } else {
+        } else if ($user->hasRole('admin') && $data['user_id']) {
+            $company = Company::create($data);
+        } 
+        else {
             $company = $user->companies()->create($data);
         }
         return response()->json($company, 201);

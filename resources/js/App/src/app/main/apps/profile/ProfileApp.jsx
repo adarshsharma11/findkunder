@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUser, updateUserData } from "app/store/userSlice";
 import AuthService from "../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
+import authRoles from "../../../auth/authRoles";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -25,7 +26,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 function ProfileApp() {
   const user = useSelector(selectUser);
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === authRoles.admin[0];
   const dispatch = useDispatch();
   const methods = useForm({
     mode: "onChange",

@@ -66,10 +66,14 @@ class ContactPersonController extends Controller
             $image->move(public_path('assets/images/contact-person'), $image_name);
             $data['image'] = $image_name;
         }
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
             $contactPerson = ContactPerson::create($data);
-        } else {
+        }
+        else if ($user->hasRole('admin') && $data['user_id']) {
+            $contactPerson = ContactPerson::create($data);
+        } 
+        else {
             $contactPerson = $user->contact_person()->create($data);
         }
 

@@ -18,6 +18,7 @@ import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { getPersons, selectPersonSearchText } from "../../../store/userAccountsSlice";
 import ContactPersonTableHead from "./PersonTableHead";
+import { Link } from "react-router-dom";
 
 function ContactPersonTable(props) {
   const { userId } = props;
@@ -89,7 +90,7 @@ function ContactPersonTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/contact-person/${item.id}`);
+    props.navigate(`/account-person/${item.id}/${userId}`);
   }
 
   function handleCheck(event, id) {
@@ -133,11 +134,20 @@ function ContactPersonTable(props) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 0.1 } }}
-        className="flex flex-1 items-center justify-center h-full"
+        className="flex flex-1 flex-col items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
           There are no contact persons!
         </Typography>
+      <Button
+        className="mt-24 mb-8"
+        component={Link}
+        variant="outlined"
+        to={`/account-person/new/${userId}`}
+        color="inherit"
+        >
+        Go to contact person page to add one!
+      </Button>
       </motion.div>
     );
   }

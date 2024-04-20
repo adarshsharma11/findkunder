@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { Link } from "react-router-dom";
 import { getCompanies, selectCompaniesSearchText } from "../../../store/userAccountsSlice";
 import LocationTableHead from "./LocationTableHead";
 
@@ -87,7 +88,7 @@ function LocationsTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/locations/${item.id}`);
+    props.navigate(`/account-location/${item.id}/${userId}`);
   }
 
   function handleCheck(event, id) {
@@ -128,15 +129,24 @@ function LocationsTable(props) {
 
   if (data.length === 0) {
     return (
-      <motion.div
+        <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 0.1 } }}
-        className="flex flex-1 items-center justify-center h-full"
+        className="flex flex-col flex-1 items-center justify-center h-full"
+        >
+      <Typography color="text.secondary" variant="h5">
+        There is no locations!
+      </Typography>
+      <Button
+        className="mt-24 mb-8"
+        component={Link}
+        variant="outlined"
+        to={`/account-location/new/${userId}`}
+        color="inherit"
       >
-        <Typography color="text.secondary" variant="h5">
-          There are no locations!
-        </Typography>
-      </motion.div>
+        Go to Location Page to add one!
+      </Button>
+    </motion.div>
     );
   }
 
