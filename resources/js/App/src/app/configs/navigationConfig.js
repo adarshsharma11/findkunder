@@ -48,20 +48,20 @@ const navigationConfig = [
     ],
   },
   {
-    id: "apps",
+    id: "apps.contact",
     title: "Contacts",
     type: "group",
     icon: "heroicons-outline:home",
     children: [
       {
-        id: "apps.companies",
+        id: "apps.locations",
         title: "Locations",
         type: "item",
         icon: "heroicons-outline:location-marker",
         url: "/locations",
       },
       {
-        id: "apps.person",
+        id: "apps.persons",
         title: "Persons",
         type: "item",
         icon: "heroicons-outline:user-circle",

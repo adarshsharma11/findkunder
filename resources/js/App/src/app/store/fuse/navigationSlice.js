@@ -65,6 +65,14 @@ export const selectNavigation = createSelector(
           item.children[0].title = 'My Profiles';
         }
 
+        if ( item.children && item.children[0].id === 'apps.locations' && userRole === 'user') {
+          item.children[0].title = 'My Locations';
+        }
+  
+        if ( item.id === 'apps.contact' && item.children && item.children[1].id === 'apps.persons' && userRole === 'user') {
+          item.children[1].title = 'My Contacts';
+        }
+
         // see if there is a children node
         if (item.children) {
           // run this function recursively on the children array
