@@ -75,6 +75,13 @@ const userRows = [
     sort: true,
   },
   {
+    id: "details",
+    align: "right",
+    disablePadding: false,
+    label: "Detail",
+    sort: true,
+  },
+  {
     id: "action",
     align: "right",
     disablePadding: false,
