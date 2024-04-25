@@ -19,6 +19,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { Link } from "react-router-dom";
 import { getProfiles as getProducts, selectProfileSearchText } from "../../../store/userAccountsSlice";
 import CustomersTableHead from "./ProfileTableHead";
+import AccountTabsHeader from "../AccountTabsHeader";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
@@ -202,6 +203,9 @@ function CutomersTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full">
+        <div className="container">
+        <AccountTabsHeader link={`/account-profile/new/${userId}`} />
+        </div>
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
           <CustomersTableHead

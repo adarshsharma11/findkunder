@@ -18,6 +18,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Link } from "react-router-dom";
 import { getCompanies, selectCompaniesSearchText } from "../../../store/userAccountsSlice";
 import LocationTableHead from "./LocationTableHead";
+import AccountTabsHeader from "../AccountTabsHeader";
 
 function LocationsTable(props) {
   const { userId } = props;
@@ -152,6 +153,9 @@ function LocationsTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full">
+       <div className="container">
+        <AccountTabsHeader link={`/account-location/new/${userId}`} />
+        </div>
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
           <LocationTableHead

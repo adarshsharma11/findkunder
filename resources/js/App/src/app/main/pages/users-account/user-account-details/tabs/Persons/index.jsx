@@ -19,6 +19,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { getPersons, selectPersonSearchText } from "../../../store/userAccountsSlice";
 import ContactPersonTableHead from "./PersonTableHead";
 import { Link } from "react-router-dom";
+import AccountTabsHeader from "../AccountTabsHeader";
 
 function ContactPersonTable(props) {
   const { userId } = props;
@@ -154,6 +155,9 @@ function ContactPersonTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full">
+       <div className="container">
+        <AccountTabsHeader link={`/account-person/new/${userId}`} />
+        </div>
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
           <ContactPersonTableHead
