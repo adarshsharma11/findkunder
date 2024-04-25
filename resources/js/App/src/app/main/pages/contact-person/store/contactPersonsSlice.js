@@ -7,8 +7,12 @@ import axios from "axios";
 
 export const getProducts = createAsyncThunk(
   "contact/getContactPersons",
-  async () => {
-    const response = await axios.get("/api/contact-person");
+  async (userId) => {
+    let url = "/api/contact-person";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
     const data = await response.data;
     return data;
   }

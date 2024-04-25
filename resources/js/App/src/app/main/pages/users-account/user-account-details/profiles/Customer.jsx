@@ -84,7 +84,7 @@ function Customer(props) {
   }, [dispatch, routeParams]);
 
   useEffect(() => {
-    dispatch(getCompanies()).then((action) => {
+    dispatch(getCompanies(userId && userId)).then((action) => {
       if (action.payload) {
         setCompanies(action.payload);
       }
@@ -100,7 +100,7 @@ function Customer(props) {
   }, []);
 
   useEffect(() => {
-    dispatch(getContactPerson()).then((action) => {
+    dispatch(getContactPerson(userId && userId)).then((action) => {
       if (action.payload) {
         setContacts(action.payload);
       }

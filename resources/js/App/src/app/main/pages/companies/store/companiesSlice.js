@@ -7,8 +7,12 @@ import axios from "axios";
 
 export const getCompanies = createAsyncThunk(
   "company/getCompanies",
-  async () => {
-    const response = await axios.get("/api/companies");
+  async (userId) => {
+    let url = "/api/companies";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
     const data = await response.data;
     return data;
   }
