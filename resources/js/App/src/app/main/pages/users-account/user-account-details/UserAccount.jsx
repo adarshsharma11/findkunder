@@ -276,7 +276,7 @@ function UserAccount(props) {
               }
               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 3 ? "hidden" : ""}>
-               <Profiles userId={routeParams.productId} isAdmin={isAdmin} handleOpenDialog={handleOpenDialog} setData={setData} data={data} filteredData={filteredData} setFilteredData={setFilteredData} />
+               <Profiles userId={routeParams.productId} isAdmin={isAdmin} handleOpenDialog={handleOpenDialog} handleDeleteDialog={handleDeleteDialog} setData={setData} data={data} filteredData={filteredData} setFilteredData={setFilteredData} />
                </div>
               }
             </div>

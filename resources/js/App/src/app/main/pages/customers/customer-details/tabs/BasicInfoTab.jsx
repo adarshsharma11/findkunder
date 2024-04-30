@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -35,6 +35,7 @@ function BasicInfoTab(props) {
     customerTypes,
     isAdmin,
     customerLocations,
+    product,
   } = props;
   const { control, formState, setValue, trigger } = methods;
   const [invalidContact, setInvalidContact] = useState(false);
@@ -42,7 +43,46 @@ function BasicInfoTab(props) {
   const [companyName, setCompany] = useState(false);
   const [contactName, setContact] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedCustomerTypes, setSelectedCutomerTypes] = useState([]);
   const { errors } = formState;
+
+
+  useEffect(() => {
+    if (product && product?.customer_locations?.length > 0) {
+      const locationIds = product.customer_locations.map(location => location.id);
+      setSelectedLocations(locationIds);
+      //setValue("customer_locations", locationIds);
+    } else {
+      setSelectedLocations([]);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product && product?.customer_types?.length > 0) {
+      const typeIds = product.customer_types.map(type => type.id);
+      setSelectedCutomerTypes(typeIds);
+      //setValue("customer_types", typeIds);
+    } else {
+      setSelectedCutomerTypes([]);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product && product?.categories?.length > 0) {
+      const categoryIds = product.categories.map(category => category.id);
+      setSelectedCategories(categoryIds);
+      //setValue("categories", categoryIds);
+    } else {
+      setSelectedCategories([]);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product && product.notes !== undefined) {
+      setValue("notes", product.notes || "", { shouldDirty: true });
+    }
+  }, [product, setValue]);
 
   const handleSaveCompany = (values) => {
     dispatch(addNewCompany(values)).then((addedCompany) => {
@@ -77,7 +117,7 @@ function BasicInfoTab(props) {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               className="mt-8 mb-16"
-              value={companies.find((company) => company.id === value) || ""}
+              value={companies.find((company) => company.id === value)}
               onChange={(event, newValue) => {
                 if (typeof newValue === "string") {
                   // timeout to avoid instant validation of the dialog's form.
@@ -254,28 +294,15 @@ function BasicInfoTab(props) {
          </>
         }
       </div>
-      <AddCompany
-        invalidCompany={invalidCompany}
-        setInvalidCompany={setInvalidCompany}
-        companyName={companyName}
-        handleSaveCompany={handleSaveCompany}
-      />
-      <FormProvider {...contactMethods}>
-        <AddContact
-          setInvalidContact={setInvalidContact}
-          invalidContact={invalidContact}
-          contactName={contactName}
-          handleSaveContact={handleSaveContact}
-        />
-      </FormProvider>
     </div>
     <div className="flex justify-between w-full space-x-8">
       <div className="w-full">
         <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
         <Controller
-          name="customerTypes"
+          name="customer_types"
           control={control}
           defaultValue={[]}
+          //value={selectedCustomerTypes}
           render={({ field: { onChange, value } }) => (
             <div className="mt-8 mb-16">
               {customerTypes &&
@@ -286,12 +313,13 @@ function BasicInfoTab(props) {
                         <Checkbox
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const updatedCategories = isChecked
-                              ? [...value, category.id]
-                              : value.filter((id) => id !== category.id);
+                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(category.id)
+                              ? [...selectedCustomerTypes, category.id]
+                              : selectedCustomerTypes.filter((id) => id !== category.id);
+                              setSelectedCutomerTypes(updatedCategories);
                             onChange(updatedCategories);
                           }}
-                          checked={value.includes(category.id)}
+                          checked={selectedCustomerTypes.includes(category.id)}
                         />
                       }
                       label={category.name}
@@ -305,9 +333,10 @@ function BasicInfoTab(props) {
         <div className="w-full">
         <InputLabel id="customerTypes-label">The customer must be located in:</InputLabel>
         <Controller
-          name="customerLocations"
+          name="customer_locations"
           control={control}
           defaultValue={[]}
+          //value={selectedLocations}
           render={({ field: { onChange, value } }) => (
             <div className="mt-8 mb-16">
               {customerLocations &&
@@ -316,14 +345,20 @@ function BasicInfoTab(props) {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const updatedCategories = isChecked
-                              ? [...value, category.id]
-                              : value.filter((id) => id !== category.id);
-                            onChange(updatedCategories);
-                          }}
-                          checked={value.includes(category.id)}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const locationId = category.id;
+                          let updatedLocations;
+                          if (isChecked && !selectedLocations.includes(category.id)) {
+                            updatedLocations = [...selectedLocations, category.id];
+                          } else {
+                            updatedLocations = selectedLocations.filter((id) => id !== locationId);
+                          }
+                          setSelectedLocations(updatedLocations);
+                          onChange(updatedLocations);
+                          //trigger("customerLocations");
+                        }}
+                        checked={selectedLocations.includes(category.id)}
                         />
                       }
                       label={category.name}
@@ -350,7 +385,7 @@ function BasicInfoTab(props) {
                         <Checkbox
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const updatedCategories = isChecked
+                          const updatedCategories = isChecked  && !selectedCategories.includes(category.id)
                             ? [...selectedCategories, category.id]
                             : selectedCategories.filter(
                                 (id) => id !== category.id
@@ -363,7 +398,6 @@ function BasicInfoTab(props) {
                       }
                       label={category.name}
                     />
-
                     {category.subcategories && selectedCategories.includes(category.id) && (
                       <div style={{ marginLeft: 20 }}>
                         {category.subcategories.map((sub) => (
@@ -371,15 +405,15 @@ function BasicInfoTab(props) {
                             key={sub.id}
                             control={
                               <Checkbox
-                              onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                const updatedCategories = isChecked
-                                  ? [...value, sub.id]
-                                  : value.filter((id) => id !== sub.id);
-                                setSelectedCategories(updatedCategories);
-                                onChange(updatedCategories);
-                              }}
-                              checked={value.includes(sub.id)}
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  const updatedCategories = isChecked && !selectedCategories.includes(sub.id)
+                                    ? [...selectedCategories, sub.id]
+                                    : selectedCategories.filter((id) => id !== sub.id);
+                                  setSelectedCategories(updatedCategories);
+                                  onChange(updatedCategories);
+                                }}
+                                checked={selectedCategories.includes(sub.id)}
                               />
                             }
                             label={sub.name}
@@ -415,6 +449,20 @@ function BasicInfoTab(props) {
           )}
         />
       </div>
+      <AddCompany
+        invalidCompany={invalidCompany}
+        setInvalidCompany={setInvalidCompany}
+        companyName={companyName}
+        handleSaveCompany={handleSaveCompany}
+      />
+      <FormProvider {...contactMethods}>
+        <AddContact
+          setInvalidContact={setInvalidContact}
+          invalidContact={invalidContact}
+          contactName={contactName}
+          handleSaveContact={handleSaveContact}
+        />
+      </FormProvider>
     </div>
   );
 }

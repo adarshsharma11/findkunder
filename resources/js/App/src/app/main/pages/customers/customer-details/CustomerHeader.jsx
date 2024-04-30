@@ -11,7 +11,7 @@ import { saveProduct, addNewPerson } from "../store/customerSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id } = props;
+  const { id, handleDeleteDialog } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -99,6 +99,20 @@ function ProductHeader(props) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
       >
+         <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          disabled={id === "new"}
+          onClick={handleDeleteDialog}
+          startIcon={
+            <FuseSvgIcon className="hidden sm:flex">
+              heroicons-outline:trash
+            </FuseSvgIcon>
+          }
+        >
+          Remove
+        </Button>
         <Button
           className="whitespace-nowrap mx-4"
           variant="contained"

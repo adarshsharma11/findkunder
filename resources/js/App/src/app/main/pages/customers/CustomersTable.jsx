@@ -114,7 +114,8 @@ function CutomersTable(props) {
   }
 
   function handleClick(item) {
-    handleOpenDialog(item);
+    const navigationLink = isAdmin ? `/account-profile/${item.id}/${item.user_id}` : `/profiles/${item.id}`;
+    props.navigate(navigationLink);
   }
 
   function handleCheck(event, id) {
@@ -406,7 +407,8 @@ function CutomersTable(props) {
                             <strong>LinkedIn:</strong> {n.person?.linkedin ? <a href={addUrlPrefix(n.person?.linkedin)} target="_blank" rel="noopener noreferrer">Visit LinkedIn</a> : "N/A"}
                           </div>
                           <div>
-                            <strong>INTERNAL COMMENTS:</strong>
+                            <strong>INTERNAL COMMENTS:</strong><br />
+                            {n.notes || 'N/A'}
                             <br />
                           </div>
                         </div>
@@ -424,7 +426,17 @@ function CutomersTable(props) {
                             <strong>I/we offer:</strong><br />
                             {n.categories.map((category) => (
                               <div key={category.id}>
-                                {category.name}
+                                <div>{category.name}
+                                {category.subcategories && category.subcategories.length > 0 && (
+                                  <span>
+                                    (
+                                    {category.subcategories.map((sub) => (
+                                      <span key={sub.id}>{sub.name}, </span>
+                                    ))}
+                                    )
+                                  </span>
+                                )}
+                                </div>
                               </div>
                             ))}
                             {n.categories.length === 0 && <div>N/A</div>}

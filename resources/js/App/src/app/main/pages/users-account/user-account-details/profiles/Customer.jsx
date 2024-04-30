@@ -9,7 +9,7 @@ import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +19,7 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
+  removeProduct,
 } from "../../../customers/store/customerSlice";
 import { selectUser } from "../../../../../store/userSlice";
 import { getCompanies } from "../../../companies/store/companiesSlice";
@@ -31,9 +32,12 @@ import { profileSchema, adminProfileSchema } from "../../../../../schemas/valida
 import ProductHeader from "./CustomerHeader";
 import BasicInfoTab from "../../../customers/customer-details/tabs/BasicInfoTab";
 import authRoles from "../../../../../auth/authRoles";
+import { showMessage } from "app/store/fuse/messageSlice";
+import DeleteConfirmationDialog from "../../../customers/customer-details/modal/DeleteConfirmationDialog";
 
 function Customer(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const isAdmin = user?.role === authRoles.admin[0];
   const product = useSelector(selectProduct);
@@ -45,6 +49,7 @@ function Customer(props) {
   const [companies, setCompanies] = useState(false);
   const [categories, setCategories] = useState(false);
   const [customerTypes, setCustomerTypes] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [customerLocations, setCustomerLocation] = useState(false);
   const [contact, setContacts] = useState(false);
   const formSchema = isAdmin ? adminProfileSchema : profileSchema;
@@ -150,6 +155,27 @@ function Customer(props) {
     setTabValue(value);
   }
 
+  const handleDeleteDialog = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
+  };
+
+  function handleRemoveCustomer(options) {
+    const payload = {
+      id: productId,
+      options,
+    };
+    dispatch(removeProduct(payload)).then(() => {
+      const successMessage =
+        options.deleteCompany || options.deleteContact
+          ? "Customer profile and associated records deleted successfully!"
+          : "Customer profile deleted successfully!";
+
+      dispatch(showMessage({ message: successMessage }));
+      handleDeleteDialog();
+      navigate(`/accounts/${userId}`);
+    });
+  }
+
   /**
    * Show Message if the requested products is not exists
    */
@@ -223,21 +249,22 @@ function Customer(props) {
   /**
    * Wait while product data is loading and form is setted
    */
-  if (
-    routeParams.productId !== "new" ||
-    !companies ||
-    !contact ||
-    !categories ||
-    !customerLocations ||
-    !customerTypes
+  if ( _.isEmpty(form) ||
+  (!product && productId !== "new") ||
+  !companies ||
+  !contact ||
+  !categories ||
+  !customerLocations ||
+  !customerTypes
   ) {
     return <FuseLoading />;
   }
 
   return (
+    <>
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} userId={userId} />}
+        header={<ProductHeader id={productId} userId={userId} handleDeleteDialog={handleDeleteDialog} />}
         content={
           <>
             <Tabs
@@ -261,6 +288,7 @@ function Customer(props) {
                   categories={categories}
                   customerTypes={customerTypes}
                   isAdmin={isAdmin}
+                  product={product}
                   customerLocations={customerLocations}
                 />
               </div>
@@ -270,6 +298,14 @@ function Customer(props) {
         scroll={isMobile ? "normal" : "content"}
       />
     </FormProvider>
+    {openDeleteDialog && (
+          <DeleteConfirmationDialog
+            open={handleDeleteDialog}
+            onClose={handleDeleteDialog}
+            onConfirm={handleRemoveCustomer}
+          />
+    )}
+    </>
   );
 }
 

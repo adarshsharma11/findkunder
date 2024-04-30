@@ -30,14 +30,20 @@ class CustomerController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])
+            $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+                $query->with('subcategories');
+            }, 'customerTypes', 'customerLocations'])
             ->where('user_id', $userId)
             ->get();
         } else {
             if ($user->hasRole('admin')) {
-                $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])->get();
+                $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+                    $query->with('subcategories');
+                }, 'customerTypes', 'customerLocations'])->get();
             } else {
-            $customers = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])
+            $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+                $query->with('subcategories');
+            }, 'customerTypes', 'customerLocations'])
             ->where('user_id', $user->id)
             ->get();
             }
@@ -58,8 +64,8 @@ class CustomerController extends Controller
             'person_id' => 'required|exists:contact_person,id',
             'notes' => 'nullable|string',
             'categories' => 'array',
-            'customerTypes' => 'array',
-            'customerLocations' => 'array',
+            'customer_types' => 'array',
+            'customer_locations' => 'array',
             'status' => 'nullable|string',
         ]);
 
@@ -92,14 +98,14 @@ class CustomerController extends Controller
             $customer->categories()->attach($categories);
         }
 
-        if (!empty($data['customerLocations'])) {
-            $locations = CustomerLocation::whereIn('id', $data['customerLocations'])->get();
+        if (!empty($data['customer_locations'])) {
+            $locations = CustomerLocation::whereIn('id', $data['customer_locations'])->get();
             $customer->customerLocations()->attach($locations);
         }
 
        // Attach customer types to the customer
-        if (!empty($data['customerTypes'])) {
-            $customerTypes = CustomerType::whereIn('id', $data['customerTypes'])->get();
+        if (!empty($data['customer_types'])) {
+            $customerTypes = CustomerType::whereIn('id', $data['customer_types'])->get();
             $customer->customerTypes()->attach($customerTypes);
         }
         return response()->json(['status' => true, 'data' => $customer, 'message' => ' Profile created successfully!']);
@@ -113,7 +119,9 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = Customer::with(['company', 'person', 'categories' => function ($query) {
+            $query->with('subcategories');
+        }, 'customerTypes', 'customerLocations'])->find($id);
         if (!$customer) {
             return response()->json(['error' => 'Profile not found'], 404);
         }
@@ -145,6 +153,7 @@ class CustomerController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['status' => 'error', 'message' => 'Customer not found.'], 404);
         }
+        $data = $request->all();
     
         $customer->update([
             'company_id' => $request->input('company_id'),
@@ -152,8 +161,67 @@ class CustomerController extends Controller
             'status' => $request->input('status'),
             'notes' => $request->input('notes'),
         ]);
+
+        if (isset($data['categories'])) {
+            if (count($data['categories']) > 0) {
+                $categoryIds = [];
+                if (!empty($data['categories'])) {
+                    if (is_array($data['categories']) && !empty($data['categories'][0]['id'])) {
+                        $categoryIds = array_map(function($type) {
+                            return $type['id'];
+                        }, $data['categories']);
+                    } else {
+                        $categoryIds = $data['categories'];
+                    }
+                }
+                $categories = Category::whereIn('id', $categoryIds)->get();
+                $customer->categories()->sync($categories->pluck('id'));
+            } else {
+                $customer->categories()->detach();
+            }
+        }
     
-        return response()->json($customer);
+        if (isset($data['customer_locations'])) {
+            if (count($data['customer_locations']) > 0) {
+                $locationIds = [];
+                if (!empty($data['customer_locations'])) {
+                    if (is_array($data['customer_locations']) && !empty($data['customer_locations'][0]['id'])) {
+                        $locationIds = array_map(function($type) {
+                            return $type['id'];
+                        }, $data['customer_locations']);
+                    } else {
+                        $locationIds = $data['customer_locations'];
+                    }
+                }
+                $locations = CustomerLocation::whereIn('id', $locationIds)->get();
+                $customer->customerLocations()->sync($locations->pluck('id'));
+            } else {
+                $customer->customerLocations()->detach();
+            }
+        }
+    
+        if (isset($data['customer_types'])) {
+            if (count($data['customer_types']) > 0) {
+                $customerTypeIds = [];
+                if (!empty($data['customer_types'])) {
+                    if (is_array($data['customer_types']) && !empty($data['customer_types'][0]['id'])) {
+                        $customerTypeIds = array_map(function($type) {
+                            return $type['id'];
+                        }, $data['customer_types']);
+                    } else {
+                        $customerTypeIds = $data['customer_types'];
+                    }
+                }
+                $customerTypes = CustomerType::whereIn('id', $customerTypeIds)->get();
+                $customer->customerTypes()->sync($customerTypes->pluck('id'));
+            } else {
+                $customer->customerTypes()->detach();
+            }
+        }
+    
+        $updatedCustomer = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])->find($id);
+        return response()->json($updatedCustomer);
+    
     }
 
     /**

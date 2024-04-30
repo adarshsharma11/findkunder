@@ -112,7 +112,7 @@ function CutomersTable(props) {
   }
 
   function handleClick(item) {
-    handleOpenDialog(item);
+    props.navigate(`/account-profile/${item.id}/${userId}`)
   }
 
   function handleCheck(event, id) {
@@ -347,7 +347,7 @@ function CutomersTable(props) {
                           </FuseSvgIcon>
                         }
                       >
-                        See More
+                       Edit
                       </Button>
                     </TableCell>
                   </TableRow>
