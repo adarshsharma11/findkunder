@@ -160,3 +160,53 @@ export const adminProfileSchema = yup.object().shape({
     .oneOf(['0', '1', '2', '3'], "Invalid status value")
     .required("You must select a status"),
 });
+
+export const inquiryContactSchema = yup.object().shape({
+  contact_name: yup
+    .string()
+    .required("You must enter a company")
+    .max(255, "First name must not exceed 255 characters"),
+  contact_email: yup
+    .string()
+    .required("You must enter a contact person email")
+    .email('Please enter a valid email address'),
+  contact_phone: yup
+    .string()
+    .required("You must enter a phone")
+    .max(10, "Phone must not exceed 10 characters"),
+});
+
+export const inquiryCompanySchema = yup.object().shape({
+  companyName: yup
+    .string()
+    .required('You must enter a company name')
+    .max(255, 'Company name must not exceed 255 characters'),
+  cvrNumber: yup
+    .string()
+    .required('You must enter a CVR number')
+    .matches(/^\d+$/, 'CVR number must contain only digits'),
+  street: yup.string().required('You must enter a street address'),
+  postalCode: yup
+    .string()
+    .required('You must enter a postal code')
+    .matches(/^\d+$/, 'Postal code must contain only digits'),
+  city: yup.string().required('You must enter a city'),
+  // location: yup.string().required('You must select your location'),
+  // customerType: yup.string().required('You must select who you are'),
+  // companyDescription: yup.string().required('You must provide a description of your company'),
+});
+
+export const additionalInfoSchema = yup.object().shape({
+  whoDoYouNeed: yup.string().required('You must specify who you need'),
+  whatDoYouNeedHelpFor: yup.string().required('You must specify what you need help for'),
+  specificPreferences: yup.string(),
+  physicalAttendance: yup.string().required('You must specify if physical attendance is required'),
+  physicalAttendanceDetails: yup
+    .string()
+    .when('physicalAttendance', {
+      is: 'Yes',
+      then: yup.string().required('Please elaborate on your need regarding physical attendance'),
+      otherwise: yup.string(),
+    }),
+  doNotContact: yup.string(),
+});

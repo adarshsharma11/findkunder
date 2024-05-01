@@ -15,6 +15,7 @@ import FuseAuthorization from "@fuse/core/FuseAuthorization";
 import settingsConfig from "app/configs/settingsConfig";
 import withAppProviders from "./withAppProviders";
 import { AuthProvider } from "./auth/AuthContext";
+import { StepperProvider } from "./InquiryContext";
 
 // import axios from 'axios';
 /**
@@ -45,6 +46,7 @@ const App = () => {
   return (
     <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
       <FuseTheme theme={mainTheme} direction={langDirection}>
+        <StepperProvider>
         <AuthProvider>
           <BrowserRouter>
             <FuseAuthorization
@@ -67,6 +69,7 @@ const App = () => {
             </FuseAuthorization>
           </BrowserRouter>
         </AuthProvider>
+        </StepperProvider>
       </FuseTheme>
     </CacheProvider>
   );
