@@ -179,28 +179,28 @@ export const inquiryContactSchema = yup.object().shape({
 export const inquiryCompanySchema = yup.object().shape({
   companyName: yup
     .string()
-    .required('You must enter a company name')
+    .optional()
     .max(255, 'Company name must not exceed 255 characters'),
   cvrNumber: yup
     .string()
-    .required('You must enter a CVR number')
+    .optional()
     .matches(/^\d+$/, 'CVR number must contain only digits'),
-  street: yup.string().required('You must enter a street address'),
+  street: yup.string().optional(),
   postalCode: yup
     .string()
-    .required('You must enter a postal code')
+    .optional()
     .matches(/^\d+$/, 'Postal code must contain only digits'),
-  city: yup.string().required('You must enter a city'),
-  // location: yup.string().required('You must select your location'),
-  // customerType: yup.string().required('You must select who you are'),
-  // companyDescription: yup.string().required('You must provide a description of your company'),
+  city: yup.string().optional(),
+  location: yup.string().required('You must select your location'),
+  customerType: yup.string().optional(),
+  companyDescription: yup.string().optional(),
 });
 
 export const additionalInfoSchema = yup.object().shape({
-  whoDoYouNeed: yup.string().required('You must specify who you need'),
-  whatDoYouNeedHelpFor: yup.string().required('You must specify what you need help for'),
-  specificPreferences: yup.string(),
-  physicalAttendance: yup.string().required('You must specify if physical attendance is required'),
+  whoDoYouNeed: yup.string().optional(),
+  whatDoYouNeedHelpFor: yup.string().optional(),
+  specificPreferences: yup.string().optional(),
+  physicalAttendance: yup.string().optional(),
   physicalAttendanceDetails: yup
     .string()
     .when('physicalAttendance', {

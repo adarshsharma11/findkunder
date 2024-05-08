@@ -11,7 +11,7 @@ import { addNewPerson, saveProduct } from "../../../customers/store/customerSlic
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, userId, handleDeleteDialog } = props;
+  const { id, userId, handleDeleteDialog, isProfilePage } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -40,6 +40,8 @@ function ProductHeader(props) {
     });
   }
 
+  const backToProfiles = isProfilePage ? `/profiles` : `/accounts/${userId}`
+
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
       <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
@@ -51,7 +53,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to={`/accounts/${userId}`}
+            to={backToProfiles}
             color="inherit"
           >
             <FuseSvgIcon size={20}>

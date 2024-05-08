@@ -114,7 +114,7 @@ function CutomersTable(props) {
   }
 
   function handleClick(item) {
-    const navigationLink = isAdmin ? `/account-profile/${item.id}/${item.user_id}` : `/profiles/${item.id}`;
+    const navigationLink = isAdmin ? `/account-profile/${item.id}/${item.user_id}?sprn=admin` : `/profiles/${item.id}`;
     props.navigate(navigationLink);
   }
 

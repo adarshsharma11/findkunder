@@ -26,6 +26,10 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::get('/customers/count', [AuthController::class, 'countAllProfiles']);
+    Route::apiResource('customerLocations', CustomerLocationController::class);
+    Route::apiResource('customerTypes', CustomerTypeController::class);
+    Route::apiResource('categories', CategoryController::class);
+
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
         Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
@@ -33,9 +37,6 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 
         Route::apiResource('/accounts', AccountController::class); 
-        Route::apiResource('customerTypes', CustomerTypeController::class);
-        Route::apiResource('categories', CategoryController::class);
-        Route::apiResource('customerLocations', CustomerLocationController::class);
         Route::post('/logout', [AuthController::class, 'logoutUser']);
         Route::post('/me', [AuthController::class, 'me']);
     });

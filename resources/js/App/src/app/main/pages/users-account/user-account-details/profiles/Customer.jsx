@@ -9,7 +9,7 @@ import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -42,11 +42,15 @@ function Customer(props) {
   const isAdmin = user?.role === authRoles.admin[0];
   const product = useSelector(selectProduct);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
+  const location = useLocation();
+  const { search } = location;
+  const isAdminParam = new URLSearchParams(search).get('sprn') === 'admin';
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
   const [companies, setCompanies] = useState(false);
+  const [isProfilePage] = useState(isAdminParam || false);
   const [categories, setCategories] = useState(false);
   const [customerTypes, setCustomerTypes] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -264,7 +268,7 @@ function Customer(props) {
     <>
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={productId} userId={userId} handleDeleteDialog={handleDeleteDialog} />}
+        header={<ProductHeader id={productId} userId={userId} handleDeleteDialog={handleDeleteDialog} isProfilePage={isProfilePage} />}
         content={
           <>
             <Tabs
