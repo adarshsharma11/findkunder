@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -11,6 +11,10 @@ import { useForm, FormProvider } from 'react-hook-form';
 import ContactInfo from './form-steps/Contact';
 import AdditionalInfo from './form-steps/AdditionalInfo';
 import CompanyInfo from './form-steps/Company';
+import { useDispatch } from 'react-redux';
+import { getProducts as getCategories } from '../pages/categories/store/categoriesSlice';
+import { getProducts as getCustomerTypes } from '../pages/customer-types/store/customerTypesSlice';
+import { getProducts as getLocations } from '../pages/customer-locations/store/customerLocationsSlice';
 import { inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema } from '../../schemas/validationSchemas';
 import _ from "@lodash";
 
@@ -51,7 +55,13 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function InquiryStepForm() {
-  const { activeStep, setActiveStep, data } = useStepper();
+  const { activeStep, setActiveStep } = useStepper();
+  const dispatch = useDispatch();
+  const [data, setData] = useState({
+    locations: [],
+    customerTypes: [],
+    customerCategories: [],
+  });
   const { locations, customerTypes, customerCategories } = data;
   const schema = activeStep === 0 ? inquiryContactSchema : activeStep === 1 ? inquiryCompanySchema : additionalInfoSchema;
   const defaultValues = activeStep === 0 ? defaultValuesForContact : activeStep === 1 ? defaultValuesForCompany : defaultValuesForAdditionalInfo;
@@ -60,36 +70,96 @@ export default function InquiryStepForm() {
     defaultValues,
     resolver: yupResolver(schema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch, control, onChange, formState, handleSubmit } = methods;
   const { errors, isValid, dirtyFields } = formState;
   const form = watch();
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false); 
 
   const steps = ['Contact', 'Company', 'Additional information'];
 
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
+  useEffect(() => {
+    // Dispatch the getProducts action and handle the response
+    dispatch(getLocations())
+      .then((response) => {
+        if (response.meta.requestStatus === "fulfilled") {
+          setData(prevData => ({
+            ...prevData,
+            locations: response.payload
+          }));
+        } else {
+          // Handle error if needed
+          console.error("Error fetching locations:", response.error);
+        }
+      })
+      .finally(() => {});
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Dispatch the getProducts action and handle the response
+    dispatch(getCustomerTypes())
+      .then((response) => {
+        if (response.meta.requestStatus === "fulfilled") {
+          setData(prevData => ({
+            ...prevData,
+            customerTypes: response.payload
+          }));
+        } else {
+          // Handle error if needed
+          console.error("Error fetching locations:", response.error);
+        }
+      })
+      .finally(() => {});
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Dispatch the getProducts action and handle the response
+    dispatch(getCategories())
+      .then((response) => {
+        if (response.meta.requestStatus === "fulfilled") {
+          setData(prevData => ({
+            ...prevData,
+            customerCategories: response.payload
+          }));
+        } else {
+          // Handle error if needed
+          console.error("Error fetching locations:", response.error);
+        }
+      })
+      .finally(() => {});
+  }, [dispatch]);
 
   const isStepSkipped = (step) => {
-    // Implement your logic to check if step is skipped
     return false;
   };
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === steps.length - 1) {
+      handleSubmit(onSubmit)();
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
+  
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSkip = () => {
-    // Implement your logic to skip step
-  };
-
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const onSubmit = async (formData) => {
+    setIsLoading(true); // Set loading to true when form is submitted
+    try {
+      // await submitFormData(formData);
+      console.log("Form submitted successfully:", formData);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -110,9 +180,11 @@ export default function InquiryStepForm() {
           );
         })}
       </Stepper>
-      {activeStep === 0 && <FormProvider {...methods}> <div className='mt-16 mb-8'> <ContactInfo /> </div> </FormProvider>}
-      {activeStep === 1 && <FormProvider {...methods}> <div className='mt-16 mb-8'> <CompanyInfo locations={locations} customerTypes={customerTypes} /> </div> </FormProvider>}
-      {activeStep === 2 && <FormProvider {...methods}> <div className='mt-16 mb-8'> <AdditionalInfo customerCategories={customerCategories}/> </div> </FormProvider>}
+      <FormProvider {...methods}>
+        {activeStep === 0 && <div className='mt-16 mb-8'> <ContactInfo /> </div>}
+        {activeStep === 1 && <div className='mt-16 mb-8'> <CompanyInfo locations={locations} customerTypes={customerTypes} /> </div>}
+        {activeStep === 2 && <div className='mt-16 mb-8'> <AdditionalInfo customerCategories={customerCategories}/> </div>}
+      </FormProvider>
       {activeStep === steps.length ? (
         <React.Fragment>
         <div className="bg-green-100 rounded-md p-8 mb-4 mt-16">
@@ -140,13 +212,8 @@ export default function InquiryStepForm() {
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                Skip
-              </Button>
-            )}
             <Button onClick={handleNext} disabled={_.isEmpty(dirtyFields) || !isValid}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Button>
           </Box>
         </React.Fragment>

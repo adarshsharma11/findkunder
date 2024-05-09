@@ -119,7 +119,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::with(['company', 'person', 'categories' => function ($query) {
+        $customer = Customer::with(['company', 'person','user','categories' => function ($query) {
             $query->with('subcategories');
         }, 'customerTypes', 'customerLocations'])->find($id);
         if (!$customer) {

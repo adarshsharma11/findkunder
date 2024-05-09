@@ -7,12 +7,33 @@ import { regions } from "../../../../../store/constants";
 import CompanyImageTab from "./CompanyImageTab";
 
 function BasicInfoTab(props) {
+  const { product, isAdmin } = props;
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
 
   return (
     <div>
+       {isAdmin && product?.user && (
+        <Controller
+          name="user_email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="mt-8 mb-16"
+              id="user_email"
+              label="User"
+              InputProps={{
+                readOnly: true,
+              }}
+              value={product.user?.email || ''}
+              variant="outlined"
+              fullWidth
+            />
+          )}
+        />
+      )}
       <Controller
         name="company_name"
         control={control}

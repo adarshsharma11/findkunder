@@ -35,7 +35,7 @@ class CompanyController extends Controller
 
     public function show($id)
     {
-        $company = Company::find($id);
+        $company = Company::with('user')->find($id);
         if (!$company) {
             return response()->json(['error' => 'Company not found'], 404);
         }

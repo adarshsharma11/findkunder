@@ -109,6 +109,28 @@ function BasicInfoTab(props) {
   return (
     <div className="flex flex-col">
     <div className="flex justify-between w-full space-x-8">
+       {isAdmin && product?.user && (
+        <div className="w-full">
+        <Controller
+          name="user_email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="mt-8 mb-16"
+              id="user_email"
+              label="User"
+              InputProps={{
+                readOnly: true,
+              }}
+              value={product.user?.email || ''}
+              variant="outlined"
+              fullWidth
+            />
+          )}
+        />
+       </div>
+      )}
       <div className="w-full">
         <Controller
           name="company_id"

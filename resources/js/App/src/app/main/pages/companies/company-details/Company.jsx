@@ -14,6 +14,7 @@ import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
+import { selectUser } from "../../../../store/userSlice";
 import {
   getProduct,
   newProduct,
@@ -23,11 +24,14 @@ import {
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
+import authRoles from "../../../../auth/authRoles";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
+  const user = useSelector(selectUser);
+  const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
@@ -151,7 +155,7 @@ function Company(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab />
+                <BasicInfoTab product={product} isAdmin={isAdmin}/>
               </div>
             </div>
           </>
