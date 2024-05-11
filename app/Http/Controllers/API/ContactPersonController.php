@@ -36,7 +36,7 @@ class ContactPersonController extends Controller
 
     public function show($id)
     {
-        $contactPerson = ContactPerson::find($id);
+        $contactPerson = ContactPerson::with('user')->find($id);
         if (!$contactPerson) {
             return response()->json(['error' => 'Contact person not found'], 404);
         }

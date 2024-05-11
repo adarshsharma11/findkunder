@@ -7,6 +7,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
+  const { isAdmin, product } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
   const { control, formState } = methods;
@@ -28,6 +29,26 @@ function BasicInfoTab(props) {
 
   return (
     <div>
+       {isAdmin && product?.user && (
+        <Controller
+          name="user_email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="mt-8 mb-16"
+              id="user_email"
+              label="User"
+              InputProps={{
+                readOnly: true,
+              }}
+              value={product.user?.email || ''}
+              variant="outlined"
+              fullWidth
+            />
+          )}
+        />
+      )}
       <Controller
         name="title"
         control={control}

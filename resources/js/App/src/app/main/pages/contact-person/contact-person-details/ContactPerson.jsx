@@ -22,12 +22,16 @@ import {
 } from "../store/contactPersonSlice";
 import reducer from "../store";
 import ProductHeader from "./ContactPersonHeader";
+import authRoles from "../../../../auth/authRoles";
+import { selectUser } from "../../../../store/userSlice";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { contactSchema } from "../../../../schemas/validationSchemas";
 
 function Contact(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
+  const user = useSelector(selectUser);
+  const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
@@ -151,7 +155,7 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab />
+                <BasicInfoTab isAdmin={isAdmin} product={product} />
               </div>
             </div>
           </>
