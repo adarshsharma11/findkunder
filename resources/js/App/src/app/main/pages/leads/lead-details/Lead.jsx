@@ -21,7 +21,7 @@ import {
   selectProduct,
 } from "../store/leadSlice";
 import reducer from "../store";
-import ProductHeader from "./CustomerLocationHeader";
+import ProductHeader from "./LeadHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { createCustomerTypeSchema } from "../../../../schemas/validationSchemas";
 
