@@ -19,7 +19,7 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
-} from "../store/customerLocationSlice";
+} from "../store/leadSlice";
 import reducer from "../store";
 import ProductHeader from "./CustomerLocationHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
