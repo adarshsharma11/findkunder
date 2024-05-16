@@ -10,7 +10,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
   removeProduct,
   saveProduct,
-  addNewCustomerType,
+  addNewLead,
 } from "../store/leadSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
@@ -26,7 +26,7 @@ function ProductHeader(props) {
   const navigate = useNavigate();
 
   function handleSaveProduct() {
-    dispatch(addNewCustomerType(getValues())).then(() => {
+    dispatch(addNewLead(getValues())).then(() => {
       dispatch(showMessage({ message: "Customer location added successfully!" }));
       navigate("/leads");
     });
