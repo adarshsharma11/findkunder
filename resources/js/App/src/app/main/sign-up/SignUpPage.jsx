@@ -1,4 +1,8 @@
+import React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { blue } from '@mui/material/colors';
 import { Controller, useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -13,6 +17,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import AuthService from "../../auth/services/AuthService";
 import { signUpSchema } from "../../schemas/validationSchemas";
 import HeroBox from '../../shared-components/HeroBox';
+import { useAuth } from "../../auth/AuthContext";
 
 const defaultValues = {
   email: "",
@@ -28,9 +33,11 @@ function SignUpPage() {
     resolver: yupResolver(signUpSchema),
   });
 
+  const { isLoading, setIsLoading } = useAuth();
   const { isValid, dirtyFields, errors, setError } = formState;
 
   function onSubmit({ password, email }) {
+    setIsLoading(true);
     AuthService.createUser({
       password,
       email,
@@ -45,6 +52,9 @@ function SignUpPage() {
             message: error.message,
           });
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -143,17 +153,32 @@ function SignUpPage() {
               )}
             />
 
-            <Button
+           <Box sx={{ m: 1, position: 'relative' }}>
+           <Button
               variant="contained"
               color="secondary"
               className="w-full mt-24"
               aria-label="Register"
-              disabled={_.isEmpty(dirtyFields) || !isValid}
+              disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}
               type="submit"
               size="large"
             >
               Create account
             </Button>
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: blue[500],
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+            )}
+          </Box>
           </form>
         </div>
       </Paper>

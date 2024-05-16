@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const StepperContext = createContext();
 
 export const StepperProvider = ({ children }) => {
+  const [formData, setFormData] = useState({});
   const [activeStep, setActiveStep] = useState(() => {
     try {
       const savedStep = localStorage.getItem('activeStep');
@@ -24,7 +25,7 @@ export const StepperProvider = ({ children }) => {
 
 
   return (
-    <StepperContext.Provider value={{ activeStep, setActiveStep }}>
+    <StepperContext.Provider value={{ activeStep, setActiveStep, formData,  setFormData}}>
       {children}
     </StepperContext.Provider>
   );

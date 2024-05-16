@@ -11,6 +11,7 @@ const AuthContext = React.createContext();
 function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(undefined);
   const [waitAuthCheck, setWaitAuthCheck] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -60,6 +61,7 @@ function AuthProvider({ children }) {
         dispatch(setUser(user)),
         // You can receive data in here before app initialization
       ]).then((values) => {
+        setIsLoading(false);
         setWaitAuthCheck(false);
         setIsAuthenticated(true);
       });
@@ -69,7 +71,7 @@ function AuthProvider({ children }) {
       if (message) {
         dispatch(showMessage({ message }));
       }
-
+      setIsLoading(false);
       setWaitAuthCheck(false);
       setIsAuthenticated(false);
     }
@@ -78,7 +80,7 @@ function AuthProvider({ children }) {
   return waitAuthCheck ? (
     <FuseSplashScreen />
   ) : (
-    <AuthContext.Provider value={{ isAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, setIsLoading }}>
       {children}
     </AuthContext.Provider>
   );

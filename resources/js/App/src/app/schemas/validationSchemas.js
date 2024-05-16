@@ -177,22 +177,22 @@ export const inquiryContactSchema = yup.object().shape({
 });
 
 export const inquiryCompanySchema = yup.object().shape({
-  companyName: yup
+  company_ame: yup
     .string()
     .optional()
     .max(255, 'Company name must not exceed 255 characters'),
-  cvrNumber: yup
+  cvr_number: yup
     .string()
     .optional()
     .matches(/^\d+$/, 'CVR number must contain only digits'),
   street: yup.string().optional(),
-  postalCode: yup
+  postal_code: yup
     .string()
     .optional()
     .matches(/^\d+$/, 'Postal code must contain only digits'),
   city: yup.string().optional(),
-  location: yup.string().required('You must select your location'),
-  customerType: yup.string().optional(),
+  location_id: yup.string().required('You must select your location'),
+  customer_type_id: yup.string().optional(),
   companyDescription: yup.string().optional(),
 });
 
@@ -209,4 +209,11 @@ export const additionalInfoSchema = yup.object().shape({
       otherwise: yup.string(),
     }),
   doNotContact: yup.string(),
+});
+
+export const assignPersonSchema = yup.object().shape({
+  person_id: yup
+    .string()
+    .required("You must enter a contact person")
+    .max(255, "Last name must not exceed 255 characters"),
 });

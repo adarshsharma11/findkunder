@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useStepper } from '../../InquiryContext';
+import { blue } from '@mui/material/colors';
 import { makeStyles } from '@mui/styles';
 import { useForm, FormProvider } from 'react-hook-form';
 import ContactInfo from './form-steps/Contact';
@@ -15,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { getProducts as getCategories } from '../pages/categories/store/categoriesSlice';
 import { getProducts as getCustomerTypes } from '../pages/customer-types/store/customerTypesSlice';
 import { getProducts as getLocations } from '../pages/customer-locations/store/customerLocationsSlice';
+import { addNewLead } from '../pages/leads/store/leadSlice';
 import { inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema } from '../../schemas/validationSchemas';
 import _ from "@lodash";
 
@@ -25,13 +28,13 @@ const defaultValuesForContact = {
 };
 
 const defaultValuesForCompany = {
-  companyName: "",
+  company_name: "",
   cvrNumber: "",
   street: "",
-  postalCode: "",
+  postal_code: "",
   city: "",
-  location: "",
-  customerType: "",
+  location_id: "",
+  customer_type_id: "",
   companyDescription: ""
 };
 
@@ -55,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function InquiryStepForm() {
-  const { activeStep, setActiveStep } = useStepper();
+  const { activeStep, setActiveStep, formData, setFormData } = useStepper();
   const dispatch = useDispatch();
   const [data, setData] = useState({
     locations: [],
@@ -70,7 +73,7 @@ export default function InquiryStepForm() {
     defaultValues,
     resolver: yupResolver(schema),
   });
-  const { reset, watch, control, onChange, formState, handleSubmit } = methods;
+  const { reset, watch, control, onChange, formState, handleSubmit, getValues } = methods;
   const { errors, isValid, dirtyFields } = formState;
   const form = watch();
   const classes = useStyles();
@@ -137,6 +140,8 @@ export default function InquiryStepForm() {
     if (activeStep === steps.length - 1) {
       handleSubmit(onSubmit)();
     } else {
+      const updatedFormData = { ...formData, ...getValues() };
+      setFormData(updatedFormData);
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
@@ -150,10 +155,12 @@ export default function InquiryStepForm() {
     setActiveStep(0);
   };
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (data) => {
     setIsLoading(true); // Set loading to true when form is submitted
     try {
-      // await submitFormData(formData);
+      const response = await dispatch(addNewLead(formData));
+      console.log(response, 'jkbchjbcdb');
+      setActiveStep(3);
       console.log("Form submitted successfully:", formData);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -212,9 +219,24 @@ export default function InquiryStepForm() {
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleNext} disabled={_.isEmpty(dirtyFields) || !isValid}>
+            <Box sx={{ m: 1, position: 'relative' }}>
+            <Button onClick={handleNext} disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}>
               {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Button>
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: blue[500],
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+            )}
+          </Box>
           </Box>
         </React.Fragment>
       )}

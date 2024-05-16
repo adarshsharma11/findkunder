@@ -65,6 +65,11 @@ export const selectNavigation = createSelector(
           item.children[0].title = 'My Profiles';
         }
 
+        console.log(item, item.children, 'dsvds')
+        if ( item.id === 'apps.leads'  && userRole === 'user') {
+          item.title = 'My Leads';
+        }
+
         if ( item.children && item.children[0].id === 'apps.locations' && userRole === 'user') {
           item.children[0].title = 'My Locations';
         }

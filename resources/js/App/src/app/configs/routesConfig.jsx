@@ -7,6 +7,7 @@ import SignInConfig from "../main/sign-in/SignInConfig";
 import SignUpConfig from "../main/sign-up/SignUpConfig";
 import SignOutConfig from "../main/sign-out/SignOutConfig";
 import InquiryConfig from "../main/inquiry/InquiryConfig";
+import LeadsConfig from "../main/pages/leads/LeadsConfig";
 import ForgotPasswordConfig from "../main/forgot-password/ForgotPasswordConfig";
 import ResetPasswordConfig from "../main/reset-password/ResetPasswordConfig";
 import dashboardsConfigs from "../main/dashboards/dashboardsConfigs";
@@ -31,6 +32,7 @@ const routeConfigs = [
   SignInConfig,
   SignUpConfig,
   InquiryConfig,
+  LeadsConfig,
   CompaniesConfig,
   ContactPersonConfig,
   CustomersConfig,

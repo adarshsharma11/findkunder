@@ -30,7 +30,6 @@ function AdditionalInfo(props) {
       label: t("other"),
     },
   ];
-  const helpOptions = ["Tax Preparation", "Bookkeeping", "Financial Planning"];
 
   return (
     <div>
@@ -59,7 +58,7 @@ function AdditionalInfo(props) {
 
        <InputLabel id="categories-label">What do you need help for?</InputLabel>
         <Controller
-          name="helpNeeded"
+          name="categories"
           control={control}
           defaultValue={[]}
           render={({ field: { onChange, value } }) => (
@@ -116,15 +115,15 @@ function AdditionalInfo(props) {
 
       {/* Specific Preferences */}
       <Controller
-        name="specificPreferences"
+        name="specific_preferences"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
             id="specificPreferences"
-            error={!!errors.specificPreferences}
-            helperText={errors?.specificPreferences?.message}
+            error={!!errors.specific_preferences}
+            helperText={errors?.specific_preferences?.message}
             label="Specific Preferences"
             variant="outlined"
             fullWidth
@@ -134,13 +133,13 @@ function AdditionalInfo(props) {
 
       {/* Is physical attendance required? */}
       <Controller
-        name="physicalAttendanceRequired"
+        name="physical_attendance_required"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="physicalAttendanceRequired"
+            id="physical_attendance_required"
             select
             label="Is physical attendance required?"
             variant="outlined"
@@ -153,7 +152,7 @@ function AdditionalInfo(props) {
       />
 
       {/* Please elaborate on your need regarding physical attendance */}
-      {watch('physicalAttendanceRequired') === 'Yes' && (
+      {watch('physical_attendance_required') === 'Yes' && (
         <Controller
           name="physicalAttendanceDetails"
           control={control}
@@ -172,7 +171,7 @@ function AdditionalInfo(props) {
 
       {/* Are there any bookkeepers/accountants we should not contact? */}
       <Controller
-        name="doNotContact"
+        name="do_not_contact"
         control={control}
         render={({ field }) => (
           <TextField

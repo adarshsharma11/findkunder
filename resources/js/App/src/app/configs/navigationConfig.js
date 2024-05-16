@@ -82,6 +82,13 @@ const navigationConfig = [
         icon: "search",
         url: "/profiles",
       },
+      {
+        id: "apps.leads",
+        title: "Leads",
+        type: "item",
+        icon: "material-twotone:manage_search",
+        url: "/leads",
+      },
     ],
   },
 ];

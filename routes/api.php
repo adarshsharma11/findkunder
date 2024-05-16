@@ -9,6 +9,8 @@ use App\Http\Controllers\API\ContactPersonController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\AccountController;
 use App\Http\Controllers\API\CustomerController;
+use App\Http\Controllers\API\LeadController;
+use App\Http\Controllers\API\AssignLeadController;
 use App\Http\Controllers\API\Admin\CustomerLocationController;
 
 /*
@@ -29,10 +31,12 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
     Route::apiResource('customerLocations', CustomerLocationController::class);
     Route::apiResource('customerTypes', CustomerTypeController::class);
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('leads', LeadController::class);
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
         Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
+        Route::post('/leads/get-profiles', [AssignLeadController::class, 'getUsersByLocation']);
         Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 

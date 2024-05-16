@@ -13,17 +13,17 @@ function CompanyInfo(props) {
   return (
     <div>
       <Controller
-        name="companyName"
+        name="company_name"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            error={!!errors.companyName}
-            helperText={errors?.companyName?.message}
+            error={!!errors.company_name}
+            helperText={errors?.company_name?.message}
             label="Company Name"
             autoFocus
-            id="companyName"
+            id="company_name"
             variant="outlined"
             fullWidth
           />
@@ -31,15 +31,15 @@ function CompanyInfo(props) {
       />
 
       <Controller
-        name="cvrNumber"
+        name="cvr_number"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
             id="cvrNumber"
-            error={!!errors.cvrNumber}
-            helperText={errors?.cvrNumber?.message}
+            error={!!errors.cvr_number}
+            helperText={errors?.cvr_number?.message}
             label="CVR Number"
             type="number"
             variant="outlined"
@@ -66,15 +66,15 @@ function CompanyInfo(props) {
       />
 
       <Controller
-        name="postalCode"
+        name="postal_code"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="postalCode"
-            error={!!errors.postalCode}
-            helperText={errors?.postalCode?.message}
+            id="postal_code"
+            error={!!errors.postal_code}
+            helperText={errors?.postal_code?.message}
             label="Postal Code"
             type="number"
             variant="outlined"
@@ -100,7 +100,7 @@ function CompanyInfo(props) {
         )}
       />
       <Controller
-        name="location"
+        name="location_id"
         control={control}
         render={({ field }) => (
           <>
@@ -108,10 +108,10 @@ function CompanyInfo(props) {
             <Select
               {...field}
               className="mt-8 mb-16"
-              error={!!errors.location}
+              error={!!errors.location_id}
               required
               displayEmpty
-              helperText={errors?.location?.message}
+              helperText={errors?.location_id?.message}
               id="title"
               variant="outlined"
               fullWidth
@@ -130,7 +130,7 @@ function CompanyInfo(props) {
         )}
       />
        <Controller
-        name="customerType"
+        name="customer_type_id"
         control={control}
         render={({ field }) => (
           <>
@@ -138,10 +138,10 @@ function CompanyInfo(props) {
             <Select
               {...field}
               className="mt-8 mb-16"
-              error={!!errors.customerType}
+              error={!!errors.customer_type_id}
               required
               displayEmpty
-              helperText={errors?.customerType?.message}
+              helperText={errors?.customer_type_id?.message}
               id="title"
               variant="outlined"
               fullWidth
