@@ -9,10 +9,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Collapse from "@mui/material/Collapse";
-import Box from "@mui/material/Box";
+import CustomerCollapseMenu from '../../../shared-components/customer-profile/CustomerCollapseMenu';
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
 
@@ -28,8 +26,7 @@ import CustomersTableHead from "./CustomersTableHead";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
-  const { handleOpenDialog, handleDialogData, isAdmin } = props;
-  const { t } = useTranslation("contactPerson");
+  const { isAdmin } = props;
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
   const [expanded, setExpanded] = useState(null); 
@@ -171,13 +168,6 @@ function CutomersTable(props) {
         {buttonText}
       </Button>
     );
-  } 
-  
-  function addUrlPrefix(url) {
-    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
-      return "https://" + url;
-    }
-    return url;
   }
 
   if (loading) {
@@ -371,88 +361,7 @@ function CutomersTable(props) {
                   </TableRow>
                   <TableRow>
                   <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-                    <Collapse in={expanded === n.id} timeout="auto" unmountOnExit>
-                      <Box margin={1}>
-                        <div className="flex justify-between mb-8 mt-12">
-                          <div>
-                            <strong>LOCATION:</strong>
-                            <br />
-                            <strong>Company:</strong> {n.company?.company_name}
-                            <br />
-                            <strong>CVR:</strong> {n.company?.cvr}
-                            <br />
-                            <strong>Address:</strong> {n.company?.address}, {n.company?.postal_code} {n.company?.city}
-                            <br />
-                            <strong>Region:</strong> {n.company?.region}
-                            <br />
-                            <strong>Website:</strong> {n.company?.website ? <a href={addUrlPrefix(n.company?.website)} target="_blank" rel="noopener noreferrer">Visit Website</a> : "N/A"}
-                            <br />
-                            <strong>LinkedIn:</strong> {n.company?.linkedin ? <a href={addUrlPrefix(n.company?.linkedin)} target="_blank" rel="noopener noreferrer">Visit LinkedIn</a> : "N/A"}
-                            <br />
-                            <strong>Facebook:</strong> {n.company?.facebook ? <a href={addUrlPrefix(n.company?.facebook)} target="_blank" rel="noopener noreferrer">Visit Facebook</a> : "N/A"}
-                          </div>
-                          <div>
-                            <strong>CONTACT PERSON:</strong>
-                            <br />
-                            <strong>Title:</strong> {n.person?.title}
-                            <br />
-                            <strong>Name:</strong> {n.person?.first_name} {n.person?.last_name}
-                            <br />
-                            <strong>E-mail:</strong> {n.person?.email}
-                            <br />
-                            <strong>Phone:</strong> {n.person?.phone}
-                            <br />
-                            <strong>Website:</strong> {n.person?.website ? <a href={addUrlPrefix(n.person?.website)} target="_blank" rel="noopener noreferrer">Visit Website</a> : "N/A"}
-                            <br />
-                            <strong>LinkedIn:</strong> {n.person?.linkedin ? <a href={addUrlPrefix(n.person?.linkedin)} target="_blank" rel="noopener noreferrer">Visit LinkedIn</a> : "N/A"}
-                          </div>
-                          <div>
-                            <strong>INTERNAL COMMENTS:</strong><br />
-                            {n.notes || 'N/A'}
-                            <br />
-                          </div>
-                        </div>
-                        <div className="flex justify-between mb-8 mt-12">
-                          <div>
-                            <strong>The customer can be:</strong><br />
-                            {n.customer_types.map((type) => (
-                              <div key={type.id}>
-                                {type.name}
-                              </div>
-                            ))}
-                            {n.customer_types.length === 0 && <div>N/A</div>}
-                          </div>
-                          <div>
-                            <strong>I/we offer:</strong><br />
-                            {n.categories.map((category) => (
-                              <div key={category.id}>
-                                <div>{category.name}
-                                {category.subcategories && category.subcategories.length > 0 && (
-                                  <span>
-                                    (
-                                    {category.subcategories.map((sub) => (
-                                      <span key={sub.id}>{sub.name}, </span>
-                                    ))}
-                                    )
-                                  </span>
-                                )}
-                                </div>
-                              </div>
-                            ))}
-                            {n.categories.length === 0 && <div>N/A</div>}
-                          </div>
-                          <div>
-                            <strong>Customer location:</strong><br />
-                            {n.customer_locations.map((location) => (
-                              <div key={location.id}>
-                                {location.name}
-                              </div>
-                            ))}
-                            {n.customer_locations.length === 0 && <div>N/A</div>}
-                          </div>
-                        </div>
-                      </Box>
-                    </Collapse>
+                  <CustomerCollapseMenu expanded={expanded === n.id} data={n} />
                   </TableCell>
                 </TableRow>
                 </React.Fragment>

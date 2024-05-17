@@ -141,6 +141,13 @@ const adminRows = [
     sort: true,
   },
   {
+    id: "details",
+    align: "right",
+    disablePadding: false,
+    label: "Detail",
+    sort: true,
+  },
+  {
     id: "status",
     align: "right",
     disablePadding: false,

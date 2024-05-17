@@ -1,3 +1,4 @@
+import React from "react";
 import FuseScrollbars from "@fuse/core/FuseScrollbars";
 import _ from "@lodash";
 import Checkbox from "@mui/material/Checkbox";
@@ -17,15 +18,17 @@ import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { Link } from "react-router-dom";
+import CustomerCollapseMenu from "../../../../../../shared-components/customer-profile/CustomerCollapseMenu";
 import { getProfiles as getProducts, selectProfileSearchText } from "../../../store/userAccountsSlice";
 import CustomersTableHead from "./ProfileTableHead";
 import AccountTabsHeader from "../AccountTabsHeader";
 
 function CutomersTable(props) {
   const dispatch = useDispatch();
-  const { handleOpenDialog, isAdmin, userId, data, setData, filteredData, setFilteredData } = props;
+  const { isAdmin, userId, data, setData, filteredData, setFilteredData } = props;
   const { t } = useTranslation("contactPerson");
   const searchText = useSelector(selectProfileSearchText);
+  const [expanded, setExpanded] = useState(null); 
 
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
@@ -84,6 +87,10 @@ function CutomersTable(props) {
     );
     setPage(0);
   }, [filteredData, searchText]);
+
+  const handleExpand = (rowId) => {
+    setExpanded(expanded === rowId ? null : rowId);
+  };
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -239,13 +246,13 @@ function CutomersTable(props) {
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
+                  <React.Fragment key={n.id}>
                   <TableRow
                     className="h-72 cursor-pointer"
                     hover
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.id}
                     selected={isSelected}
                   >
                     <TableCell
@@ -320,6 +327,26 @@ function CutomersTable(props) {
                     >
                       {n?.notes || "N/A"}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => handleExpand(n.id)}
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                          { expanded === n.id ? 'heroicons-solid:arrow-circle-up' : 'heroicons-solid:arrow-circle-down' }
+                          </FuseSvgIcon>
+                        }
+                      >
+                        {expanded === n.id ? 'See Less' : 'See More'}
+                      </Button>
+                    </TableCell>
                     {isAdmin && 
                         <TableCell
                         className="p-4 md:p-16"
@@ -351,6 +378,12 @@ function CutomersTable(props) {
                       </Button>
                     </TableCell>
                   </TableRow>
+                   <TableRow>
+                   <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+                   <CustomerCollapseMenu expanded={expanded === n.id} data={n} />
+                   </TableCell>
+                 </TableRow>
+                </React.Fragment>
                 );
               })}
           </TableBody>
