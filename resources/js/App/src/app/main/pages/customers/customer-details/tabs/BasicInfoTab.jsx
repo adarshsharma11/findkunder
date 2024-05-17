@@ -463,7 +463,7 @@ function BasicInfoTab(props) {
               rows={8}
               error={!!errors.notes}
               helperText={errors?.notes?.message}
-              label="Notes"
+              label="Internal Notes"
               type="text"
               variant="outlined"
               fullWidth
