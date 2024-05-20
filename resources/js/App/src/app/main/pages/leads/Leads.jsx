@@ -14,11 +14,13 @@ import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
 import authRoles from "../../../auth/authRoles";
 import { selectUser } from "../../../store/userSlice";
+import { getProducts } from "./store/leadsSlice";
 import { useSelector } from "react-redux";
 import LeadsTable from "./LeadsTable";
 
 const defaultValues = {
   person_id: "",
+  status: "",
 };
 
 function Leads() {
@@ -55,6 +57,7 @@ function Leads() {
       const response = await dispatch(saveProduct(formData));
       if (response?.payload) {
         dispatch(showMessage({ message: "Person assigned successfully!" }));
+        dispatch(getProducts()).then(() => {});
         handleAssignPersonDialog();
       }
     } catch (error) {
@@ -70,7 +73,7 @@ function Leads() {
       scroll={isMobile ? "normal" : "content"}
     />
     {openAssignPersonDialog && 
-     <AssignPersonDialog open={handleAssignPersonDialog} onClose={handleAssignPersonDialog} assignLeadProfiles={assignLeadProfiles} assignContactPerson={assignContactPerson} leadId={leadId} />
+     <AssignPersonDialog open={openAssignPersonDialog} onClose={handleAssignPersonDialog} assignLeadProfiles={assignLeadProfiles} assignContactPerson={assignContactPerson} leadId={leadId} />
     }
    </FormProvider>
   );

@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import moment from "moment";
 
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
@@ -93,6 +94,9 @@ function LeadsTable(props) {
     if (item?.user_id) {
       setValue('person_id', item?.user_id);
     }
+    if (item?.status && item?.status !== '0') {
+      setValue('status', item?.status);
+    }
     setLeadId(item.id);
     getContactPersons(params);
   }
@@ -144,6 +148,29 @@ function LeadsTable(props) {
           There are no leads!
         </Typography>
       </motion.div>
+    );
+  }
+
+  const renderPriorityStatus = (priority) => {
+    let buttonColor;
+    let buttonText;
+    switch (priority) {
+      case "2":
+        buttonColor = "success";
+        buttonText = "Complete";
+        break;
+      case "1":
+        buttonColor = "warning";
+        buttonText = "Inprogress";
+        break;
+      default:
+        buttonColor = "secondary";
+        buttonText = "New";
+    }
+    return (
+      <Button variant="contained" color={buttonColor} size="small">
+        {buttonText}
+      </Button>
     );
   }
 
@@ -217,6 +244,30 @@ function LeadsTable(props) {
                         alt={t(n.title)}
                       />
                     </TableCell>
+                    {isAdmin && 
+                        <TableCell
+                        className="p-4 md:p-16"
+                        component="th"
+                        scope="row"
+                        align="right"
+                        >
+                        {renderPriorityStatus(n?.status)}
+                        </TableCell>
+                    }
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      {moment(n.created_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.cvr_number || "N/A"}
+                    </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"
@@ -278,7 +329,7 @@ function LeadsTable(props) {
                            </FuseSvgIcon>
                          }
                        >
-                         Assign Person
+                         {n.user_id && n.user_id === "" ? 'Assign Person' : 'Update Assigned Person' }
                        </Button>
                      </TableCell>
                     }

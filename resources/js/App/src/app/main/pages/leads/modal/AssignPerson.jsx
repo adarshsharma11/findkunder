@@ -12,6 +12,17 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
 
+const leadStatus = [
+ {
+  label: 'Completed',
+  value: '2',
+ },
+ {
+  label: 'In Progress',
+  value: '1',
+ }
+]
+
 function AssignPersonDialog({ open, onClose, assignContactPerson, assignLeadProfiles, leadId }) {
   const [ isLoading, setisLoading ] = useState(false);
   const methods = useFormContext();
@@ -23,6 +34,7 @@ function AssignPersonDialog({ open, onClose, assignContactPerson, assignLeadProf
     const params = {
       user_id: getValues("person_id")?.toString(),
       id: leadId,
+      status: getValues("status")?.toString() || "",
     }
     await assignContactPerson(params);
     setisLoading(false);
@@ -64,6 +76,36 @@ function AssignPersonDialog({ open, onClose, assignContactPerson, assignLeadProf
                 assignLeadProfiles?.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.email}
+                  </MenuItem>
+                ))}
+            </Select>
+          </>
+        )}
+      />
+        <Controller
+        name="status"
+        control={control}
+        render={({ field }) => (
+          <>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              {...field}
+              className="mt-8 mb-16"
+              error={!!errors.status}
+              required
+              displayEmpty
+              helperText={errors?.status?.message}
+              id="person_id"
+              variant="outlined"
+              fullWidth
+            >
+              <MenuItem value="" disabled>
+                Select Status
+              </MenuItem>
+              {leadStatus &&
+                leadStatus?.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
                   </MenuItem>
                 ))}
             </Select>

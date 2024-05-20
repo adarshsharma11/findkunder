@@ -216,4 +216,8 @@ export const assignPersonSchema = yup.object().shape({
     .string()
     .required("You must enter a contact person")
     .max(255, "Last name must not exceed 255 characters"),
+  status: yup
+    .string()
+    .required("You must select a status")
+    .oneOf(["0", "1", "2"], "Invalid status value"),  
 });

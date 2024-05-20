@@ -101,6 +101,7 @@ class LeadController extends Controller
             'categories' => 'nullable|array',
             'user_id' => 'sometimes|required|string',
             'categories.*' => 'exists:categories,id',
+            'status' => 'nullable|in:0,1,2', 
         ]);
 
         // If validation fails, return error response

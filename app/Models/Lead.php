@@ -25,6 +25,7 @@ class Lead extends Model
         'customer_type_id',
         'location_id',
         'user_id',
+        'status',
     ];           
 
     public function customerType()
