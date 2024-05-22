@@ -21,9 +21,9 @@ class LeadController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('admin')) {
-            $leads = Lead::with('location:id,name', 'customerType:id,name')->get();
+            $leads = Lead::with('location:id,name', 'customerType:id,name', 'user')->get();
         } else {
-            $leads = Lead::where('user_id', $user->id)->with('location:id,name', 'customerType:id,name')->get();
+            $leads = Lead::where('user_id', $user->id)->with('location:id,name', 'customerType:id,name', 'user')->get();
         }
         return response()->json($leads);
     }

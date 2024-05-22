@@ -160,6 +160,22 @@ function CompanyInfo(props) {
         )}
       />
       <Controller
+        name="website"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            id="city"
+            error={!!errors.website}
+            helperText={errors?.website?.message}
+            label="Website"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
+      <Controller
         name="companyDescription"
         control={control}
         render={({ field }) => (

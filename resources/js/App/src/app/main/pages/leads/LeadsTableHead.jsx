@@ -88,6 +88,13 @@ const userRows = [
     label: "Customer Type",
     sort: true,
   },
+  {
+    id: "details",
+    align: "left",
+    disablePadding: false,
+    label: "Details",
+    sort: true,
+  },
 ];
 
 const adminRows = [
@@ -162,6 +169,13 @@ const adminRows = [
     sort: true,
   },
   {
+    id: "details",
+    align: "left",
+    disablePadding: false,
+    label: "Details",
+    sort: true,
+  },
+  {
     id: "action",
     align: "left",
     disablePadding: false,
@@ -190,6 +204,7 @@ function LeadsTableHead(props) {
   function closeSelectedProductsMenu() {
     setSelectedProductsMenu(null);
   }
+  
 
   return (
     <TableHead>

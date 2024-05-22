@@ -24,6 +24,7 @@ import {
   selectProductsSearchText,
 } from "./store/leadsSlice";
 import LeadsTableHead from "./LeadsTableHead";
+import LeadsCollapseMenu from "../../../shared-components/leads/LeadsCollapseMenu";
 
 function LeadsTable(props) {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function LeadsTable(props) {
   const searchText = useSelector(selectProductsSearchText);
 
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState(null);
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(products);
   const [page, setPage] = useState(0);
@@ -129,6 +131,10 @@ function LeadsTable(props) {
     setRowsPerPage(event.target.value);
   }
 
+  const handleExpand = (rowId) => {
+    setExpanded(expanded === rowId ? null : rowId);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -209,6 +215,7 @@ function LeadsTable(props) {
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
+                  <>
                   <TableRow
                     className="h-72 cursor-pointer"
                     hover
@@ -311,6 +318,26 @@ function LeadsTable(props) {
                     >
                       {n.customer_type?.name || "N/A"}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => handleExpand(n.id)}
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                          { expanded === n.id ? 'heroicons-solid:arrow-circle-up' : 'heroicons-solid:arrow-circle-down' }
+                          </FuseSvgIcon>
+                        }
+                      >
+                        {expanded === n.id ? 'See Less' : 'See More'}
+                      </Button>
+                    </TableCell>
                     {isAdmin &&
                        <TableCell
                        className="p-4 md:p-16"
@@ -334,6 +361,12 @@ function LeadsTable(props) {
                      </TableCell>
                     }
                   </TableRow>
+                  <TableRow>
+                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+                      <LeadsCollapseMenu expanded={expanded === n.id} data={n} />
+                    </TableCell>
+                  </TableRow>
+                   </>
                 );
               })}
           </TableBody>

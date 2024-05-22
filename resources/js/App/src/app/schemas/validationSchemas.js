@@ -192,6 +192,7 @@ export const inquiryCompanySchema = yup.object().shape({
     .matches(/^\d+$/, 'Postal code must contain only digits'),
   city: yup.string().optional(),
   location_id: yup.string().required('You must select your location'),
+  website: yup.string().nullable(),
   customer_type_id: yup.string().optional(),
   companyDescription: yup.string().optional(),
 });

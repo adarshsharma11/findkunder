@@ -35,7 +35,8 @@ const defaultValuesForCompany = {
   city: "",
   location_id: "",
   customer_type_id: "",
-  companyDescription: ""
+  companyDescription: "",
+  website: "",
 };
 
 const defaultValuesForAdditionalInfo = {

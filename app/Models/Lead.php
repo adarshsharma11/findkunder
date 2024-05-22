@@ -26,6 +26,7 @@ class Lead extends Model
         'location_id',
         'user_id',
         'status',
+        'website',
     ];           
 
     public function customerType()
@@ -41,5 +42,9 @@ class Lead extends Model
     public function helpNeeded()
     {
         return $this->belongsToMany(Category::class, 'lead_category');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
