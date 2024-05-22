@@ -213,16 +213,16 @@ function Customer(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no companies added to system!
+          There are no locations added to system!
         </Typography>
         <Button
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/companies/new"
+          to={`/account-location/new/${userId}`}
           color="inherit"
         >
-          Go to Companies Page & add one
+          Go to Locations Page & add one
         </Button>
       </motion.div>
     );
@@ -242,7 +242,7 @@ function Customer(props) {
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/contact-person/new"
+          to={`/account-person/new/${userId}`}
           color="inherit"
         >
           Go to Contact Page & add one
