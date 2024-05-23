@@ -29,23 +29,22 @@ const defaultValuesForContact = {
 
 const defaultValuesForCompany = {
   company_name: "",
-  cvrNumber: "",
+  cvr_number: "",
   street: "",
   postal_code: "",
   city: "",
   location_id: "",
   customer_type_id: "",
-  companyDescription: "",
+  company_description: "",
   website: "",
 };
 
 const defaultValuesForAdditionalInfo = {
-  whoDoYouNeed: "",
-  whatDoYouNeedHelpFor: "",
-  specificPreferences: "",
-  physicalAttendance: "",
-  physicalAttendanceDetails: "",
-  doNotContact: ""
+  who_do_you_need: "",
+  specific_preferences: "",
+  physical_attendance: "",
+  physical_attendance_details: "",
+  do_not_contact: ""
 };
 
 
@@ -157,12 +156,14 @@ export default function InquiryStepForm() {
   };
 
   const onSubmit = async (data) => {
-    setIsLoading(true); // Set loading to true when form is submitted
+    setIsLoading(true);
     try {
       const response = await dispatch(addNewLead(formData));
-      console.log(response, 'jkbchjbcdb');
-      setActiveStep(3);
-      console.log("Form submitted successfully:", formData);
+      if (response.payload) {
+        setTimeout(() => {
+          setActiveStep(3);
+        }, 1000);  
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

@@ -49,9 +49,11 @@ class LeadController extends Controller
             'specific_preferences' => 'nullable|string',
             'street' => 'required|string',
             'city' => 'required|string',
+            'who_do_you_need'=> 'nullable|string',
             'postal_code' => 'required|string',
             'customer_type_id' => 'required|exists:customer_types,id',
             'location_id' => 'required|exists:customer_locations,id',
+            'website' => 'nullable|string',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id', // Validate each category ID in the array
         ]);

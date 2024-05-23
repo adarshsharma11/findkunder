@@ -23,6 +23,7 @@ class Lead extends Model
         'city',
         'postal_code',
         'customer_type_id',
+        'who_do_you_need',
         'location_id',
         'user_id',
         'status',
@@ -39,7 +40,7 @@ class Lead extends Model
         return $this->belongsTo(CustomerLocation::class);
     }
 
-    public function helpNeeded()
+    public function categories()
     {
         return $this->belongsToMany(Category::class, 'lead_category');
     }

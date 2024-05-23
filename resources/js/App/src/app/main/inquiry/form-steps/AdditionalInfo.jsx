@@ -154,13 +154,13 @@ function AdditionalInfo(props) {
       {/* Please elaborate on your need regarding physical attendance */}
       {watch('physical_attendance_required') === 'Yes' && (
         <Controller
-          name="physicalAttendanceDetails"
+          name="physical_attendance_details"
           control={control}
           render={({ field }) => (
             <TextField
               {...field}
               className="mt-8 mb-16"
-              id="physicalAttendanceDetails"
+              id="physical_attendance_details"
               label="Please elaborate on your need regarding physical attendance"
               variant="outlined"
               fullWidth

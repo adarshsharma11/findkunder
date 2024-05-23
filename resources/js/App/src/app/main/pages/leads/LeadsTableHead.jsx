@@ -54,17 +54,17 @@ const userRows = [
     sort: true,
   },
   {
-    id: "contact_email",
-    align: "left",
-    disablePadding: false,
-    label: "Contact Email",
-    sort: true,
-  },
-  {
     id: "contact_name",
     align: "left",
     disablePadding: false,
     label: "Contact name",
+    sort: true,
+  },
+  {
+    id: "contact_email",
+    align: "left",
+    disablePadding: false,
+    label: "Contact Email",
     sort: true,
   },
   {
@@ -134,17 +134,17 @@ const adminRows = [
     sort: true,
   },
   {
-    id: "contact_email",
-    align: "left",
-    disablePadding: false,
-    label: "Contact Email",
-    sort: true,
-  },
-  {
     id: "contact_name",
     align: "left",
     disablePadding: false,
     label: "Contact name",
+    sort: true,
+  },
+  {
+    id: "contact_email",
+    align: "left",
+    disablePadding: false,
+    label: "Contact Email",
     sort: true,
   },
   {

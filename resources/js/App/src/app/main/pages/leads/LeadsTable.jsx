@@ -288,14 +288,14 @@ function LeadsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.contact_email || "N/A"}
+                      {n.contact_name || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                     >
-                      {n.contact_name || "N/A"}
+                      {n.contact_email || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"

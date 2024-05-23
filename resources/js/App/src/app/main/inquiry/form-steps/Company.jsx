@@ -176,7 +176,7 @@ function CompanyInfo(props) {
         )}
       />
       <Controller
-        name="companyDescription"
+        name="company_description"
         control={control}
         render={({ field }) => (
           <TextField
