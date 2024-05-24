@@ -5,6 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { Controller, useFormContext } from "react-hook-form";
 import { regions } from "../../../../../store/constants";
 import CompanyImageTab from "./CompanyImageTab";
+import { validateNumberInput } from '../../../../../schemas/validationRulesSchemas';
 
 function BasicInfoTab(props) {
   const { product, isAdmin } = props;
@@ -56,6 +57,7 @@ function BasicInfoTab(props) {
       <Controller
         name="cvr"
         control={control}
+        rules={{ validate: validateNumberInput }}
         render={({ field }) => (
           <TextField
             {...field}
@@ -65,8 +67,14 @@ function BasicInfoTab(props) {
             error={!!errors.cvr}
             helperText={errors?.cvr?.message}
             label="CVR"
-            type="number"
+            type="text"
             variant="outlined"
+            onChange={(e) => {
+              const { value } = e.target;
+              if (/^\d*$/.test(value)) {
+                field.onChange(value);
+              }
+            }}
             fullWidth
           />
         )}
@@ -92,6 +100,7 @@ function BasicInfoTab(props) {
       <Controller
         name="postal_code"
         control={control}
+        rules={{ validate: validateNumberInput }}
         render={({ field }) => (
           <TextField
             {...field}
@@ -101,9 +110,15 @@ function BasicInfoTab(props) {
             error={!!errors.postal_code}
             helperText={errors?.postal_code?.message}
             label="Postal Code"
-            type="number"
+            type="text"
             variant="outlined"
             fullWidth
+            onChange={(e) => {
+              const { value } = e.target;
+              if (/^\d*$/.test(value)) {
+                field.onChange(value);
+              }
+            }}
           />
         )}
       />
