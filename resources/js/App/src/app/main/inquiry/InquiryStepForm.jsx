@@ -19,6 +19,7 @@ import { getProducts as getCustomerTypes } from '../pages/customer-types/store/c
 import { getProducts as getLocations } from '../pages/customer-locations/store/customerLocationsSlice';
 import { addNewLead } from '../pages/leads/store/leadSlice';
 import { inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema } from '../../schemas/validationSchemas';
+import { INITIAL_INQUIRY_DATA } from '../../InquiryContext';
 import _ from "@lodash";
 
 const defaultValuesForContact = {
@@ -42,7 +43,7 @@ const defaultValuesForCompany = {
 const defaultValuesForAdditionalInfo = {
   who_do_you_need: "",
   specific_preferences: "",
-  physical_attendance: "",
+  physical_attendance_required: "",
   physical_attendance_details: "",
   do_not_contact: ""
 };
@@ -66,8 +67,9 @@ export default function InquiryStepForm() {
     customerCategories: [],
   });
   const { locations, customerTypes, customerCategories } = data;
-  const schema = activeStep === 0 ? inquiryContactSchema : activeStep === 1 ? inquiryCompanySchema : additionalInfoSchema;
-  const defaultValues = activeStep === 0 ? defaultValuesForContact : activeStep === 1 ? defaultValuesForCompany : defaultValuesForAdditionalInfo;
+  const schema = [inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema][activeStep];
+  const defaultValues = [defaultValuesForContact, defaultValuesForCompany, defaultValuesForAdditionalInfo][activeStep];
+
   const methods = useForm({
     mode: "onChange",
     defaultValues,
@@ -137,11 +139,13 @@ export default function InquiryStepForm() {
   };
 
   const handleNext = () => {
+    setFormData(prevData => ({
+      ...prevData,
+      ...getValues(),
+    }));
     if (activeStep === steps.length - 1) {
       handleSubmit(onSubmit)();
     } else {
-      const updatedFormData = { ...formData, ...getValues() };
-      setFormData(updatedFormData);
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
@@ -153,6 +157,8 @@ export default function InquiryStepForm() {
 
   const handleReset = () => {
     setActiveStep(0);
+    setFormData(INITIAL_INQUIRY_DATA);
+    reset(INITIAL_INQUIRY_DATA);
   };
 
   const onSubmit = async (data) => {
@@ -160,8 +166,10 @@ export default function InquiryStepForm() {
     try {
       const response = await dispatch(addNewLead(formData));
       if (response.payload) {
+        await localStorage.removeItem('inquiry-data');
+        setFormData(INITIAL_INQUIRY_DATA);
         setTimeout(() => {
-          setActiveStep(3);
+          setActiveStep(steps.length);
         }, 1000);  
       }
     } catch (error) {

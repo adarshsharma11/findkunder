@@ -15,6 +15,8 @@ function LeadsCollapseMenu({ expanded, data }) {
             <br />
             <strong>Address:</strong> {data.street}
             <br />
+            <strong>Company Description:</strong> {data.company_description}
+            <br />
           </div>
           <div className="w-full md:w-1/2 lg:w-1/3">
             <strong>Assigned Person Info:</strong>
@@ -24,9 +26,15 @@ function LeadsCollapseMenu({ expanded, data }) {
           </div>
           <div className="w-full md:w-1/2 lg:w-1/3">
             <strong>Addition Info:</strong><br />
-            <strong>Physical Attendance Required:</strong> {data?.physical_attendance_required}
+            <strong>Who Do You Need:</strong> {data?.who_do_you_need || 'N/A'}
+            <br />
+            <strong>Physical Attendance Required:</strong> {data?.physical_attendance_required || 'N/A'}
+            <br />
+            <strong>Physical Attendance Details:</strong> {data?.physical_attendance_details || 'N/A'}
             <br />
             <strong>Specific Preferences:</strong> {data?.specific_preferences || 'N/A'}
+            <br />
+            <strong>Do Not Contact:</strong> {data?.do_not_contact || 'N/A'}
             <br />
             <strong>Website:</strong> {data?.website || 'N/A'}
             <br />

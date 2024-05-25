@@ -25,6 +25,7 @@ class Lead extends Model
         'customer_type_id',
         'who_do_you_need',
         'location_id',
+        'company_description',
         'user_id',
         'status',
         'website',

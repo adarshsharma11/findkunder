@@ -194,22 +194,21 @@ export const inquiryCompanySchema = yup.object().shape({
   location_id: yup.string().required('You must select your location'),
   website: yup.string().nullable(),
   customer_type_id: yup.string().optional(),
-  companyDescription: yup.string().optional(),
+  company_description: yup.string().optional(),
 });
 
 export const additionalInfoSchema = yup.object().shape({
-  whoDoYouNeed: yup.string().optional(),
-  whatDoYouNeedHelpFor: yup.string().optional(),
-  specificPreferences: yup.string().optional(),
-  physicalAttendance: yup.string().optional(),
-  physicalAttendanceDetails: yup
+  who_do_you_need: yup.string().optional(),
+  specific_preferences: yup.string().optional(),
+  physical_attendance_required: yup.string().optional(),
+  physical_attendance_details: yup
     .string()
-    .when('physicalAttendance', {
+    .when('physical_attendance_required', {
       is: 'Yes',
       then: yup.string().required('Please elaborate on your need regarding physical attendance'),
       otherwise: yup.string(),
     }),
-  doNotContact: yup.string(),
+  do_not_contact: yup.string(),
 });
 
 export const assignPersonSchema = yup.object().shape({

@@ -35,13 +35,13 @@ function AdditionalInfo(props) {
     <div>
       {/* Who do you need? */}
       <Controller
-        name="whoDoYouNeed"
+        name="who_do_you_need"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="whoDoYouNeed"
+            id="who_do_you_need"
             select
             label="Who do you need?"
             variant="outlined"
