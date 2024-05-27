@@ -127,18 +127,13 @@ class AuthController extends Controller
     public function logoutUser(Request $request)
     {
        
-        Auth::guard('web')->logout();
-        // Invalidate the session\
-        $request->user()->tokens()->delete();
-        $request->session()->invalidate();
-
-        // Regenerate the CSRF token
-        $request->session()->regenerateToken();
-        $cookie = Cookie::forget('XSRF-TOKEN');
+        $request->user()->tokens()->each(function ($token, $key) {
+            $token->delete();
+        });
         return response()->json([
-            'status' => true,
-            'message' => 'Logged out'
-        ])->withCookie($cookie);
+                'status' => true,
+                'message' => 'Logged out'
+        ]);
     }
 
     /**

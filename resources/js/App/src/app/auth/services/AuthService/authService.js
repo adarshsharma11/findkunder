@@ -208,36 +208,26 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   logout = () => {
-    this.setSession(null);
-    this.emit("onLogout", "Logged out");
+    return new Promise((resolve, reject) => {
+      axios
+        .post(authServiceConfig.signOut)
+        .then((response) => {
+          if (response.data.status) {
+            this.setSession(null);
+            this.emit("onLogout", "Logged out");
+          } else {
+            this.setSession(null);
+            this.emit("onLogout", "Logged out");
+            reject(new Error("Failed to login with token."));
+          }
+        })
+        .catch((error) => {
+          this.setSession(null);
+          this.emit("onLogout", "Logged out");
+          reject(new Error("Failed to login with token."));
+        });
+    });
   };
-
-  // logout = () => {
-  //   return new Promise((resolve, reject) => {
-  //     axios
-  //       .post(authServiceConfig.signOut)
-  //       .then((response) => {
-  //         if (response.data.status) {
-  //           this.setSession(null);
-  //           this.emit("onLogout", "Logged out");
-  //           const pastDate = new Date(0).toUTCString();
-  //           document.cookie = "XSRF-TOKEN=; expires=" + pastDate + "; path=/";
-  //           document.cookie =
-  //             "laravel_session=; expires=" + pastDate + "; path=/";
-  //           return;
-  //         } else {
-  //           this.setSession(null);
-  //           this.emit("onLogout", "Logged out");
-  //           reject(new Error("Failed to login with token."));
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         this.setSession(null);
-  //         this.emit("onLogout", "Logged out");
-  //         reject(new Error("Failed to login with token."));
-  //       });
-  //   });
-  // };
 
   isAuthTokenValid = (access_token, expirationTime) => {
     if (!access_token || !expirationTime) {
