@@ -14,6 +14,7 @@ import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
+import { getAssignLeadsProfiles } from "../store/leadsSlice";
 import {
   getProduct,
   newProduct,
@@ -69,6 +70,25 @@ function Lead(props) {
 
     updateProductState();
   }, [dispatch, routeParams]);
+
+
+  const getContactPersons = async (formData) => {
+    try {
+      const response = await dispatch(getAssignLeadsProfiles(formData));
+      console.log(response, 'RRRRR');
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  }
+
+  useEffect(() => {
+    const data = {
+     locationId: '1'
+    }
+    getContactPersons();
+  }, []);
+
+
 
   useEffect(() => {
     if (!product) {
