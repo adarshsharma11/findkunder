@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
 import moment from "moment";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -28,8 +27,6 @@ import LeadsCollapseMenu from "../../../shared-components/leads/LeadsCollapseMen
 
 function LeadsTable(props) {
   const dispatch = useDispatch();
-  const methods = useFormContext();
-  const { setValue } = methods;
   const { getContactPersons, setLeadId, isAdmin } = props;
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
@@ -90,17 +87,7 @@ function LeadsTable(props) {
   }
 
   function handleClick(item) {
-    const params = {
-      locationId: item.location.id
-    }
-    if (item?.user_id) {
-      setValue('person_id', item?.user_id);
-    }
-    if (item?.status && item?.status !== '0') {
-      setValue('status', item?.status);
-    }
-    setLeadId(item.id);
-    getContactPersons(params);
+    props.navigate(`/leads/${item.id}`);
   }
 
   function handleCheck(event, id) {

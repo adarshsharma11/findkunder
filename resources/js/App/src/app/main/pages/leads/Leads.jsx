@@ -19,12 +19,10 @@ import { useSelector } from "react-redux";
 import LeadsTable from "./LeadsTable";
 
 const defaultValues = {
-  person_id: "",
   status: "",
 };
 
 function Leads() {
-  const [ openAssignPersonDialog, setOpenAssignPersonDialog ] = useState(false);
   const [ assignLeadProfiles, setAssignLeadProfiles ] = useState(false);
   const user = useSelector(selectUser);
   const isAdmin = user?.role === authRoles.admin[0];
@@ -35,9 +33,6 @@ function Leads() {
     defaultValues,
     resolver: yupResolver(assignPersonSchema),
   });
-  const handleAssignPersonDialog = () => {
-    setOpenAssignPersonDialog(!openAssignPersonDialog);
-  };
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const getContactPersons = async (formData) => {
@@ -45,7 +40,6 @@ function Leads() {
       const response = await dispatch(getAssignLeadsProfiles(formData));
       if (response?.payload) {
         setAssignLeadProfiles(response?.payload);
-        handleAssignPersonDialog();
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -58,7 +52,6 @@ function Leads() {
       if (response?.payload) {
         dispatch(showMessage({ message: "Person assigned successfully!" }));
         dispatch(getProducts()).then(() => {});
-        handleAssignPersonDialog();
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -72,9 +65,6 @@ function Leads() {
       content={<LeadsTable getContactPersons={getContactPersons} setLeadId={setLeadId} isAdmin={isAdmin} />}
       scroll={isMobile ? "normal" : "content"}
     />
-    {openAssignPersonDialog && 
-     <AssignPersonDialog open={openAssignPersonDialog} onClose={handleAssignPersonDialog} assignLeadProfiles={assignLeadProfiles} assignContactPerson={assignContactPerson} leadId={leadId} />
-    }
    </FormProvider>
   );
 }

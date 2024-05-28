@@ -211,13 +211,13 @@ export const additionalInfoSchema = yup.object().shape({
   do_not_contact: yup.string(),
 });
 
+// export const assignPersonSchema = yup.object().shape({
+//   status: yup
+//     .string()
+//     .required("You must select a status")
+//     .oneOf(["0", "1", "2"], "Invalid status value"),  
+// });
+
 export const assignPersonSchema = yup.object().shape({
-  person_id: yup
-    .string()
-    .required("You must enter a contact person")
-    .max(255, "Last name must not exceed 255 characters"),
-  status: yup
-    .string()
-    .required("You must select a status")
-    .oneOf(["0", "1", "2"], "Invalid status value"),  
+  status: yup.string().required("You must enter status"),
 });

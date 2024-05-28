@@ -76,6 +76,21 @@ class LeadController extends Controller
         return response()->json(['message' => 'Lead created successfully', 'lead' => $lead], 201);
     }
 
+      /**
+     * Show the details of a specific lead.
+     *
+     * @param  \App\Models\Lead  $lead
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $lead = Lead::with(['location:id,name', 'customerType:id,name', 'user', 'categories:id,name'])
+                    ->find($id);
+        if (!$lead) {
+            return response()->json(['error' => 'Lead not found'], 404);
+        }
+        return response()->json($lead);
+    }
         /**
      * Update the specified resource in storage.
      *

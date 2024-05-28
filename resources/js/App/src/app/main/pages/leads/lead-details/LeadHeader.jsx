@@ -58,7 +58,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/customer-locations"
+            to="/leads"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -66,7 +66,7 @@ function ProductHeader(props) {
                 ? "heroicons-outline:arrow-sm-left"
                 : "heroicons-outline:arrow-sm-right"}
             </FuseSvgIcon>
-            <span className="flex mx-4 font-medium">Locations</span>
+            <span className="flex mx-4 font-medium">Leads</span>
           </Typography>
         </motion.div>
       </div>
@@ -108,7 +108,7 @@ function ProductHeader(props) {
               {name || "New Customer Locations"}
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Customer Location Details
+              Lead Details
             </Typography>
           </motion.div>
         </div>

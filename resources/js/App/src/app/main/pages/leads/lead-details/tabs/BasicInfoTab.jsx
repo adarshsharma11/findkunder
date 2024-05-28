@@ -1,31 +1,11 @@
-import TextField from "@mui/material/TextField";
-import { Controller, useFormContext } from "react-hook-form";
+
+import LeadDetails from "../components/LeadDetails";
 
 function BasicInfoTab(props) {
-  const methods = useFormContext();
-  const { control, formState } = methods;
-  const { errors } = formState;
-
+  const { data } = props;
   return (
     <div>
-      <Controller
-        name="name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            error={!!errors.name}
-            required
-            helperText={errors?.name?.message}
-            label="Customer location"
-            autoFocus
-            id="name"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
+      <LeadDetails data={data} />
     </div>
   );
 }

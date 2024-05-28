@@ -2,18 +2,18 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getProduct = createAsyncThunk(
-  "customer/customerLocation/getCustomerLocation",
+  "customer/customerLead/getCustomerLead",
   async (productId) => {
-    const response = await axios.get(`/api/customerLocations/${productId}`);
+    const response = await axios.get(`/api/leads/${productId}`);
     const data = await response.data;
     return data === undefined ? null : data;
   }
 );
 
 export const removeProduct = createAsyncThunk(
-  "customer/customerLocation/removeCustomerLocation",
+  "customer/customerLead/removeCustomerLead",
   async (id, { dispatch, getState }) => {
-    const response = await axios.delete(`/api/customerLocations/${id}`);
+    const response = await axios.delete(`/api/leads/${id}`);
     const data = await response.data;
     return data;
   }
@@ -49,7 +49,7 @@ const customerLeadSlice = createSlice({
       reducer: (state, action) => action.payload,
       prepare: (event) => ({
         payload: {
-          name: "",
+          status: "",
         },
       }),
     },

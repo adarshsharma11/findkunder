@@ -23,7 +23,9 @@ import {
 import reducer from "../store";
 import ProductHeader from "./LeadHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-import { createCustomerTypeSchema } from "../../../../schemas/validationSchemas";
+import AssignContactTab from "./tabs/AssignContact";
+import { assignPersonSchema } from "../../../../schemas/validationSchemas";
+
 
 function Lead(props) {
   const dispatch = useDispatch();
@@ -36,7 +38,7 @@ function Lead(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(createCustomerTypeSchema),
+    resolver: yupResolver(assignPersonSchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
@@ -106,16 +108,16 @@ function Lead(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no such contact persons!
+          There is no such leads!
         </Typography>
         <Button
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/contact-person"
+          to="/leads"
           color="inherit"
         >
-          Go to Contact Person Page
+          Go to leads Page
         </Button>
       </motion.div>
     );
@@ -148,10 +150,14 @@ function Lead(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
+              <Tab className="h-64" label="Assign Contact" />
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab />
+                <BasicInfoTab data={product} />
+              </div>
+              <div className={tabValue !== 1 ? "hidden" : ""}>
+                <AssignContactTab />
               </div>
             </div>
           </>
