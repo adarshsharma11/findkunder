@@ -36,7 +36,7 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
         Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
-        Route::post('/leads/get-profiles', [AssignLeadController::class, 'getUsersByLocation']);
+        Route::post('/leads/get-profiles', [AssignLeadController::class, 'getRelevantLeadProfiles']);
         Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 

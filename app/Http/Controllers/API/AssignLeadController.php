@@ -5,31 +5,32 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Models\User;
+use App\Services\LeadMatchingService;
+use App\Models\Lead;
 
 class AssignLeadController extends Controller
 {
+
+    protected $leadMatchingService;
+
+    public function __construct(LeadMatchingService $leadMatchingService)
+    {
+        $this->leadMatchingService = $leadMatchingService;
+    }
     /**
      * Get user profiles based on location ID.
      *
      * @param  int  $locationId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUsersByLocation(Request $request)
+    public function getRelevantLeadProfiles(Request $request)
     {
-        $locationId = $request->input("locationId");
-        $customers = Customer::whereHas('customerLocations', function ($query) use ($locationId) {
-            $query->where('customer_locations.id', $locationId);
-        })->get();
-        
-        // Extract user profiles from customers
-        $uniqueUserIds = $customers->pluck('user')->flatten()->reject(function ($user) {
-            return $user->hasRole('admin');
-        })->pluck('id')->unique();
-
-        // Retrieve the user profiles based on unique IDs
-        $userProfiles = User::whereIn('id', $uniqueUserIds)->get();
-    
-        return response()->json($userProfiles);
+        $leadId = $request->input('lead_id');
+        $lead = Lead::find($leadId);
+        if (!$lead) {
+            return response()->json(['error' => 'Lead not found'], 404);
+        }
+        $matches = $this->leadMatchingService->findBestMatches($lead);    
+        return response()->json($matches);
     }
 }

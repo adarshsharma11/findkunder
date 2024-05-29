@@ -22,6 +22,8 @@ const leadStatus = [
  ]
 function AssignContactTab(props) {
   const methods = useFormContext();
+  const { data } = props;
+  const { best, average, worse } = data;
   const dispatch = useDispatch();
   const contactMethods = useForm({
     mode: "onChange",
@@ -55,24 +57,25 @@ function AssignContactTab(props) {
           //value={selectedCustomerTypes}
           render={({ field: { onChange, value } }) => (
             <div className="mt-8 mb-16">
-              {defaultData &&
-                defaultData?.map((category) => (
-                  <div key={category.id}>
+              {best &&
+                best?.map((customer) => (
+                  <div key={customer.customer.id}>
                     <FormControlLabel
                       control={
                         <Checkbox
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(category.id)
-                              ? [...selectedCustomerTypes, category.id]
-                              : selectedCustomerTypes.filter((id) => id !== category.id);
+                            const customerId = customer.customer.id;
+                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(customerId)
+                              ? [...selectedCustomerTypes, customerId]
+                              : selectedCustomerTypes.filter((id) => id !== customerId);
                               setSelectedCutomerTypes(updatedCategories);
                             onChange(updatedCategories);
                           }}
-                          checked={selectedCustomerTypes.includes(category.id)}
+                          checked={selectedCustomerTypes.includes(customer.customer.id)}
                         />
                       }
-                      label={category.name}
+                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
                     />
                   </div>
                 ))}
@@ -89,29 +92,29 @@ function AssignContactTab(props) {
           //value={selectedLocations}
           render={({ field: { onChange, value } }) => (
             <div className="mt-8 mb-16">
-              {defaultData &&
-                defaultData?.map((category) => (
-                  <div key={category.id}>
+              {average &&
+                average?.map((customer) => (
+                  <div key={customer.customer.id}>
                     <FormControlLabel
                       control={
                         <Checkbox
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const locationId = category.id;
+                          const customerId = customer.customer.id;
                           let updatedLocations;
-                          if (isChecked && !selectedLocations.includes(category.id)) {
-                            updatedLocations = [...selectedLocations, category.id];
+                          if (isChecked && !selectedLocations.includes(customerId)) {
+                            updatedLocations = [...selectedLocations, customerId];
                           } else {
-                            updatedLocations = selectedLocations.filter((id) => id !== locationId);
+                            updatedLocations = selectedLocations.filter((id) => id !== customerId);
                           }
                           setSelectedLocations(updatedLocations);
                           onChange(updatedLocations);
                           //trigger("customerLocations");
                         }}
-                        checked={selectedLocations.includes(category.id)}
+                        checked={selectedLocations.includes(customer.customer.id)}
                         />
                       }
-                      label={category.name}
+                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
                     />
                   </div>
                 ))}
@@ -127,26 +130,27 @@ function AssignContactTab(props) {
           defaultValue={[]}
           render={({ field: { onChange, value } }) => (
             <div className="mt-8 mb-16">
-              {defaultData &&
-                defaultData?.map((category) => (
-                  <div key={category.id}>
+              {worse &&
+                worse?.map((customer) => (
+                  <div key={customer.customer.id}>
                     <FormControlLabel
                       control={
                         <Checkbox
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const updatedCategories = isChecked  && !selectedCategories.includes(category.id)
-                            ? [...selectedCategories, category.id]
+                          const customerId = customer.customer.id;
+                          const updatedCategories = isChecked  && !selectedCategories.includes(customerId)
+                            ? [...selectedCategories, customerId]
                             : selectedCategories.filter(
                                 (id) => id !== category.id
                               );
                           setSelectedCategories(updatedCategories);
                           onChange(updatedCategories);
                         }}
-                        checked={selectedCategories.includes(category.id)}
+                        checked={selectedCategories.includes(customer.customer.id)}
                         />
                       }
-                      label={category.name}
+                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
                     />
                   </div>
                 ))}

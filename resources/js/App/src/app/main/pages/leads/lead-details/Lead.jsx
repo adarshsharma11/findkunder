@@ -36,6 +36,7 @@ function Lead(props) {
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
+  const [assignLeadsData, setAssignLeadsData] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
@@ -43,10 +44,10 @@ function Lead(props) {
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
+  const { productId } = routeParams;
 
   useDeepCompareEffect(() => {
     function updateProductState() {
-      const { productId } = routeParams;
 
       if (productId === "new") {
         /**
@@ -75,18 +76,22 @@ function Lead(props) {
   const getContactPersons = async (formData) => {
     try {
       const response = await dispatch(getAssignLeadsProfiles(formData));
-      console.log(response, 'RRRRR');
+      if (response.payload) {
+        setAssignLeadsData(response.payload);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   }
 
   useEffect(() => {
-    const data = {
-     locationId: '1'
-    }
-    getContactPersons();
-  }, []);
+    if (product && productId) {
+      const param = {
+        lead_id: productId,
+      }
+    getContactPersons(param);
+  }
+  }, [product, productId]);
 
 
 
@@ -149,7 +154,7 @@ function Lead(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new")
+      routeParams.productId !== "new") || !assignLeadsData
   ) {
     return <FuseLoading />;
   }
@@ -177,7 +182,7 @@ function Lead(props) {
                 <BasicInfoTab data={product} />
               </div>
               <div className={tabValue !== 1 ? "hidden" : ""}>
-                <AssignContactTab />
+                <AssignContactTab data={assignLeadsData}/>
               </div>
             </div>
           </>

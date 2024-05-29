@@ -24,7 +24,7 @@ class Customer extends Model
 
     public function person()
     {
-        return $this->belongsTo(ContactPerson::class);
+        return $this->belongsTo(ContactPerson::class, 'person_id');
     }
     public function user()
     {
