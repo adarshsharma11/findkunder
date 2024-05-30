@@ -4,18 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Customer;
-use App\Services\LeadMatchingService;
 use App\Models\Lead;
 
 class AssignLeadController extends Controller
 {
-
-    protected $leadMatchingService;
-
-    public function __construct(LeadMatchingService $leadMatchingService)
+    public function __construct()
     {
-        $this->leadMatchingService = $leadMatchingService;
+
     }
     /**
      * Get user profiles based on location ID.
@@ -30,7 +25,7 @@ class AssignLeadController extends Controller
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
         }
-        $matches = $this->leadMatchingService->findBestMatches($lead);    
+        $matches = $lead->findBestMatches();    
         return response()->json($matches);
     }
 }
