@@ -4,12 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    use HasRoles;
     /**
      * Run the database seeds.
      */
@@ -29,7 +27,5 @@ class RoleSeeder extends Seeder
             'name' => 'staff',
             'guard_name' => 'web',
         ]);
-
-        $adminRole->givePermissionTo('all');
     }
 }
