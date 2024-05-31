@@ -3,9 +3,11 @@ import _ from "@lodash";
 import Paper from "@mui/material/Paper";
 import HeroBox from "../../shared-components/HeroBox";
 import InquiryStepForm from "./InquiryStepForm";
+import { useCustomersCount } from "../../CustomersCountContext";
 
 
 function InquiryPage() {
+  const { customersCount, isLoading } = useCustomersCount();
 
   return (
     <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-1 min-w-0">
@@ -24,7 +26,7 @@ function InquiryPage() {
             <InquiryStepForm />
         </div>
       </Paper>
-     <HeroBox />
+     <HeroBox count={customersCount} isLoading={isLoading} />
     </div>
   );
 }

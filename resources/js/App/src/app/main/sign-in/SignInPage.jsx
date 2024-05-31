@@ -16,6 +16,7 @@ import _ from "@lodash";
 import Paper from "@mui/material/Paper";
 import { useAuth } from "../../auth/AuthContext";
 import AuthService from "../../auth/services/AuthService";
+import { useCustomersCount } from "../../CustomersCountContext";
 
 import HeroBox from "../../shared-components/HeroBox";
 
@@ -40,6 +41,7 @@ const defaultValues = {
 };
 
 function SignInPage() {
+  const { customersCount, isLoading: isLoadingCustomersCount } = useCustomersCount();
   const { control, formState, handleSubmit, setError, setValue } = useForm({
     mode: "onChange",
     defaultValues,
@@ -171,7 +173,7 @@ function SignInPage() {
           </form>
         </div>
       </Paper>
-     <HeroBox />
+     <HeroBox count={customersCount} isLoading={isLoadingCustomersCount} />
     </div>
   );
 }

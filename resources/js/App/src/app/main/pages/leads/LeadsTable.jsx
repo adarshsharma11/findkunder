@@ -24,6 +24,7 @@ import {
 } from "./store/leadsSlice";
 import LeadsTableHead from "./LeadsTableHead";
 import LeadsCollapseMenu from "../../../shared-components/leads/LeadsCollapseMenu";
+import PriorityStatus from "./lead-details/components/PriorityStatus";
 
 function LeadsTable(props) {
   const dispatch = useDispatch();
@@ -144,29 +145,6 @@ function LeadsTable(props) {
     );
   }
 
-  const renderPriorityStatus = (priority) => {
-    let buttonColor;
-    let buttonText;
-    switch (priority) {
-      case "2":
-        buttonColor = "success";
-        buttonText = "Complete";
-        break;
-      case "1":
-        buttonColor = "warning";
-        buttonText = "Inprogress";
-        break;
-      default:
-        buttonColor = "secondary";
-        buttonText = "New";
-    }
-    return (
-      <Button variant="contained" color={buttonColor} size="small">
-        {buttonText}
-      </Button>
-    );
-  }
-
   return (
     <div className="w-full flex flex-col min-h-full">
       <FuseScrollbars className="grow overflow-x-auto">
@@ -245,7 +223,7 @@ function LeadsTable(props) {
                         scope="row"
                         align="right"
                         >
-                        {renderPriorityStatus(n?.status)}
+                        <PriorityStatus priority={n?.status} />
                         </TableCell>
                     }
                     <TableCell
@@ -343,7 +321,7 @@ function LeadsTable(props) {
                            </FuseSvgIcon>
                          }
                        >
-                         {n.user_id && n.user_id === "" ? 'Assign Person' : 'Update Assigned Person' }
+                         {'Assign Contact Person' }
                        </Button>
                      </TableCell>
                     }

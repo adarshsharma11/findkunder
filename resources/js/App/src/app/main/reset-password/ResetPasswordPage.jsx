@@ -13,6 +13,7 @@ import Paper from "@mui/material/Paper";
 import AuthService from "../../auth/services/AuthService";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
+import { useCustomersCount } from "../../CustomersCountContext";
 import HeroBox from "../../shared-components/HeroBox";
 
 /**
@@ -34,6 +35,7 @@ const defaultValues = {
 };
 
 function ResetPasswordPage() {
+  const { customersCount, isLoading: isLoadingCustomersCount } = useCustomersCount();
   const { token } = useParams();
   const dispatch = useDispatch();
   const { control, formState, handleSubmit, reset, getValues } = useForm({
@@ -150,7 +152,7 @@ function ResetPasswordPage() {
           )}
         </div>
       </Paper>
-    <HeroBox />
+    <HeroBox count={customersCount} isLoading={isLoadingCustomersCount} />
     </div>
   );
 }

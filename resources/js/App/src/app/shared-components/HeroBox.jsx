@@ -4,23 +4,9 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import Avatar from '@mui/material/Avatar';
 import AuthService from '../auth/services/AuthService';
 
-function HeroBox() {
-  const [customersCount, setCustomersCount] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+function HeroBox(props) {
+  const { isLoading, count } = props;
 
-  useEffect(() => {
-    // Fetch the count of customers
-    AuthService.getCustomersCount()
-      .then(response => {
-        setCustomersCount(response.data.profileCount);
-      })
-      .catch(error => {
-        console.error('Error fetching customers count:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []); 
 
   return (
     <Box
@@ -81,7 +67,7 @@ function HeroBox() {
           <div>our community</div>
         </div>
         <div className="mt-24 text-lg tracking-tight leading-6 text-gray-400">
-        Join {customersCount !== null ? customersCount : 'X'} companies who are using our marketing network to attract relevant leads more affordably. 
+        Join {count !== null ? count : ' '} companies who are using our marketing network to attract relevant leads more affordably. 
         </div>
         <div className="flex items-center mt-32">
           <AvatarGroup
