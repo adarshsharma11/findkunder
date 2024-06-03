@@ -5,9 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Controller, useFormContext } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import { contactSchema } from "../../../../../schemas/validationSchemas";
 
 const leadStatusData = [
   { label: 'Completed', value: '2' },
