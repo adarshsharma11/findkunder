@@ -37,6 +37,7 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
         Route::apiResource('/companies', CompanyController::class);
         Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
         Route::post('/leads/get-profiles', [AssignLeadController::class, 'getRelevantLeadProfiles']);
+        Route::post('/lead/assign-profiles', [AssignLeadController::class, 'assignLeadToCustomers']);
         Route::put('/update-profile', [AuthController::class, 'update']);
         Route::apiResource('/contact-person', ContactPersonController::class);
         Route::apiResource('/customers', CustomerController::class); 

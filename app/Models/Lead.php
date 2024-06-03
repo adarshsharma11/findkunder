@@ -51,6 +51,11 @@ class Lead extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class, 'customer_lead');
+    }
+
     public function findBestMatches()
     {
         $customers = Customer::with(['person', 'customerTypes', 'categories'])->get();

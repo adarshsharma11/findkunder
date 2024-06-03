@@ -40,9 +40,15 @@ function ProductHeader(props) {
   }
 
   function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
+    const { assigned_customers, id } = getValues();
+    const params = {
+      lead_id: id,
+      assigned_customers: assigned_customers
+    }
+    console.log(params, 'RREEEE');
+    dispatch(saveProduct(params)).then(() => {
       dispatch(
-        showMessage({ message: "Customer locations updated successfully!" })
+        showMessage({ message: "Profile assigned to lead successfully!" })
       );
     });
   }

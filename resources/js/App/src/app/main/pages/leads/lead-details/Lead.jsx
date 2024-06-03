@@ -27,6 +27,10 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
 import AssignContactTab from "./tabs/AssignContact";
 import { assignPersonSchema } from "../../../../schemas/validationSchemas";
 
+const defaultValues = {
+  status: "",
+  assigned_customers: [],
+}
 
 function Lead(props) {
   const dispatch = useDispatch();
@@ -39,7 +43,7 @@ function Lead(props) {
   const [assignLeadsData, setAssignLeadsData] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues,
     resolver: yupResolver(assignPersonSchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
@@ -182,7 +186,7 @@ function Lead(props) {
                 <BasicInfoTab data={product} />
               </div>
               <div className={tabValue !== 1 ? "hidden" : ""}>
-                <AssignContactTab data={assignLeadsData}/>
+                <AssignContactTab data={assignLeadsData} leadStatus={product?.status}/>
               </div>
             </div>
           </>

@@ -20,10 +20,10 @@ export const removeProduct = createAsyncThunk(
 );
 
 export const saveProduct = createAsyncThunk(
-  "contact/customerLead/saveCustomerLead",
+  "contact/customerLead/assignCustomers",
   async (productData, { dispatch, getState }) => {
     const response = await axios.post(
-      `/api/leads/${productData.id}?_method=PUT`,
+      `/api/lead/assign-profiles`,
       productData
     );
     const data = await response.data;

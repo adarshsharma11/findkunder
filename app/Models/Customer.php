@@ -42,5 +42,9 @@ class Customer extends Model
     {
         return $this->belongsToMany(CustomerLocation::class);
     }
+    public function leads()
+    {
+        return $this->belongsToMany(Lead::class, 'customer_lead');
+    }
     
 }
