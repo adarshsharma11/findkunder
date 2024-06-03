@@ -50,7 +50,7 @@ class LeadController extends Controller
             'street' => 'required|string',
             'city' => 'required|string',
             'who_do_you_need'=> 'required|string',
-            'company_description'=> 'required|string',
+            'company_description'=> 'nullable|string',
             'postal_code' => 'required|string',
             'customer_type_id' => 'required|exists:customer_types,id',
             'location_id' => 'required|exists:customer_locations,id',

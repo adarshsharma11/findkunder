@@ -18,6 +18,7 @@ import AuthService from "../../auth/services/AuthService";
 import { signUpSchema } from "../../schemas/validationSchemas";
 import HeroBox from '../../shared-components/HeroBox';
 import { useAuth } from "../../auth/AuthContext";
+import { useCustomersCount } from "../../CustomersCountContext";
 
 const defaultValues = {
   email: "",
@@ -27,6 +28,7 @@ const defaultValues = {
 };
 
 function SignUpPage() {
+  const { customersCount, isLoading: isLoadingCustomersCount } = useCustomersCount();
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     defaultValues,
@@ -182,7 +184,7 @@ function SignUpPage() {
           </form>
         </div>
       </Paper>
-     <HeroBox />
+     <HeroBox count={customersCount} isLoading={isLoadingCustomersCount}/>
     </div>
   );
 }

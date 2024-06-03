@@ -45,39 +45,67 @@ class Lead extends Model
     {
         return $this->belongsToMany(Category::class, 'lead_category');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getMatchingScore(Customer $customer)
+    public function customers()
     {
-        $score = 0;
-        // Location match
-        // $leadLocationId = $this->location_id; // Assuming location_id is the foreign key column
-        // die($leadLocationId);
-        // $customerLocationIds = $customer->customerLocations->pluck('id')->toArray();
-        // if (in_array($leadLocationId, $customerLocationIds)) {
-        //     $score += 30;
-        // }
+        return $this->belongsToMany(Customer::class, 'customer_lead');
+    }
 
-        // Customer type match
-        $leadCustomerTypes = $this->customerType->pluck('id')->toArray();
-        $customerCustomerTypes = $customer->customerTypes->pluck('id')->toArray();
-        $commonCustomerTypes = array_intersect($leadCustomerTypes, $customerCustomerTypes);
-        $score += count($commonCustomerTypes) * 10;
+    public function findBestMatches()
+    {
+        $customers = Customer::with(['person', 'customerTypes', 'categories'])->get();
+        $groupedMatches = [
+            'best' => [],
+            'average' => [],
+            'worse' => []
+        ];
 
-        // Category match
-        $leadCategories = $this->categories->pluck('id')->toArray();
-        $customerCategories = $customer->categories->pluck('id')->toArray();
-        $commonCategories = array_intersect($leadCategories, $customerCategories);
-        $score += count($commonCategories) * 5;
+        foreach ($customers as $customer) {
+            $score = $this->getMatchingScore($customer);
+            $match = [
+                'customer' => $customer,
+                'score' => $score,
+            ];
 
-        // Physical attendance requirement
-        if ($this->physical_attendance_required && $customer->physical_attendance_available) {
-            $score += 20;
+            if ($score >= 15) {
+                $groupedMatches['best'][] = $match;
+            } elseif ($score >= 5 && $score < 15) {
+                $groupedMatches['average'][] = $match;
+            } else {
+                $groupedMatches['worse'][] = $match;
+            }
         }
 
+        return $groupedMatches;
+    }
+
+    public function getMatchingScore($customer)
+    {
+        $score = 0;
+
+        // Ensure we have collections to work with
+        $leadCustomerTypes = $this->customerType->pluck('id');
+        $customerCustomerTypes = $customer->customerTypes->pluck('id');
+        $leadCategories = $this->categories->pluck('id');
+        $customerCategories = $customer->categories->pluck('id');
+
+        // Calculate the score based on common customer types
+        $commonCustomerTypesCount = $leadCustomerTypes->intersect($customerCustomerTypes)->count();
+        $score += $commonCustomerTypesCount * 5;
+
+        // Calculate the score based on common categories
+        $commonCategoriesCount = $leadCategories->intersect($customerCategories)->count();
+        $score += $commonCategoriesCount  * 5;
+
+        // Add score for physical attendance requirement
+        if ($this->physical_attendance_required && $customer->physical_attendance_available) {
+            $score += 10;
+        }
 
         return $score;
     }

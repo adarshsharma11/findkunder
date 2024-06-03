@@ -68,7 +68,7 @@ export const contactSchema = yup.object().shape({
   phone: yup
     .string()
     .required("You must enter a phone")
-    .max(20, "Phone must not exceed 20 characters"),
+    .matches(/^\d{10}$/, "Phone number must be exactly 10 digits"),
   comment: yup
     .string()
     .nullable()
@@ -173,7 +173,7 @@ export const inquiryContactSchema = yup.object().shape({
   contact_phone: yup
     .string()
     .required("You must enter a phone")
-    .max(10, "Phone must not exceed 10 characters"),
+    .matches(/^\d{10}$/, "Phone number must be exactly 10 digits"),
 });
 
 export const inquiryCompanySchema = yup.object().shape({
@@ -211,13 +211,7 @@ export const additionalInfoSchema = yup.object().shape({
   do_not_contact: yup.string(),
 });
 
-// export const assignPersonSchema = yup.object().shape({
-//   status: yup
-//     .string()
-//     .required("You must select a status")
-//     .oneOf(["0", "1", "2"], "Invalid status value"),  
-// });
-
 export const assignPersonSchema = yup.object().shape({
-  status: yup.string().required("You must enter status"),
+  status: yup.string().optional(),
+  assigned_customers: yup.array().of(yup.string()).required("At least one customer must be selected"),
 });

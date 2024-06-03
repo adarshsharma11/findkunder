@@ -183,8 +183,8 @@ function CompanyInfo(props) {
             {...field}
             className="mt-8 mb-16"
             id="city"
-            error={!!errors.city}
-            helperText={errors?.city?.message}
+            error={!!errors.company_description}
+            helperText={errors?.company_description?.message}
             label="Tell us a bit about your company"
             variant="outlined"
             fullWidth

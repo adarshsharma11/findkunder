@@ -1,195 +1,93 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import InputLabel from "@mui/material/InputLabel";
-import { Controller, useFormContext } from "react-hook-form";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { Controller, useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { contactSchema } from "../../../../../schemas/validationSchemas";
 
-const leadStatus = [
-  {
-   label: 'Completed',
-   value: '2',
-  },
-  {
-   label: 'In Progress',
-   value: '1',
-  }
- ]
+const leadStatusData = [
+  { label: 'Completed', value: '2' },
+  { label: 'In Progress', value: '1' },
+  { label: 'New', value: '0' },
+];
+
 function AssignContactTab(props) {
   const methods = useFormContext();
-  const { data } = props;
+  const { data, leadStatus } = props;
   const { best, average, worse } = data;
   const dispatch = useDispatch();
-  const contactMethods = useForm({
-    mode: "onChange",
-    defaultValues: {},
-    resolver: yupResolver(contactSchema),
-  });
-  const {
-    categories,
-    customerTypes,
-    customerLocations,
-  } = props;
-  const { control, formState, setValue, trigger } = methods;
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedLocations, setSelectedLocations] = useState([]);
-  const [selectedCustomerTypes, setSelectedCutomerTypes] = useState([]);
-  const { errors } = formState;
-  const defaultData = [{
-    id: 1,
-    name: 'test'
-  }]
+  const { control, setValue } = methods;
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+
+  useEffect(() => {
+    const preselectedCustomers = [...best, ...average, ...worse]
+      .filter(customer => customer.lead_assigned)
+      .map(customer => customer.customer.id);
+    setSelectedCustomers(preselectedCustomers);
+    setValue("assigned_customers", preselectedCustomers);
+    setValue("status", leadStatus);
+  }, [best, average, worse, setValue, leadStatus]);
+
+  const handleCheckboxChange = (e, customerId) => {
+    const isChecked = e.target.checked;
+    const updatedCustomers = isChecked
+      ? [...selectedCustomers, customerId]
+      : selectedCustomers.filter(id => id !== customerId);
+    setSelectedCustomers(updatedCustomers);
+    setValue("assigned_customers", updatedCustomers);
+  };
 
   return (
     <div className="flex flex-col">
-    <div className="flex justify-between w-full space-x-8">
-      <div className="w-full">
-        <InputLabel id="customerTypes-label">Best Match:</InputLabel>
-        <Controller
-          name="customer_types"
-          control={control}
-          defaultValue={[]}
-          //value={selectedCustomerTypes}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {best &&
-                best?.map((customer) => (
-                  <div key={customer.customer.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const customerId = customer.customer.id;
-                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(customerId)
-                              ? [...selectedCustomerTypes, customerId]
-                              : selectedCustomerTypes.filter((id) => id !== customerId);
-                              setSelectedCutomerTypes(updatedCategories);
-                            onChange(updatedCategories);
-                          }}
-                          checked={selectedCustomerTypes.includes(customer.customer.id)}
-                        />
-                      }
-                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        </div>
-        <div className="w-full">
-        <InputLabel id="customerTypes-label">Average match:</InputLabel>
-        <Controller
-          name="customer_locations"
-          control={control}
-          defaultValue={[]}
-          //value={selectedLocations}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {average &&
-                average?.map((customer) => (
-                  <div key={customer.customer.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const customerId = customer.customer.id;
-                          let updatedLocations;
-                          if (isChecked && !selectedLocations.includes(customerId)) {
-                            updatedLocations = [...selectedLocations, customerId];
-                          } else {
-                            updatedLocations = selectedLocations.filter((id) => id !== customerId);
+      <div className="flex justify-between w-full space-x-8">
+        {['Best Match', 'Average Match', 'Worst Match'].map((label, index) => {
+          const group = index === 0 ? best : index === 1 ? average : worse;
+          return (
+            <div key={label} className="w-full">
+              <InputLabel id={`${label.replace(' ', '-').toLowerCase()}-label`}>{label}:</InputLabel>
+              <Controller
+                name="assigned_customers"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <div className="mt-8 mb-16">
+                    {group && group.map((customer) => (
+                      <div key={customer.customer.id}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              onChange={(e) => handleCheckboxChange(e, customer.customer.id)}
+                              checked={selectedCustomers.includes(customer.customer.id)}
+                            />
                           }
-                          setSelectedLocations(updatedLocations);
-                          onChange(updatedLocations);
-                          //trigger("customerLocations");
-                        }}
-                        checked={selectedLocations.includes(customer.customer.id)}
+                          label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
                         />
-                      }
-                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
-                    />
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+              />
             </div>
-          )}
-        />
-        </div>
-        <div className="w-full">
-        <InputLabel id="categories-label">Worst Match:</InputLabel>
-        <Controller
-          name="categories"
-          control={control}
-          defaultValue={[]}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {worse &&
-                worse?.map((customer) => (
-                  <div key={customer.customer.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const customerId = customer.customer.id;
-                          const updatedCategories = isChecked  && !selectedCategories.includes(customerId)
-                            ? [...selectedCategories, customerId]
-                            : selectedCategories.filter(
-                                (id) => id !== category.id
-                              );
-                          setSelectedCategories(updatedCategories);
-                          onChange(updatedCategories);
-                        }}
-                        checked={selectedCategories.includes(customer.customer.id)}
-                        />
-                      }
-                      label={`${customer.customer.person.first_name} ${customer.customer.person.last_name}`}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        </div>
+          );
+        })}
       </div>
       <div className="max-w-3xl">
-      <Controller
-        name="status"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">Status</InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.status}
-              required
-              displayEmpty
-              helperText={errors?.status?.message}
-              id="person_id"
-              variant="outlined"
-              fullWidth
-            >
-              <MenuItem value="" disabled>
-                Select Status
-              </MenuItem>
-              {leadStatus &&
-                leadStatus?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <>
+              <InputLabel id="demo-simple-select-label">Status</InputLabel>
+              <Select {...field} className="mt-8 mb-16" variant="outlined" fullWidth>
+                <MenuItem value="" disabled>Select Status</MenuItem>
+                {leadStatusData && leadStatusData.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                 ))}
-            </Select>
-          </>
-        )}
-      />
+              </Select>
+            </>
+          )}
+        />
       </div>
     </div>
   );

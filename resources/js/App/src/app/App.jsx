@@ -16,6 +16,7 @@ import settingsConfig from "app/configs/settingsConfig";
 import withAppProviders from "./withAppProviders";
 import { AuthProvider } from "./auth/AuthContext";
 import { StepperProvider } from "./InquiryContext";
+import { CustomersCountProvider } from './CustomersCountContext';
 
 // import axios from 'axios';
 /**
@@ -46,6 +47,7 @@ const App = () => {
   return (
     <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
       <FuseTheme theme={mainTheme} direction={langDirection}>
+        <CustomersCountProvider>
         <StepperProvider>
         <AuthProvider>
           <BrowserRouter>
@@ -70,6 +72,7 @@ const App = () => {
           </BrowserRouter>
         </AuthProvider>
         </StepperProvider>
+        </CustomersCountProvider>
       </FuseTheme>
     </CacheProvider>
   );
