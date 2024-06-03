@@ -20,11 +20,12 @@ class AssignLeadController extends Controller
     public function getRelevantLeadProfiles(Request $request)
     {
         $leadId = $request->input('lead_id');
+        $locationId = $request->input('location_id') ?? null;
         $lead = Lead::find($leadId);
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
         }
-        $matches = $lead->findBestMatches();   
+        $matches = $lead->findBestMatches($locationId);   
         foreach ($matches as $matchGroup => &$customers) {
             foreach ($customers as &$match) {
                 $match['lead_assigned'] = CustomerLead::where('customer_id', $match['customer']->id)
