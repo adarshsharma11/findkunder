@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Lead extends Model
 {
@@ -56,7 +57,7 @@ class Lead extends Model
         return $this->belongsToMany(Customer::class, 'customer_lead');
     }
 
-    public function findBestMatches()
+    public function findBestMatches($locationId)
     {
         $customers = Customer::with(['person', 'customerTypes', 'categories'])->get();
         $groupedMatches = [
@@ -66,7 +67,7 @@ class Lead extends Model
         ];
 
         foreach ($customers as $customer) {
-            $score = $this->getMatchingScore($customer);
+            $score = $this->getMatchingScore($customer, $locationId);
             $match = [
                 'customer' => $customer,
                 'score' => $score,
@@ -84,7 +85,7 @@ class Lead extends Model
         return $groupedMatches;
     }
 
-    public function getMatchingScore($customer)
+    public function getMatchingScore($customer, $locationId)
     {
         $score = 0;
 
@@ -105,6 +106,11 @@ class Lead extends Model
         // Add score for physical attendance requirement
         if ($this->physical_attendance_required && $customer->physical_attendance_available) {
             $score += 10;
+        }
+
+        // Add score for location
+        if ($locationId && $this->location_id === $locationId) {
+            $score += 15;
         }
 
         return $score;
