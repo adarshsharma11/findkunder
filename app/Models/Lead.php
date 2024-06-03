@@ -72,9 +72,9 @@ class Lead extends Model
                 'score' => $score,
             ];
 
-            if ($score >= 15) {
+            if ($score >= 25) {
                 $groupedMatches['best'][] = $match;
-            } elseif ($score >= 5 && $score < 15) {
+            } elseif ($score >= 5 && $score < 25) {
                 $groupedMatches['average'][] = $match;
             } else {
                 $groupedMatches['worse'][] = $match;
@@ -109,7 +109,7 @@ class Lead extends Model
 
         // Add score for location
         if ($locationId && $this->location_id === $locationId) {
-            $score += 15;
+            $score += 10;
         }
 
         return $score;
