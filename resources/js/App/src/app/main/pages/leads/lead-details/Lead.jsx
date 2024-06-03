@@ -87,11 +87,11 @@ function Lead(props) {
       console.error("Error submitting form:", error);
     }
   }
-
   useEffect(() => {
     if (product && productId) {
       const param = {
         lead_id: productId,
+        location_id: product?.location_id,
       }
     getContactPersons(param);
   }
