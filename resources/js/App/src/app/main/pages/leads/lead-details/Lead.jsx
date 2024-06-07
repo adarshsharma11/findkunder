@@ -20,11 +20,13 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
+  saveProduct,
 } from "../store/leadSlice";
 import reducer from "../store";
 import ProductHeader from "./LeadHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import AssignContactTab from "./tabs/AssignContact";
+import { showMessage } from "app/store/fuse/messageSlice";
 import { assignPersonSchema } from "../../../../schemas/validationSchemas";
 
 const defaultValues = {
@@ -86,6 +88,21 @@ function Lead(props) {
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+  }
+
+  const updateAssignLeads = async (params) => {
+    dispatch(saveProduct(params)).then(() => {
+      if (product && productId) {
+        const param = {
+          lead_id: productId,
+          location_id: product?.location_id,
+        }
+      getContactPersons(param);
+    }
+      dispatch(
+        showMessage({ message: "Profile assigned to lead successfully!" })
+      );
+    });
   }
   useEffect(() => {
     if (product && productId) {
@@ -181,12 +198,12 @@ function Lead(props) {
               <Tab className="h-64" label="Basic Info" />
               <Tab className="h-64" label="Assign Contact" />
             </Tabs>
-            <div className="p-16 sm:p-24 max-w-3xl">
+            <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab data={product} />
               </div>
               <div className={tabValue !== 1 ? "hidden" : ""}>
-                <AssignContactTab data={assignLeadsData} leadStatus={product?.status}/>
+                <AssignContactTab data={assignLeadsData} leadStatus={product?.status} updateAssignLeads={updateAssignLeads} leadId={productId}/>
               </div>
             </div>
           </>

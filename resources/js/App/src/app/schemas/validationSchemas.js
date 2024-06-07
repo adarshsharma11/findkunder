@@ -213,5 +213,4 @@ export const additionalInfoSchema = yup.object().shape({
 
 export const assignPersonSchema = yup.object().shape({
   status: yup.string().optional(),
-  assigned_customers: yup.array().of(yup.string()).required("At least one customer must be selected"),
 });

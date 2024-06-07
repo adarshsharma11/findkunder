@@ -58,30 +58,19 @@ class Lead extends Model
 
     public function findBestMatches($locationId)
     {
-        $customers = Customer::with(['person', 'customerTypes', 'categories'])->get();
-        $groupedMatches = [
-            'best' => [],
-            'average' => [],
-            'worse' => []
-        ];
+        $customers = Customer::with(['person', 'customerTypes', 'categories', 'company'])->get();
 
         foreach ($customers as $customer) {
             $score = $this->getMatchingScore($customer, $locationId);
-            $match = [
+            $matches[] = [
                 'customer' => $customer,
                 'score' => $score,
             ];
-
-            if ($score >= 25) {
-                $groupedMatches['best'][] = $match;
-            } elseif ($score >= 5 && $score < 25) {
-                $groupedMatches['average'][] = $match;
-            } else {
-                $groupedMatches['worse'][] = $match;
-            }
         }
-
-        return $groupedMatches;
+        usort($matches, function ($a, $b) {
+            return $b['score'] <=> $a['score'];
+        });    
+        return $matches;
     }
 
     public function getMatchingScore($customer, $locationId)

@@ -25,14 +25,11 @@ class AssignLeadController extends Controller
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
         }
-        $matches = $lead->findBestMatches($locationId);   
-        foreach ($matches as $matchGroup => &$customers) {
-            foreach ($customers as &$match) {
-                $match['lead_assigned'] = CustomerLead::where('customer_id', $match['customer']->id)
-                                                      ->where('lead_id', $leadId)
-                                                      ->exists();
-            }
-        } 
+        $matches = $lead->findBestMatches($locationId);
+        foreach ($matches as &$match) {
+            $match['lead_assigned'] = CustomerLead::where('customer_id', $match['customer']->id)
+            ->where('lead_id', $leadId)->exists();
+        }
         return response()->json($matches);
     }
 
@@ -48,37 +45,46 @@ class AssignLeadController extends Controller
         $customerIds = $request->input('assigned_customers');
         $status = $request->input('status');
 
-        $lead = Lead::find($leadId);
+        $lead = Lead::with(['location:id,name', 'customerType:id,name', 'user', 'categories:id,name'])
+        ->find($leadId);
 
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
         }
 
-        $customers = Customer::whereIn('id', $customerIds)->get();
-
         if ($status !== null) {
             $lead->status = $status;
             $lead->save();
         }
-
-        foreach ($customers as $customer) {
-            // Check if the lead is already assigned to the customer
-            if (!CustomerLead::where('customer_id', $customer->id)->where('lead_id', $leadId)->exists()) {
-                CustomerLead::create([
-                    'customer_id' => $customer->id,
-                    'lead_id' => $leadId,
-                ]);
-
-                $person = $customer->person;
-                if ($person && $person->email) {
-                    Mail::send('emails.lead_assigned', ['lead' => $lead], function ($message) use ($person) {
-                        $message->to($person->email)
+        if (!empty($customerIds)) {
+            foreach ($customerIds as $customerId) {
+                // Check if the lead is already assigned to the customer
+                $assignment = CustomerLead::where('customer_id', $customerId)
+                    ->where('lead_id', $leadId)
+                    ->first();
+                if ($assignment) {
+                    // Assignment exists, remove it
+                    $assignment->delete();
+                } else {
+                    // Assignment does not exist, add it
+                    CustomerLead::create([
+                        'customer_id' => $customerId,
+                        'lead_id' => $leadId,
+                    ]);
+    
+                    // Retrieve the customer's person and send email if available
+                    $customer = Customer::with('person')->find($customerId);
+                    $person = $customer->person;
+                    if ($person && $person->email) {
+                        Mail::send('emails.lead_assigned', ['lead' => $lead], function ($message) use ($person) {
+                            $message->to($person->email)
                                 ->subject('New Lead Assigned');
-                    });
+                        });
+                    }
                 }
             }
         }
-
-        return response()->json(['success' => 'Lead assigned to customers successfully']);
+    
+        return response()->json($lead);
     }
 }
