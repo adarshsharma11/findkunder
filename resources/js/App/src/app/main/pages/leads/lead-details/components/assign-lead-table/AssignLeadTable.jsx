@@ -7,6 +7,7 @@ import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import { blue } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -16,8 +17,10 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { showMessage } from "app/store/fuse/messageSlice";
 import AssignLeadTableHead from "./AssignLeadTableHead";
 import AssignLeadsCollapaseMenu from "../../../../../../shared-components/leads/AssignLeadsCollapaseMenu";
+import LoadingButton from "../../../../../../shared-components/button/LoadingButton";
 
 function AssignLeadTable(props) {
   const dispatch = useDispatch();
@@ -26,6 +29,7 @@ function AssignLeadTable(props) {
   const products = assignLeadData;
   const [searchText, setSearchText] = useState("");
   const [expanded, setExpanded] = useState(null);
+  const [loadingState, setLoadingState] = useState({});
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(assignLeadData);
   const [page, setPage] = useState(0);
@@ -74,13 +78,19 @@ function AssignLeadTable(props) {
     setSelected([]);
   }
 
-  function handleClick(item) {
+  async function handleClick(item) {
+    setLoadingState(prevState => ({ ...prevState, [item.id]: true })); // Set isLoading to true before the request
     const params = {
       assigned_customers: [item?.id],
       lead_id: leadId,
+    };
+    try {
+      await updateAssignLeads(params);
+    } catch (error) {
+      dispatch(showMessage({ message: "Something went wrong!", variant: 'error'  }));
+    } finally {
+      setLoadingState(prevState => ({ ...prevState, [item.id]: false })); // Set isLoading to false after the request completes (whether successful or not)
     }
-    updateAssignLeads(params);
-
   }
 
   function handleCheck(event, id) {
@@ -179,7 +189,7 @@ function AssignLeadTable(props) {
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.id}
+                    key={n.customer.id}
                     selected={isSelected}
                   >
                     <TableCell
@@ -255,15 +265,28 @@ function AssignLeadTable(props) {
                        component="th"
                        scope="row"
                      >
-                       <Button
+                       <LoadingButton
                          className="whitespace-nowrap"
                          variant="contained"
-                         color={n?.lead_assigned ? 'success' : 'secondary'}
-                         size="small"
+                         sx={{ m: 1, position: 'relative' }}
+                         color={n?.lead_assigned ? 'warning' : 'success'}
+                         size="large"
+                         isLoading={loadingState[n?.customer?.id] || false}
                          onClick={(event) => handleClick(n?.customer)}
-                       >
-                         { n?.lead_assigned ? 'Unassign' : 'Assign' }
-                       </Button>
+                         disabled={loadingState[n?.customer?.id]}
+                         circularProgressProps={{
+                          sx: {
+                            color: blue[500],
+                            position: 'absolute',
+                            top: '50%',
+                            left: '25%',
+                            marginTop: '-12px',
+                            marginLeft: '-12px',
+                          },
+                        }}
+                         text={n?.lead_assigned ? 'Unassign' : 'Assign'}
+                       />
+                       
                      </TableCell>
                   </TableRow>
                   <TableRow>

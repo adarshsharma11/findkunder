@@ -90,20 +90,20 @@ function Lead(props) {
     }
   }
 
-  const updateAssignLeads = async (params) => {
-    dispatch(saveProduct(params)).then(() => {
+  const updateAssignLeads = (params) => {
+    return dispatch(saveProduct(params)).then(() => {
       if (product && productId) {
         const param = {
           lead_id: productId,
           location_id: product?.location_id,
-        }
-      getContactPersons(param);
-    }
+        };
+        getContactPersons(param);
+      }
       dispatch(
         showMessage({ message: "Profile assigned to lead successfully!" })
       );
     });
-  }
+  };
   useEffect(() => {
     if (product && productId) {
       const param = {
