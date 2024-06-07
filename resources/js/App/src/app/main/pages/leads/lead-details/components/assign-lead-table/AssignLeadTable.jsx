@@ -270,7 +270,7 @@ function AssignLeadTable(props) {
                          variant="contained"
                          sx={{ m: 1, position: 'relative' }}
                          color={n?.lead_assigned ? 'warning' : 'success'}
-                         size="large"
+                         size="small"
                          isLoading={loadingState[n?.customer?.id] || false}
                          onClick={(event) => handleClick(n?.customer)}
                          disabled={loadingState[n?.customer?.id]}
@@ -279,7 +279,7 @@ function AssignLeadTable(props) {
                             color: blue[500],
                             position: 'absolute',
                             top: '50%',
-                            left: '25%',
+                            left: '22%',
                             marginTop: '-12px',
                             marginLeft: '-12px',
                           },
