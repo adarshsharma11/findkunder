@@ -7,7 +7,7 @@ export const companySchema = yup.object().shape({
   company_name: yup
     .string()
     .required("You must enter a company name")
-    .min(5, "The company name must be at least 5 characters"),
+    .min(2, "The company name must be at least 2 characters"),
   cvr: yup
     .string()
     .required("You must enter a CVR")
@@ -68,7 +68,7 @@ export const contactSchema = yup.object().shape({
   phone: yup
     .string()
     .required("You must enter a phone")
-    .matches(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+    .matches(/^\d{8}$/, "Phone number must be exactly 8 digits"),
   comment: yup
     .string()
     .nullable()
@@ -173,7 +173,7 @@ export const inquiryContactSchema = yup.object().shape({
   contact_phone: yup
     .string()
     .required("You must enter a phone")
-    .matches(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+    .matches(/^\d{8}$/, "Phone number must be exactly 10 digits"),
 });
 
 export const inquiryCompanySchema = yup.object().shape({
