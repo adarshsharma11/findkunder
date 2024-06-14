@@ -16,7 +16,6 @@ class AuthService extends FuseUtils.EventEmitter {
       },
       (err) => {
         return new Promise((resolve, reject) => {
-          console.log('EREEEEE', err)
           if (
             err.response.status === 401 &&
             err.config &&
