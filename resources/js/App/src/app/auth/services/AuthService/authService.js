@@ -16,13 +16,15 @@ class AuthService extends FuseUtils.EventEmitter {
       },
       (err) => {
         return new Promise((resolve, reject) => {
+          console.log('EREEEEE', err)
           if (
             err.response.status === 401 &&
             err.config &&
             !err.config.__isRetryRequest && err.response.data.message
           ) {
             // if you ever get an unauthorized response, logout the user
-            this.emit("onAutoLogout", err.response.data.message);
+            const errorMessage = err.response.data.message || "Invalid access_token"
+            this.emit("onAutoLogout", ` ${errorMessage}`);
             this.setSession(null);
           }
           throw err;
