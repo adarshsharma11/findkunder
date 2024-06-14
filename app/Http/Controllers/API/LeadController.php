@@ -7,6 +7,8 @@ use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\CustomerLead;
 use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
@@ -21,9 +23,11 @@ class LeadController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('admin')) {
-            $leads = Lead::with('location:id,name', 'customerType:id,name', 'user')->get();
+            $leads = Lead::with('location:id,name', 'customerType:id,name')->get();
         } else {
-            $leads = Lead::where('user_id', $user->id)->with('location:id,name', 'customerType:id,name', 'user')->get();
+            $customerIds = Customer::where('user_id', $user->id)->pluck('id');
+            $leadIds = CustomerLead::whereIn('customer_id', $customerIds)->pluck('lead_id');
+            $leads = Lead::whereIn('id', $leadIds)->with('location:id,name', 'customerType:id,name')->get();
         }
         return response()->json($leads);
     }

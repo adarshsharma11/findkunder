@@ -26,13 +26,6 @@ const userRows = [
     sort: false,
   },
   {
-    id: "status",
-    align: "left",
-    disablePadding: true,
-    label: "Status",
-    sort: true,
-  },
-  {
     id: "created_at",
     align: "left",
     disablePadding: true,
