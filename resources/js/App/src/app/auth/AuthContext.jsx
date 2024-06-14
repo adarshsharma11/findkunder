@@ -69,7 +69,7 @@ function AuthProvider({ children }) {
 
     function pass(message) {
       if (message) {
-        dispatch(showMessage({ message }));
+        dispatch(showMessage({ message, variant: "error" }));
       }
       setIsLoading(false);
       setWaitAuthCheck(false);
