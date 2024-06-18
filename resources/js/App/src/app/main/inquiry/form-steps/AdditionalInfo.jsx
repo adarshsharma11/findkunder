@@ -124,7 +124,7 @@ function AdditionalInfo(props) {
             id="specificPreferences"
             error={!!errors.specific_preferences}
             helperText={errors?.specific_preferences?.message}
-            label="Specific Preferences"
+            label="Do you have any specific preferences?"
             variant="outlined"
             fullWidth
           />
