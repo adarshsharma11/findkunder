@@ -173,7 +173,7 @@ export const inquiryContactSchema = yup.object().shape({
   contact_phone: yup
     .string()
     .required("You must enter a phone")
-    .matches(/^\d{8}$/, "Phone number must be exactly 10 digits"),
+    .matches(/^\d{8}$/, "Phone number must be exactly 8 digits"),
 });
 
 export const inquiryCompanySchema = yup.object().shape({
