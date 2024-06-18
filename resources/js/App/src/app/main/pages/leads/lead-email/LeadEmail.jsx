@@ -9,12 +9,11 @@ import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
-import { getAssignLeadsProfiles } from "../store/leadsSlice";
 import {
   getProduct,
   newProduct,
@@ -23,31 +22,33 @@ import {
   saveProduct,
 } from "../store/leadSlice";
 import reducer from "../store";
-import ProductHeader from "./LeadHeader";
-import BasicInfoTab from "./tabs/BasicInfoTab";
-import AssignContactTab from "./tabs/AssignContact";
+import ProductHeader from "./LeadEmailHeader";
+import BasicInfoTab from "./tabs/BasicTabInfo";
 import { showMessage } from "app/store/fuse/messageSlice";
-import { assignPersonSchema } from "../../../../schemas/validationSchemas";
+import { composeEmailSchema } from "../../../../schemas/validationSchemas";
 
 const defaultValues = {
-  status: "",
-  assigned_customers: [],
+  subject: "",
+  body: "",
 }
 
-function Lead(props) {
+function ComposeLeadEmail(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const assignedCustomersParam = params.get("assigned_customers");
+  const statusParam = params.get("status");
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
-  const [selected, setSelected] = useState([]);
   const [assignLeadsData, setAssignLeadsData] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
-    resolver: yupResolver(assignPersonSchema),
+    resolver: yupResolver(composeEmailSchema),
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
@@ -80,42 +81,6 @@ function Lead(props) {
   }, [dispatch, routeParams]);
 
 
-  const getContactPersons = async (formData) => {
-    try {
-      const response = await dispatch(getAssignLeadsProfiles(formData));
-      if (response.payload) {
-        setAssignLeadsData(response.payload);
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  }
-
-  const updateAssignLeads = (params) => {
-    return dispatch(saveProduct(params)).then(() => {
-      if (product && productId) {
-        const param = {
-          lead_id: productId,
-          location_id: product?.location_id,
-        };
-        getContactPersons(param);
-      }
-      dispatch(
-        showMessage({ message: "Profile assigned to lead successfully!" })
-      );
-    });
-  };
-  useEffect(() => {
-    if (product && productId) {
-      const param = {
-        lead_id: productId,
-        location_id: product?.location_id,
-      }
-    getContactPersons(param);
-  }
-  }, [product, productId]);
-
-
 
   useEffect(() => {
     if (!product) {
@@ -143,6 +108,14 @@ function Lead(props) {
   function handleTabChange(event, value) {
     setTabValue(value);
   }
+
+  const updateAssignLeads = (params) => {
+    return dispatch(saveProduct(params)).then(() => {
+      dispatch(
+        showMessage({ message: "Profile assigned to lead successfully!" })
+      );
+    });
+  };
 
   /**
    * Show Message if the requested products is not exists
@@ -176,7 +149,7 @@ function Lead(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new") || !assignLeadsData
+      routeParams.productId !== "new")
   ) {
     return <FuseLoading />;
   }
@@ -184,7 +157,7 @@ function Lead(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} selected={selected} />}
+        header={<ProductHeader id={routeParams?.productId} />}
         content={
           <>
             <Tabs
@@ -197,14 +170,10 @@ function Lead(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
-              <Tab className="h-64" label="Assign Contact" />
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab data={product} />
-              </div>
-              <div className={tabValue !== 1 ? "hidden" : ""}>
-                <AssignContactTab data={assignLeadsData} leadStatus={product?.status} updateAssignLeads={updateAssignLeads} leadId={productId} selected={selected} setSelected={setSelected}/>
+                <BasicInfoTab data={product} updateAssignLeads={updateAssignLeads} leadId={productId} assignedCustomers={assignedCustomersParam} status={statusParam} />
               </div>
             </div>
           </>
@@ -215,4 +184,4 @@ function Lead(props) {
   );
 }
 
-export default withReducer("lead", reducer)(Lead);
+export default withReducer("lead", reducer)(ComposeLeadEmail);

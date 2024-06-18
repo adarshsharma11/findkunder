@@ -24,13 +24,12 @@ import LoadingButton from "../../../../../../shared-components/button/LoadingBut
 
 function AssignLeadTable(props) {
   const dispatch = useDispatch();
-  const { getContactPersons, setLeadId, isAdmin, data: assignLeadData, updateAssignLeads, leadId } = props;
+  const { isAdmin, data: assignLeadData, updateAssignLeads, leadId, selected, setSelected } = props;
   const { t } = useTranslation("contactPerson");
   const products = assignLeadData;
   const [searchText, setSearchText] = useState("");
   const [expanded, setExpanded] = useState(null);
   const [loadingState, setLoadingState] = useState({});
-  const [selected, setSelected] = useState([]);
   const [data, setData] = useState(assignLeadData);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -68,7 +67,7 @@ function AssignLeadTable(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(data.map((n) => n.id));
+      setSelected(data.map((n) => n.customer.id));
       return;
     }
     setSelected([]);
@@ -180,7 +179,7 @@ function AssignLeadTable(props) {
             )
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n, index) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
+                const isSelected = selected.indexOf(n?.customer?.id) !== -1;
                 return (
                   <>
                   <TableRow
@@ -199,7 +198,7 @@ function AssignLeadTable(props) {
                       <Checkbox
                         checked={isSelected}
                         onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
+                        onChange={(event) => handleCheck(event, n?.customer?.id)}
                       />
                     </TableCell>
                     <TableCell
@@ -271,20 +270,8 @@ function AssignLeadTable(props) {
                          sx={{ m: 1, position: 'relative' }}
                          color={n?.lead_assigned ? 'warning' : 'success'}
                          size="small"
-                         isLoading={loadingState[n?.customer?.id] || false}
-                         onClick={(event) => handleClick(n?.customer)}
-                         disabled={loadingState[n?.customer?.id]}
-                         circularProgressProps={{
-                          sx: {
-                            color: blue[500],
-                            position: 'absolute',
-                            top: '50%',
-                            left: '22%',
-                            marginTop: '-12px',
-                            marginLeft: '-12px',
-                          },
-                        }}
-                         text={n?.lead_assigned ? 'Unassign' : 'Assign'}
+                         text={n?.lead_assigned ? 'Assigned' : 'Assign'}
+                         onClick={() => {}}
                        />
                        
                      </TableCell>

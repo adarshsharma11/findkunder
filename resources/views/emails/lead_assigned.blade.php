@@ -4,6 +4,13 @@
     <title>New Lead Assigned</title>
 </head>
 <body>
+    @if (!empty($body))
+    <div style="font-size: 16px; line-height: 1.6;">
+        {!! nl2br(e($body)) !!}
+    </div>
+    <hr style="margin: 20px 0;">
+    @endif
+
     <h1>New Lead Assigned</h1>
     <p>A new lead has been assigned to your customer account.</p>
     <p>Lead Details:</p>

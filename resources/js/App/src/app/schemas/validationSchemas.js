@@ -214,3 +214,12 @@ export const additionalInfoSchema = yup.object().shape({
 export const assignPersonSchema = yup.object().shape({
   status: yup.string().optional(),
 });
+
+export const composeEmailSchema = yup.object().shape({
+  subject: yup.string()
+    .required('Subject is required')
+    .max(255, 'Subject cannot be longer than 255 characters'),
+  body: yup.string()
+    .required('Body is required')
+    .min(10, 'Body must be at least 10 characters long'),
+});

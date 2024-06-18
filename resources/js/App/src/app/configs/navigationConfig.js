@@ -49,29 +49,7 @@ const navigationConfig = [
   },
   {
     id: "apps.contact",
-    title: "Contacts",
-    type: "group",
-    icon: "heroicons-outline:home",
-    children: [
-      {
-        id: "apps.locations",
-        title: "Locations",
-        type: "item",
-        icon: "heroicons-outline:location-marker",
-        url: "/locations",
-      },
-      {
-        id: "apps.persons",
-        title: "Persons",
-        type: "item",
-        icon: "heroicons-outline:user-circle",
-        url: "/contact-person",
-      },
-    ],
-  },
-  {
-    id: "apps.findkunder",
-    title: "Findkunder",
+    title: "Profile",
     type: "group",
     icon: "heroicons-outline:home",
     children: [
@@ -82,6 +60,28 @@ const navigationConfig = [
         icon: "search",
         url: "/profiles",
       },
+      {
+        id: "apps.locations",
+        title: "Locations",
+        type: "item",
+        icon: "heroicons-outline:location-marker",
+        url: "/locations",
+      },
+      {
+        id: "apps.persons",
+        title: "Contacts",
+        type: "item",
+        icon: "heroicons-outline:user-circle",
+        url: "/contact-person",
+      },
+    ],
+  },
+  {
+    id: "apps.findkunder",
+    title: "Marketing",
+    type: "group",
+    icon: "heroicons-outline:home",
+    children: [
       {
         id: "apps.leads",
         title: "Leads",

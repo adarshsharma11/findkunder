@@ -44,6 +44,8 @@ class AssignLeadController extends Controller
         $leadId = $request->input('lead_id');
         $customerIds = $request->input('assigned_customers');
         $status = $request->input('status');
+        $emailSubject = $request->input('subject');
+        $emailBody = $request->input('body');
 
         $lead = Lead::with(['location:id,name', 'customerType:id,name', 'user', 'categories:id,name'])
         ->find($leadId);
@@ -76,9 +78,13 @@ class AssignLeadController extends Controller
                     $customer = Customer::with('person')->find($customerId);
                     $person = $customer->person;
                     if ($person && $person->email) {
-                        Mail::send('emails.lead_assigned', ['lead' => $lead], function ($message) use ($person) {
+                        $emailData = [
+                            'lead' => $lead,
+                            'body' => $emailBody ?: '',
+                        ];
+                        Mail::send('emails.lead_assigned', $emailData, function ($message) use ($person, $emailSubject) {
                             $message->to($person->email)
-                                ->subject('New Lead Assigned');
+                                ->subject($emailSubject ?: 'New Lead Assigned');
                         });
                     }
                 }

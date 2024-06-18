@@ -1,4 +1,3 @@
-import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
@@ -15,7 +14,7 @@ import {
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, selected } = props;
+  const { id } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -24,22 +23,6 @@ function ProductHeader(props) {
   const name = watch("first_name");
   const theme = useTheme();
   const navigate = useNavigate();
-
-  function handleSaveProduct() {
-    const { id, status } = getValues();
-    const params = new URLSearchParams({
-      assigned_customers: selected.join(','),
-      status,
-    }).toString();
-    navigate(`/leads/compose-email/${id}?${params}`);
-  }
-
-  function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload?.message }));
-      navigate("/leads");
-    });
-  }
 
   function handleUpdateProduct() {
     const { assigned_customers, id, status } = getValues();
@@ -55,8 +38,6 @@ function ProductHeader(props) {
     });
   }
 
-  const isNextButtonDisabled = _.isEmpty(dirtyFields) || !isValid || !selected.length;
-
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
       <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
@@ -68,7 +49,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/leads"
+            to={`/leads/${id}`}
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -115,43 +96,14 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              Assign lead
+              Compose lead email
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Lead Details
+              Lead Email Details
             </Typography>
           </motion.div>
         </div>
       </div>
-      <motion.div
-        className="flex"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
-      >
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          disabled={id === "new"}
-          onClick={handleRemoveProduct}
-          startIcon={
-            <FuseSvgIcon className="hidden sm:flex">
-              heroicons-outline:trash
-            </FuseSvgIcon>
-          }
-        >
-          Remove
-        </Button>
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          disabled={isNextButtonDisabled}
-          onClick={handleSaveProduct}
-        >
-          {id !== "new" ? "Next" : "Save"}
-        </Button>
-      </motion.div>
     </div>
   );
 }

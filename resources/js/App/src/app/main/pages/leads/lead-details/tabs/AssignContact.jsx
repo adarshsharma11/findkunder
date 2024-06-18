@@ -13,7 +13,7 @@ const leadStatusData = [
 
 function AssignContactTab(props) {
   const methods = useFormContext();
-  const { data, leadStatus, updateAssignLeads, leadId } = props;
+  const { data, leadStatus, updateAssignLeads, leadId, selected, setSelected } = props;
   const dispatch = useDispatch();
   const { control } = methods;
 
@@ -38,7 +38,7 @@ function AssignContactTab(props) {
         />
       </div>
       <div className="flex justify-between w-full space-x-8">
-       <AssignLeadTable data={data} updateAssignLeads={updateAssignLeads} leadId={leadId} />
+       <AssignLeadTable data={data} updateAssignLeads={updateAssignLeads} leadId={leadId} selected={selected} setSelected={setSelected} />
       </div>
     </div>
   );
