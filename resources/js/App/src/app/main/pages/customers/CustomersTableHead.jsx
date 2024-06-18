@@ -158,7 +158,7 @@ const adminRows = [
     id: "status",
     align: "right",
     disablePadding: false,
-    label: "Priority",
+    label: "Status",
     sort: true,
   },
   {

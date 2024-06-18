@@ -51,7 +51,7 @@ function BasicInfoTab(props) {
           />
         {isAdmin &&
          <>
-         <InputLabel id="status-label">Priority</InputLabel>
+         <InputLabel id="status-label">Status</InputLabel>
          <Controller
            name="status"
            control={control}
@@ -68,7 +68,7 @@ function BasicInfoTab(props) {
                variant="outlined"
                fullWidth
              >
-               <MenuItem value="" disabled>Select Priority</MenuItem>
+               <MenuItem value="" disabled>Select Status</MenuItem>
                <MenuItem value="3">High Priority</MenuItem>
                <MenuItem value="2">Medium Priority</MenuItem>
                <MenuItem value="1">Low Priority</MenuItem>
