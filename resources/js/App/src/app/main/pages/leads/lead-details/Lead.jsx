@@ -184,7 +184,7 @@ function Lead(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} selected={selected} />}
+        header={<ProductHeader id={routeParams?.productId} selected={selected} updateAssignLeads={updateAssignLeads} leadId={productId} leadStatus={product?.status} />}
         content={
           <>
             <Tabs

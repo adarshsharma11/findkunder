@@ -1,23 +1,22 @@
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import {
-  removeProduct,
-  saveProduct,
-  addNewLead,
-} from "../store/leadSlice";
+import { removeProduct } from "../store/leadSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, selected } = props;
+  const { id, selected: assigned_customers, updateAssignLeads, leadStatus: status, leadId } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
+  const [isLoading, setIsLoading] = useState(false);
   const { formState, watch, getValues } = methods;
   const { isValid, dirtyFields } = formState;
   const image = watch("image");
@@ -28,7 +27,7 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     const { id, status } = getValues();
     const params = new URLSearchParams({
-      assigned_customers: selected.join(','),
+      assigned_customers: assigned_customers.join(','),
       status,
     }).toString();
     navigate(`/leads/compose-email/${id}?${params}`);
@@ -41,21 +40,25 @@ function ProductHeader(props) {
     });
   }
 
-  function handleUpdateProduct() {
-    const { assigned_customers, id, status } = getValues();
-    const params = {
-      lead_id: id,
-      assigned_customers: assigned_customers,
-      status,
+  const assignLead = async () => {
+    try {
+      setIsLoading(true);
+      const params = {
+        assigned_customers,
+        lead_id: leadId,
+        status,
+      };
+      await updateAssignLeads(params);
+      dispatch(showMessage({ message: "Lead assigned successfully!" }));
+      navigate(`/leads/${leadId}`);
+    } catch (error) {
+      dispatch(showMessage({ message: "Failed to assign lead", variant: "error" }));
+    } finally {
+      setIsLoading(false)
     }
-    dispatch(saveProduct(params)).then(() => {
-      dispatch(
-        showMessage({ message: "Profile assigned to lead successfully!" })
-      );
-    });
-  }
+  };
 
-  const isNextButtonDisabled = _.isEmpty(dirtyFields) || !isValid || !selected.length;
+  const isNextButtonDisabled = _.isEmpty(dirtyFields) || !isValid || !assigned_customers.length;
 
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
@@ -146,10 +149,20 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
+          disabled={isNextButtonDisabled || isLoading}
+          onClick={assignLead}
+          endIcon={isLoading && <CircularProgress size={20}/>} 
+        >
+        Assign lead
+        </Button>
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
           disabled={isNextButtonDisabled}
           onClick={handleSaveProduct}
         >
-          {id !== "new" ? "Next" : "Save"}
+          {id !== "new" ? "Send Email" : "Save"}
         </Button>
       </motion.div>
     </div>
