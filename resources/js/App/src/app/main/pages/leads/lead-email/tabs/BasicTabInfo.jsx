@@ -16,7 +16,6 @@ function BasicInfoTab(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const methods = useFormContext();
-  const [loading, setLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const { handleSubmit, control, formState } = methods;
@@ -47,20 +46,6 @@ function BasicInfoTab(props) {
       dispatch(showMessage({ message: "Failed to send email", variant: "error" }));
     } finally {
       setLoadingSubmit(false);
-    }
-  };
-
-  const handleSkipAndAssign = async () => {
-    setLoading(true);
-    try {
-      const params = {
-        assigned_customers,
-        lead_id: leadId,
-        status,
-      };
-      await assignLead(params);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -102,15 +87,6 @@ function BasicInfoTab(props) {
         )}
       />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2, width: '28%' }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleSkipAndAssign}
-          disabled={loading}
-          endIcon={loading && <CircularProgress size={20} />}
-        >
-          Skip and Assign
-        </Button>
         <Button
           type="submit"
           variant="contained"
