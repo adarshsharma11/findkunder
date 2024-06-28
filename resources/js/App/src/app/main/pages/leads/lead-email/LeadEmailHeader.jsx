@@ -2,41 +2,17 @@ import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import {
-  removeProduct,
-  saveProduct,
-  addNewLead,
-} from "../store/leadSlice";
-import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
   const { id } = props;
-  const dispatch = useDispatch();
   const methods = useFormContext();
-  const { formState, watch, getValues } = methods;
-  const { isValid, dirtyFields } = formState;
+  const { watch } = methods;
   const image = watch("image");
   const name = watch("first_name");
   const theme = useTheme();
-  const navigate = useNavigate();
-
-  function handleUpdateProduct() {
-    const { assigned_customers, id, status } = getValues();
-    const params = {
-      lead_id: id,
-      assigned_customers: assigned_customers,
-      status,
-    }
-    dispatch(saveProduct(params)).then(() => {
-      dispatch(
-        showMessage({ message: "Profile assigned to lead successfully!" })
-      );
-    });
-  }
 
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">

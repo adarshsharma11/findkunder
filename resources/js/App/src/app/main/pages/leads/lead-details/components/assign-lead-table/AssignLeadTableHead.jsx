@@ -35,7 +35,7 @@ const rows = [
     id: "company",
     align: "left",
     disablePadding: true,
-    label: "Comapny",
+    label: "Company",
     sort: true,
   },
   {

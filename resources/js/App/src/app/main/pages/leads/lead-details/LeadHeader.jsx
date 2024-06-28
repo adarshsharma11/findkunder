@@ -30,7 +30,7 @@ function ProductHeader(props) {
       assigned_customers: assigned_customers.join(','),
       status,
     }).toString();
-    navigate(`/leads/compose-email/${id}?${params}`);
+    navigate({pathname: `/leads/compose-email/${id}`, search: params});
   }
 
   function handleRemoveProduct() {
