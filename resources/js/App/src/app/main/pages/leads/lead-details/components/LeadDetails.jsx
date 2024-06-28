@@ -3,7 +3,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import Link from '@mui/material/Link';
 import { motion } from "framer-motion";
+import { formatAddress, formatWebsiteUrl } from "../../../../../utils/helpers";
 
 function getWhoDoYouNeed(value) {
   switch (value) {
@@ -16,10 +18,6 @@ function getWhoDoYouNeed(value) {
     default:
       return 'N/A';
   }
-}
-
-function formatAddress(street, postalCode, city) {
-  return `${street}, ${postalCode} ${city}`;
 }
 
 function LeadDetails(props) {
@@ -67,7 +65,7 @@ function LeadDetails(props) {
                       <Typography className="font-semibold mb-4 text-15">
                         Contact Email
                       </Typography>
-                      <Typography>{data.contact_email}</Typography>
+                      <Link href={`mailto:${data.contact_email}`} target="_blank" variant="body2" rel="noopener noreferrer">{data.contact_email}</Link>
                     </div>
                     <div className="mb-24">
                       <Typography className="font-semibold mb-4 text-15">
@@ -98,7 +96,13 @@ function LeadDetails(props) {
                       <Typography className="font-semibold mb-4 text-15">
                         Website
                       </Typography>
-                      <Typography>{data.website || "N/A"}</Typography>
+                      {data.website ? (
+                        <Link href={formatWebsiteUrl(data.website)} target="_blank" rel="noopener noreferrer" variant="body2">
+                          {data.website}
+                        </Link>
+                      ) : (
+                        <Typography>N/A</Typography>
+                      )}
                     </div>
                     <div className="mb-24">
                       <Typography className="font-semibold mb-4 text-15">

@@ -1,15 +1,9 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
+import { formatWebsiteUrl as addUrlPrefix } from "../../utils/helpers";
 
 function CustomerCollapseMenu({ expanded, data }) {
-
-  function addUrlPrefix(url) {
-    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
-      return "https://" + url;
-    }
-    return url;
-  }
 
   return (
     <Collapse in={expanded} timeout="auto" unmountOnExit>
