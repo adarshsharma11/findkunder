@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Avatar from '@mui/material/Avatar';
-import AuthService from '../auth/services/AuthService';
 
 function HeroBox(props) {
-  const { isLoading, count } = props;
+  const { count, descriptionText, welcomeHeading } = props;
 
 
   return (
@@ -64,10 +63,14 @@ function HeroBox(props) {
       <div className="z-10 relative w-full max-w-2xl">
         <div className="text-7xl font-bold leading-none text-gray-100">
           <div>Welcome to</div>
-          <div>our community</div>
+          <div>{welcomeHeading || 'our community'}</div>
         </div>
         <div className="mt-24 text-lg tracking-tight leading-6 text-gray-400">
-        Join {count !== null ? count : ' '} companies who are using our marketing network to attract relevant leads more affordably. 
+          {descriptionText ? (
+            descriptionText
+          ) : (
+            <>Join {count !== null ? count : ' '} companies who are using our marketing network to attract relevant leads more affordably.</>
+          )}
         </div>
         <div className="flex items-center mt-32">
           <AvatarGroup

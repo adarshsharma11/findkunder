@@ -8,3 +8,16 @@ export function formatWebsiteUrl(url) {
   }
   return url;
 }
+
+export function getWhoDoYouNeed(value) {
+  switch (value) {
+    case 'approved_auditor':
+      return 'Approved Auditor';
+    case 'bookkeeper':
+      return 'Bookkeeper';
+    case 'other':
+      return 'Other';
+    default:
+      return 'N/A';
+  }
+}

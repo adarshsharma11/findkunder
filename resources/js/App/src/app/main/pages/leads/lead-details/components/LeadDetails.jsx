@@ -5,23 +5,28 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Link from '@mui/material/Link';
 import { motion } from "framer-motion";
-import { formatAddress, formatWebsiteUrl } from "../../../../../utils/helpers";
-
-function getWhoDoYouNeed(value) {
-  switch (value) {
-    case 'approved_auditor':
-      return 'Approved Auditor';
-    case 'bookkeeper':
-      return 'Bookkeeper';
-    case 'other':
-      return 'Other';
-    default:
-      return 'N/A';
-  }
-}
+import { formatAddress, formatWebsiteUrl, getWhoDoYouNeed } from "../../../../../utils/helpers";
+import { formatCategories } from "../../../../../utils/categoryHelpers";
 
 function LeadDetails(props) {
   const { data } = props;
+  const formattedCategories = data.categories && formatCategories(data.categories);
+
+
+  const renderCategories = () => {
+    return formattedCategories.map(category => (
+      <div key={category.id}>
+        <Typography>
+          {category.name}
+          {category.subcategories.length > 0 && (
+            <Typography component="span">
+              ({category.subcategories.map(sub => sub.name).join(', ')})
+            </Typography>
+          )}
+        </Typography>
+      </div>
+    ));
+  };
 
   const container = {
     show: {
@@ -145,11 +150,7 @@ function LeadDetails(props) {
                       <Typography className="font-semibold mb-4 text-15">
                       What do you need help for
                       </Typography>
-                      {data.categories.length > 0 && data.categories.map((category) => (
-                        <Typography key={category.id}>
-                          {category.name} {category.subcategories && category.subcategories.length > 0 && `(${category.subcategories.map(sub => sub.name).join(', ')})`}
-                        </Typography>
-                      ))}
+                      {data.categories.length > 0 && renderCategories()}
                       {data.categories.length === 0 && <Typography>N/A</Typography>}
                     </div>
                     <div className="mb-24">

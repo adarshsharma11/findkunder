@@ -43,7 +43,7 @@ class Lead extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'lead_category');
+        return $this->belongsToMany(Category::class, 'lead_category')->with('subcategories');
     }
 
     public function user()

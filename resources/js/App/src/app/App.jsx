@@ -47,9 +47,9 @@ const App = () => {
   return (
     <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
       <FuseTheme theme={mainTheme} direction={langDirection}>
-        <CustomersCountProvider>
         <StepperProvider>
         <AuthProvider>
+        <CustomersCountProvider>
           <BrowserRouter>
             <FuseAuthorization
               userRole={user.role}
@@ -70,9 +70,9 @@ const App = () => {
               </SnackbarProvider>
             </FuseAuthorization>
           </BrowserRouter>
+          </CustomersCountProvider>
         </AuthProvider>
         </StepperProvider>
-        </CustomersCountProvider>
       </FuseTheme>
     </CacheProvider>
   );
