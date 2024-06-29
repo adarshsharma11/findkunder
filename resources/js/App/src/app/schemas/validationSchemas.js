@@ -212,7 +212,7 @@ export const additionalInfoSchema = yup.object().shape({
 });
 
 export const assignPersonSchema = yup.object().shape({
-  status: yup.string().optional(),
+  assigned_customers: yup.array().of(yup.number().required()).optional(),
 });
 
 export const composeEmailSchema = yup.object().shape({

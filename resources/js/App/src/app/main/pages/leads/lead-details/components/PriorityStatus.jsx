@@ -9,7 +9,7 @@ const PriorityStatus = ({ priority, isDetailsPage }) => {
   switch (priority) {
     case "2":
       color = "success";
-      text = "Complete";
+      text = "Completed";
       break;
     case "1":
       color = "warning";

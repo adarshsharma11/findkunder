@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import _ from "@lodash";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import { getAssignLeadsProfiles } from "../store/leadsSlice";
 import {
@@ -27,12 +25,6 @@ import ProductHeader from "./LeadHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import AssignContactTab from "./tabs/AssignContact";
 import { showMessage } from "app/store/fuse/messageSlice";
-import { assignPersonSchema } from "../../../../schemas/validationSchemas";
-
-const defaultValues = {
-  status: "",
-  assigned_customers: [],
-}
 
 function Lead(props) {
   const dispatch = useDispatch();
@@ -44,13 +36,7 @@ function Lead(props) {
   const [noProduct, setNoProduct] = useState(false);
   const [selected, setSelected] = useState([]);
   const [assignLeadsData, setAssignLeadsData] = useState(false);
-  const methods = useForm({
-    mode: "onChange",
-    defaultValues,
-    resolver: yupResolver(assignPersonSchema),
-  });
-  const { reset, watch, control, onChange, formState } = methods;
-  const form = watch();
+  
   const { productId } = routeParams;
 
   useDeepCompareEffect(() => {
@@ -124,8 +110,7 @@ function Lead(props) {
     /**
      * Reset the form on product state changes
      */
-    reset(product);
-  }, [product, reset]);
+  }, [product]);
 
   useEffect(() => {
     return () => {
@@ -173,7 +158,6 @@ function Lead(props) {
    * Wait while product data is loading and form is setted
    */
   if (
-    _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
       routeParams.productId !== "new") || !assignLeadsData
@@ -182,7 +166,6 @@ function Lead(props) {
   }
 
   return (
-    <FormProvider {...methods}>
       <FusePageCarded
         header={<ProductHeader id={routeParams?.productId} selected={selected} updateAssignLeads={updateAssignLeads} leadId={productId} leadStatus={product?.status} />}
         content={
@@ -211,7 +194,6 @@ function Lead(props) {
         }
         scroll={isMobile ? "normal" : "content"}
       />
-    </FormProvider>
   );
 }
 

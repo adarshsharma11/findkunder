@@ -4,7 +4,6 @@ import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import { motion } from "framer-motion";
-import { useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
@@ -13,22 +12,17 @@ import { removeProduct } from "../store/leadSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, selected: assigned_customers, updateAssignLeads, leadStatus: status, leadId } = props;
+  const { id, selected: assigned_customers, updateAssignLeads, leadId } = props;
   const dispatch = useDispatch();
-  const methods = useFormContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { formState, watch, getValues } = methods;
-  const { isValid, dirtyFields } = formState;
-  const image = watch("image");
-  const name = watch("first_name");
+  const [isCompletedLoading, setIsCompletedLoading] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
 
   function handleSaveProduct() {
-    const { id, status } = getValues();
     const params = new URLSearchParams({
       assigned_customers: assigned_customers.join(','),
-      status,
+      status: '1',
     }).toString();
     navigate({pathname: `/leads/compose-email/${id}`, search: params});
   }
@@ -46,7 +40,7 @@ function ProductHeader(props) {
       const params = {
         assigned_customers,
         lead_id: leadId,
-        status,
+        status: '1',
       };
       await updateAssignLeads(params);
       dispatch(showMessage({ message: "Lead assigned successfully!" }));
@@ -58,7 +52,24 @@ function ProductHeader(props) {
     }
   };
 
-  const isNextButtonDisabled = _.isEmpty(dirtyFields) || !isValid || !assigned_customers.length;
+  const completeLead = async () => {
+    try {
+      setIsCompletedLoading(true);
+      const params = {
+        lead_id: leadId,
+        status: '2',
+      };
+      await updateAssignLeads(params);
+      dispatch(showMessage({ message: "Lead assigned successfully!" }));
+      navigate(`/leads`);
+    } catch (error) {
+      dispatch(showMessage({ message: "Failed to assign lead", variant: "error" }));
+    } finally {
+      setIsCompletedLoading(false)
+    }
+  };
+
+  const isNextButtonDisabled = !assigned_customers.length;
 
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
@@ -90,27 +101,13 @@ function ProductHeader(props) {
             initial={{ scale: 0 }}
             animate={{ scale: 1, transition: { delay: 0.3 } }}
           >
-            {image ? (
-              <img
-                className="w-32 sm:w-48 rounded"
-                src={
-                  image
-                    ? typeof image === "string"
-                      ? `assets/images/contact-person/${image}`
-                      : URL.createObjectURL(
-                          image instanceof File ? image : new Blob([image])
-                        )
-                    : null
-                }
-                alt={name}
-              />
-            ) : (
+         
               <img
                 className="w-32 sm:w-48 rounded"
                 src="assets/images/apps/ecommerce/product-image-placeholder.png"
-                alt={name}
+                alt="placeholder-image"
               />
-            )}
+
           </motion.div>
           <motion.div
             className="flex flex-col items-center sm:items-start min-w-0 mx-8 sm:mx-16"
@@ -163,6 +160,15 @@ function ProductHeader(props) {
           onClick={handleSaveProduct}
         >
           {id !== "new" ? "Send Email" : "Save"}
+        </Button>
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          onClick={completeLead}
+          endIcon={isCompletedLoading && <CircularProgress size={20}/>} 
+        >
+          Mark as completed
         </Button>
       </motion.div>
     </div>

@@ -1,3 +1,4 @@
+import React from "react";
 import FuseScrollbars from "@fuse/core/FuseScrollbars";
 import _ from "@lodash";
 import Checkbox from "@mui/material/Checkbox";
@@ -181,14 +182,13 @@ function AssignLeadTable(props) {
               .map((n, index) => {
                 const isSelected = selected.indexOf(n?.customer?.id) !== -1;
                 return (
-                  <>
+                  <React.Fragment>
                   <TableRow
                     className="h-72 cursor-pointer"
                     hover
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.customer.id}
                     selected={isSelected}
                   >
                     <TableCell
@@ -281,7 +281,7 @@ function AssignLeadTable(props) {
                       <AssignLeadsCollapaseMenu expanded={expanded === n?.customer?.id} data={n?.customer} />
                     </TableCell>
                   </TableRow>
-                   </>
+                   </React.Fragment>
                 );
               })}
           </TableBody>
