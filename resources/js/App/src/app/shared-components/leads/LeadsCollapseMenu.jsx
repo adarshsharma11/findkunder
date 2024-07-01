@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import Link from '@mui/material/Link';
 import Typography from "@mui/material/Typography";
-import { formatWebsiteUrl, formatAddress } from "../../utils/helpers";
+import { formatWebsiteUrl, formatAddress, getWhoDoYouNeed } from "../../utils/helpers";
 import { formatCategories } from "../../utils/categoryHelpers";
 
 function LeadsCollapseMenu({ expanded, data }) {
@@ -13,7 +13,7 @@ function LeadsCollapseMenu({ expanded, data }) {
     return formattedCategories.map(category => (
       <div key={category.id}>
         <Typography>
-          {category.name}
+          {category.name}{' '} 
           {category.subcategories.length > 0 && (
             <Typography component="span">
               ({category.subcategories.map(sub => sub.name).join(', ')})
@@ -63,13 +63,11 @@ function LeadsCollapseMenu({ expanded, data }) {
           </div>
           <div className="w-full md:w-1/2 lg:w-1/3">
             <strong>ADDITIONAL INFO</strong><br />
-            <strong>Who Do You Need:</strong> {data?.who_do_you_need || 'N/A'}
+            <strong>Who Do You Need:</strong> {getWhoDoYouNeed(data?.who_do_you_need)}
             <br />
             <div className="flex">
-            <strong>What do you need help for:</strong> 
-            {data.categories.length > 0 ? renderCategories() : (
-                        <Typography>N/A</Typography>
-            )}
+            <strong style={{ marginRight: '4px' }}>What do you need help for:</strong> 
+            {data.categories.length > 0 ? renderCategories() : "N/A"}
             </div>
             <strong>Do you have any specific preferences:</strong> {data?.specific_preferences || 'N/A'}
             <br />

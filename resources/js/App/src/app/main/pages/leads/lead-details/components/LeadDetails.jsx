@@ -17,7 +17,7 @@ function LeadDetails(props) {
     return formattedCategories.map(category => (
       <div key={category.id}>
         <Typography>
-          {category.name}
+          {category.name}{' '}
           {category.subcategories.length > 0 && (
             <Typography component="span">
               ({category.subcategories.map(sub => sub.name).join(', ')})

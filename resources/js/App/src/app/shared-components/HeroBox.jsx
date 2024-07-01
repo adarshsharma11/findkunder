@@ -4,8 +4,7 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import Avatar from '@mui/material/Avatar';
 
 function HeroBox(props) {
-  const { count, descriptionText, welcomeHeading } = props;
-
+  const { count, descriptionText, welcomeHeading, isInquiryPage } = props;
 
   return (
     <Box
@@ -72,7 +71,8 @@ function HeroBox(props) {
             <>Join {count !== null ? count : ' '} companies who are using our marketing network to attract relevant leads more affordably.</>
           )}
         </div>
-        <div className="flex items-center mt-32">
+        {!isInquiryPage &&
+          <div className="flex items-center mt-32">
           <AvatarGroup
             sx={{
               '& .MuiAvatar-root': {
@@ -90,6 +90,7 @@ function HeroBox(props) {
             Attracting leads smarter, together.
           </div>
         </div>
+        }
       </div>
     </Box>
   );

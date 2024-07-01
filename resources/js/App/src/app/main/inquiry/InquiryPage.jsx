@@ -15,7 +15,7 @@ function InquiryPage() {
             <InquiryStepForm />
         </div>
       </Paper>
-     <HeroBox count={customersCount} isLoading={isLoading} welcomeHeading="Find bogholder/revisor!" descriptionText="We're here to help you find the perfect bookkeeper or accountant, all for free and with no obligation to choose any of our suggestions. Simply fill out our form, and we'll connect you with top freelance bookkeepers and accountants." />
+     <HeroBox count={customersCount} isLoading={isLoading} welcomeHeading="Find bogholder/revisor!" descriptionText="We're here to help you find the perfect bookkeeper or accountant, all for free and with no obligation to choose any of our suggestions. Simply fill out our form, and we'll connect you with top freelance bookkeepers and accountants." isInquiryPage={true} />
     </div>
   );
 }
