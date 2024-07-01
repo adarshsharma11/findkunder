@@ -44,14 +44,15 @@ function LeadsCollapseMenu({ expanded, data }) {
             <br />
             <strong>Tell us a bit about your company:</strong> {data.company_description || 'N/A'}
             <br />
-            <strong>Website:</strong> {data.website ? (
+            <div className="flex">
+            <strong style={{ marginRight: '4px' }}>Website:</strong> {data.website ? (
               <Link href={formatWebsiteUrl(data.website)} target="_blank" rel="noopener noreferrer" variant="body2">
                           {data.website}
               </Link>
               ) : (
-                        <Typography>N/A</Typography>
+                  <Typography>N/A</Typography>
               )}
-            <br />
+            </div>
             <strong>CVR Number:</strong> {data?.cvr_number}
             <br />
             <strong>Who are you:</strong> {data.customer_type.name}
