@@ -29,7 +29,7 @@ import PriorityStatus from "./lead-details/components/PriorityStatus";
 
 function LeadsTable(props) {
   const dispatch = useDispatch();
-  const { getContactPersons, setLeadId, isAdmin } = props;
+  const { isAdmin, activeLeads } = props;
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
@@ -50,17 +50,23 @@ function LeadsTable(props) {
   }, [dispatch]);
 
   useEffect(() => {
+    let filteredProducts;
     if (searchText.length !== 0) {
       setData(
         _.filter(products, (item) =>
           item.contact_name.toLowerCase().includes(searchText.toLowerCase())
         )
       );
-      setPage(0);
-    } else {
-      setData(products);
     }
-  }, [products, searchText]);
+    if (products && activeLeads) {
+        filteredProducts = products.filter((item) => item.status !== '2');
+    } else {
+        filteredProducts = products.filter((item) => item.status === '2');
+    }
+    setData(filteredProducts)
+    setPage(0);
+    
+  }, [products, searchText, activeLeads]);
 
   function handleRequestSort(event, property) {
     const id = property;
