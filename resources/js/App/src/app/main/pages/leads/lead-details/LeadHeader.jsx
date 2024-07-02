@@ -12,7 +12,7 @@ import { removeProduct } from "../store/leadSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, selected: assigned_customers, updateAssignLeads, leadId } = props;
+  const { id, selected: assigned_customers, updateAssignLeads, leadId, leadStatus: status } = props;
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isCompletedLoading, setIsCompletedLoading] = useState(false);
@@ -55,17 +55,19 @@ function ProductHeader(props) {
   const completeLead = async () => {
     try {
       setIsCompletedLoading(true);
+      const newStatus = status === '2' ? '1' : '2';
       const params = {
         lead_id: leadId,
-        status: '2',
+        status: newStatus,
       };
       await updateAssignLeads(params);
-      dispatch(showMessage({ message: "Lead assigned successfully!" }));
+      const message = status === '2' ? "Lead set to inprogress successfully!" : "Lead set to completed successfully!" 
+      dispatch(showMessage({ message, variant: "success" }));
       navigate(`/leads`);
     } catch (error) {
-      dispatch(showMessage({ message: "Failed to assign lead", variant: "error" }));
+      dispatch(showMessage({ message: "Failed to update assign lead status", variant: "error" }));
     } finally {
-      setIsCompletedLoading(false)
+      setIsCompletedLoading(false);
     }
   };
 
@@ -164,11 +166,11 @@ function ProductHeader(props) {
         <Button
           className="whitespace-nowrap mx-4"
           variant="contained"
-          color="secondary"
+          color={status === '2' ? 'warning' : 'secondary'}
           onClick={completeLead}
           endIcon={isCompletedLoading && <CircularProgress size={20}/>} 
         >
-          Mark as completed
+          {status === '2' ? "Change to in progress" : "Mark as completed"}
         </Button>
       </motion.div>
     </div>
