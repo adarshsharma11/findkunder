@@ -177,9 +177,103 @@ const adminRows = [
   },
 ];
 
+const adminCompletedRows = [
+  {
+    id: "image",
+    align: "left",
+    disablePadding: true,
+    label: "Image",
+    sort: false,
+  },
+  {
+    id: "status",
+    align: "left",
+    disablePadding: true,
+    label: "Status",
+    sort: true,
+  },
+  {
+    id: "created_at",
+    align: "left",
+    disablePadding: true,
+    label: "Created DateTime",
+    sort: true,
+  },
+  {
+    id: "updated_at",
+    align: "left",
+    disablePadding: true,
+    label: "Completed DateTime",
+    sort: true,
+  },
+  {
+    id: "cvr",
+    align: "left",
+    disablePadding: true,
+    label: "CVR",
+    sort: true,
+  },
+  {
+    id: "company_name",
+    align: "left",
+    disablePadding: false,
+    label: "Company name",
+    sort: true,
+  },
+  {
+    id: "contact_name",
+    align: "left",
+    disablePadding: false,
+    label: "Contact name",
+    sort: true,
+  },
+  {
+    id: "contact_email",
+    align: "left",
+    disablePadding: false,
+    label: "Contact Email",
+    sort: true,
+  },
+  {
+    id: "contact_phone",
+    align: "left",
+    disablePadding: false,
+    label: "Contact phone",
+    sort: true,
+  },
+  {
+    id: "location",
+    align: "left",
+    disablePadding: false,
+    label: "Location",
+    sort: true,
+  },
+  {
+    id: "customerType",
+    align: "left",
+    disablePadding: false,
+    label: "Customer Type",
+    sort: true,
+  },
+  {
+    id: "details",
+    align: "left",
+    disablePadding: false,
+    label: "Details",
+    sort: true,
+  },
+  {
+    id: "action",
+    align: "left",
+    disablePadding: false,
+    label: "Action",
+    sort: true,
+  },
+];
+
 function LeadsTableHead(props) {
-  const { selectedProductIds, isAdmin } = props;
-  const rows = isAdmin ? adminRows : userRows
+  const { selectedProductIds, isAdmin, completedLeads } = props;
+  const rows = isAdmin ? (completedLeads ? adminCompletedRows : adminRows) : userRows;
   const numSelected = selectedProductIds.length;
 
   const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);

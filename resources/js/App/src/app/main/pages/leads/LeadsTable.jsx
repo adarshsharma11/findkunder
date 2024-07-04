@@ -29,7 +29,7 @@ import PriorityStatus from "./lead-details/components/PriorityStatus";
 
 function LeadsTable(props) {
   const dispatch = useDispatch();
-  const { isAdmin, activeLeads } = props;
+  const { isAdmin, activeLeads, completedLeads } = props;
   const { t } = useTranslation("contactPerson");
   const products = useSelector(selectProducts);
   const searchText = useSelector(selectProductsSearchText);
@@ -163,6 +163,7 @@ function LeadsTable(props) {
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
             rowCount={data.length}
+            completedLeads={completedLeads}
             onMenuItemClick={handleDeselect}
           />
 
@@ -231,6 +232,15 @@ function LeadsTable(props) {
                         >
                         <PriorityStatus priority={n?.status} />
                         </TableCell>
+                    }
+                    {isAdmin && completedLeads && 
+                      <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      {moment(n.updated_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                    </TableCell>
                     }
                     <TableCell
                       className="p-4 md:p-16"

@@ -1,10 +1,8 @@
-import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
   selectProductsSearchText,

@@ -74,7 +74,7 @@ function Leads() {
                <LeadsTable getContactPersons={getContactPersons} isAdmin={isAdmin} activeLeads={true} />
               </div>
               <div className={tabValue !== 1 ? "hidden" : ""}>
-              <LeadsTable getContactPersons={getContactPersons} isAdmin={isAdmin} />
+              <LeadsTable getContactPersons={getContactPersons} isAdmin={isAdmin} completedLeads={tabValue === 1} />
               </div>
             </div>
           </>
