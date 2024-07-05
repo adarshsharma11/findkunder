@@ -21,14 +21,15 @@ function ProductHeader(props) {
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
   const { isValid, dirtyFields } = formState;
+
   const image = watch("image");
-  const name = watch("first_name");
+  const name = watch("name");
   const theme = useTheme();
   const navigate = useNavigate();
 
   function handleSaveProduct() {
     dispatch(addNewCustomerType(getValues())).then(() => {
-      dispatch(showMessage({ message: "Category added successfully!" }));
+      dispatch(showMessage({ message: "Category added successfully!", variant: "success" }));
       navigate("/skills");
     });
   }
@@ -42,7 +43,7 @@ function ProductHeader(props) {
 
   function handleUpdateProduct() {
     dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Category updated successfully!" }));
+      dispatch(showMessage({ message: "Category updated successfully!", variant: 'success' }));
     });
   }
 

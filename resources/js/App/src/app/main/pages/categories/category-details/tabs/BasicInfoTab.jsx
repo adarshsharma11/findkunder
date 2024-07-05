@@ -1,6 +1,4 @@
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import Checkbox from "@mui/material/Checkbox";
 import React from "react";
@@ -23,6 +21,7 @@ function BasicInfoTab(props) {
   const [subcategories, setSubcategories] = React.useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
+
   React.useEffect(() => {
     if (product && product.subcategories) {
       setSubcategories(
@@ -31,12 +30,17 @@ function BasicInfoTab(props) {
     }
   }, [product]);
 
+
   const toggleEditModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   }
   
   const onEditCategories = (editedSubcategories) => {
      setSubcategories(editedSubcategories);
+     setValue("subcategories", editedSubcategories,  {
+      shouldDirty: categoryId !== "new",
+      shouldValidate: categoryId !== "new",
+    });
   }
   return (
     <div>
@@ -58,42 +62,7 @@ function BasicInfoTab(props) {
           />
         )}
       />
-      {categoryId && categoryId === "new" && (
-        <Controller
-          name="parent_id"
-          control={control}
-          render={({ field }) => (
-            <>
-              <InputLabel id="demo-simple-select-label">
-                Parent Skill
-              </InputLabel>
-              <Select
-                {...field}
-                className="mt-8 mb-16"
-                error={!!errors.status}
-                required
-                displayEmpty
-                helperText={errors?.status?.message}
-                id="parent_id"
-                variant="outlined"
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Parent Skill
-                </MenuItem>
-                {categories &&
-                  categories?.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </>
-          )}
-        />
-      )}
-
-      {categoryId && categoryId !== "new" && (
+  
         <Controller
           name="subcategories"
           control={control}
@@ -110,16 +79,18 @@ function BasicInfoTab(props) {
                       heroicons-outline:pencil-alt
                     </FuseSvgIcon>
                  </EditButton>
-                 <CategoryEditModal
+                 {isEditModalOpen && 
+                  <CategoryEditModal
                     isOpen={isEditModalOpen}
                     onClose={toggleEditModal}
                     categories={subcategories}
                     onEditCategories={onEditCategories}
                     categoryId={categoryId}
-                    setValue={setValue}
                   />
+                 }
+                 
                  </div>
-                 {subcategories &&
+        {subcategories?.length > 0 &&
         subcategories.map((subcategory) => (
           <div key={subcategory.id} className="flex items-center">
             <FormControlLabel
@@ -145,10 +116,9 @@ function BasicInfoTab(props) {
             />
           </div>
         ))}
-          </div>
-          )}
+        </div>
+        )}
         />
-      )}
     </div>
   );
 }

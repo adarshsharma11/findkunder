@@ -10,8 +10,9 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch } from "react-redux";
-import { saveProduct, removeProduct } from "../../store/categorySlice";
+import { removeProduct } from "../../store/categorySlice";
 import { showMessage } from "app/store/fuse/messageSlice";
+import { v4 as uuidv4 } from 'uuid'; 
 
 function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, categoryId }) {
   const dispatch = useDispatch();
@@ -19,26 +20,20 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, cate
   const [newCategoryName, setNewCategoryName] = useState("");
   const [showAddMoreButton, setShowAddMoreButton] = useState(true);
 
-
   useEffect(() => {
-    setEditedCategories([...categories]);
+    if (categories.length > 0) {
+      setEditedCategories([...categories]);
+    }
   }, [categories]);
 
   const handleSave = () => {
     const updatedCategories = [...editedCategories];
     if (newCategoryName.trim() !== "") {
-      const newCategory = { id: null, name: newCategoryName, parent_id: Number(categoryId) };
+      const newCategory = { id: uuidv4(), name: newCategoryName, parent_id: categoryId ? Number(categoryId) : null };
       updatedCategories.push(newCategory);
-      const params = {
-        categories: updatedCategories,
-        id: categoryId,
-      }
-      dispatch(saveProduct(params)).then(() => {
-        dispatch(showMessage({ message: "Category updated successfully!" }));
-      });
   }
-    setEditedCategories([...editedCategories]);
-    onEditCategories([...editedCategories]);
+    setEditedCategories([...updatedCategories]);
+    onEditCategories([...updatedCategories]);
     
     setNewCategoryName("")
     onClose();
@@ -75,7 +70,7 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, cate
 
   const handleAddMore = () => {
     if (newCategoryName.trim() !== "") {
-      setEditedCategories([...editedCategories, { id: null, name: newCategoryName, parent_id: Number(categoryId)}]);
+      setEditedCategories([...editedCategories, { id: uuidv4(), name: newCategoryName, parent_id: Number(categoryId)}]);
       setNewCategoryName("");
       if (editedCategories.length >= 9) {
         setShowAddMoreButton(false);

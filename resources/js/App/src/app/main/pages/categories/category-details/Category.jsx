@@ -26,6 +26,11 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
 import { createCaterorySchema } from "../../../../schemas/validationSchemas";
 import { getProducts } from "../store/categoriesSlice";
 
+const defaultValues = {
+  name: "",
+  subcategories: [],
+}
+
 function Category(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
@@ -39,7 +44,7 @@ function Category(props) {
   const { productId } = routeParams;
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues,
     resolver: yupResolver(createCaterorySchema),
   });
   const { reset, watch, control, onChange, formState } = methods;

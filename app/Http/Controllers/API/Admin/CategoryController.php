@@ -32,11 +32,22 @@ class CategoryController extends Controller
         // Validate the incoming request data
         $request->validate([
             'name' => 'required|string',
-            'parent_id' => 'nullable|exists:categories,id',
+            'subcategories' => 'nullable|array',
+            'subcategories.*.name' => 'required|string',
         ]);
 
         // Create a new category with the provided data
-        $category = Category::create($request->all());
+        $category = Category::create(['name' => $request->name]);
+
+        // Create subcategories if provided
+        if ($request->has('subcategories')) {
+            foreach ($request->subcategories as $subcategory) {
+                $category->subcategories()->create(['name' => $subcategory['name']]);
+            }
+        }
+
+        // Reload the category with its subcategories
+        $category->load('subcategories');
 
         return response()->json(['category' => $category], 201);
     }
@@ -64,48 +75,59 @@ class CategoryController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'categories' => 'nullable|array',
-            'categories.*.name' => 'required|string',
-            'categories.*.parent_id' => 'nullable|exists:categories,id',
+            'name' => 'required|string',
+            'subcategories' => 'nullable|array',
+            'subcategories.*.id' => 'nullable', // Allow nullable IDs (accept any value)
+            'subcategories.*.name' => 'required|string',
         ]);
-
-        $updatedCategories = [];
+    
+        // Update the main category's name
         if ($request->filled('name') && $request->input('name') !== $category->name) {
             $category->update(['name' => $request->input('name')]);
         }
-        if ($request->input('categories')) {
-        foreach ($request->input('categories') as $updatedCategory) {
-            if (isset($updatedCategory['id'])) {
-                // If ID is provided, update existing category
-                $existingCategory = Category::findOrFail($updatedCategory['id']);
-                $existingCategory->update(['name' => $updatedCategory['name']]);
-                if (isset($updatedCategory['parent_id'])) {
-                    $parentCategory = Category::find($updatedCategory['parent_id']);
-                    if ($parentCategory) {
-                        $existingCategory->parent_id = $parentCategory->id;
-                        $existingCategory->save();
+    
+        // Get current subcategory IDs
+        $currentSubcategoryIds = $category->subcategories->pluck('id')->toArray();
+    
+        // Prepare a list of new and updated subcategories
+        $newSubcategories = [];
+        $updatedSubcategories = [];
+        if ($request->input('subcategories')) {
+            foreach ($request->input('subcategories') as $subcategoryData) {
+                if (isset($subcategoryData['id'])) {
+                    // Check if ID is valid (either numeric or UUID)
+                    $subcategory = $subcategoryData['id'] ? Category::find($subcategoryData['id']) : null;
+    
+                    if ($subcategory) {
+                        // Update existing subcategory
+                        $subcategory->update(['name' => $subcategoryData['name']]);
+                        $updatedSubcategories[] = $subcategory->id;
+                    } else {
+                        // Create new subcategory with null ID (or adjust for UUID logic if needed)
+                        $newSubcategories[] = ['name' => $subcategoryData['name'], 'parent_id' => $category->id];
                     }
+                } else {
+                    // Create new subcategory with null ID (or adjust for UUID logic if needed)
+                    $newSubcategories[] = ['name' => $subcategoryData['name'], 'parent_id' => $category->id];
                 }
-                $updatedCategories[] = $existingCategory;
-            } else {
-                // If ID is not provided, create new category
-                $newCategory = Category::create([
-                    'name' => $updatedCategory['name'],
-                    'parent_id' => $category->id,
-                ]);
-                $updatedCategories[] = $newCategory;
             }
         }
-
-    }
-
+    
+        // Delete subcategories that are not in the updated list
+        $subcategoriesToDelete = array_diff($currentSubcategoryIds, $updatedSubcategories);
+        Category::destroy($subcategoriesToDelete);
+    
+        // Create new subcategories
+        if (!empty($newSubcategories)) {
+            $category->subcategories()->createMany($newSubcategories);
+        }
+    
+        // Reload the category with its subcategories
         $category->load('subcategories');
     
         return response()->json($category);
-    
     }
-
-
+    
     /**
      * Remove the specified category from the database.
      *

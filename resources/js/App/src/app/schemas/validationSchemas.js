@@ -113,9 +113,15 @@ export const createUserAccountSchema = yup.object().shape({
   .email('Please enter a valid email address'),
 });
 
+const subcategorySchema = yup.object().shape({
+  id: yup.mixed().nullable(),
+  name: yup.string().required('Subcategory name is required'),
+  parent_id: yup.number().nullable()
+})
+
 export const createCaterorySchema = yup.object().shape({
   name: yup.string().required("You must enter display name"),
-  parent_id: yup.string().nullable(),
+  subcategories: yup.array().of(subcategorySchema).optional().default([]),
 });
 
 export const updateProfilePasswordSchema = yup.object().shape({
