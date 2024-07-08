@@ -233,6 +233,13 @@ function LeadsTable(props) {
                         <PriorityStatus priority={n?.status} />
                         </TableCell>
                     }
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      {moment(n.created_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                    </TableCell>
                     {isAdmin && completedLeads && 
                       <TableCell
                       className="p-4 md:p-16"
@@ -242,13 +249,6 @@ function LeadsTable(props) {
                       {moment(n.updated_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
                     </TableCell>
                     }
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                    >
-                      {moment(n.created_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
-                    </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
