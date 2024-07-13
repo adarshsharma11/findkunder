@@ -28,7 +28,7 @@ const AccountStep = () => {
         )}
       />
       <Controller
-      name="passowrd"
+      name="password"
       control={control}
       render={({ field }) => (
         <TextField
