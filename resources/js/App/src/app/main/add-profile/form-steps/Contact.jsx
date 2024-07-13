@@ -3,7 +3,7 @@ import BasicInfoTab from '../../pages/contact-person/contact-person-details/tabs
 
 const ContactStep = () => {
   return (
-    <BasicInfoTab />
+    <BasicInfoTab isAddProfile={true} />
   );
 };
 

@@ -7,10 +7,14 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import CircularProgress from "@mui/material/CircularProgress";
 
 import LocationStep from './form-steps/Location';
 import ContactStep from './form-steps/Contact';
 import AccountStep from './form-steps/AccountStep';
+import AuthService from '../../auth/services/AuthService';
+import { useDispatch } from "react-redux";
+import { showMessage } from "app/store/fuse/messageSlice";
 import { companySchema, contactSchema } from '../../schemas/validationSchemas';
 
 const defaultValues = {
@@ -46,6 +50,8 @@ const steps = ['Location', 'Contact', 'Create an account or login'];
 
 const AddProfileStepForm = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const validationSchemas = [companySchema, contactSchema, accountSchema];
 
@@ -62,10 +68,29 @@ const AddProfileStepForm = () => {
         setActiveStep((prevStep) => prevStep + 1);
       } else {
         // Submit the form
-        console.log(methods.getValues());
+        await submitProfile(methods.getValues());
       }
     }
   };
+
+  const submitProfile  = async (values) => {
+    try {
+    setLoading(true);
+    const response = await AuthService.submitProfile(values);
+    if (response.data.status) {
+      dispatch(
+        showMessage({
+          message: response.data.message,
+          variant: 'success',
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Error resetting password:", error);
+  } finally {
+    setLoading(false);
+  }
+  }
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
@@ -91,7 +116,7 @@ const AddProfileStepForm = () => {
                 Back
               </Button>
             )}
-            <Button onClick={handleNext}>
+            <Button onClick={handleNext} disabled={loading} endIcon={loading && <CircularProgress size={20}/>} >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>

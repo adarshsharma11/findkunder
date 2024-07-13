@@ -7,7 +7,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
-  const { isAdmin, product } = props;
+  const { isAdmin, product, isAddProfile } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
   const { control, formState } = methods;
@@ -152,6 +152,8 @@ function BasicInfoTab(props) {
           />
         )}
       />
+      {!isAddProfile && 
+      <>
       <ContactImageTab />
       <Controller
         name="linkedin"
@@ -170,6 +172,9 @@ function BasicInfoTab(props) {
           />
         )}
       />
+      </>
+      }
+      
     </div>
   );
 }

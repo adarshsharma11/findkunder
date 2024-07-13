@@ -193,6 +193,45 @@ class AuthService extends FuseUtils.EventEmitter {
     });
   };
 
+  submitProfile = (data) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(authServiceConfig.submitProfile, data)
+        .then((response) => {
+          const userInfo = response.data.user;
+          console.log(response.data, 'ascsacac')
+          if (response.data.user) {
+            this.setSession(
+              response.data.accessToken,
+              response.data.expirationTime
+            );
+            const newUser = {
+              uuid: userInfo.id,
+              from: "custom-db",
+              role: response.data.role,
+              data: {
+                email: userInfo.email,
+                totalCompanies: userInfo.companies_count,
+                totalProfiles: userInfo.customers_count,
+                totalContactPersons: userInfo.contact_person_count,
+                settings: {},
+                shortcuts: [],
+              },
+            };
+            resolve(newUser);
+            this.emit("onLogin", newUser);
+          } else {
+            this.logout();
+            reject(new Error("Failed to login with token."));
+          }
+        })
+        .catch((error) => {
+          this.logout();
+          reject(new Error("Failed to login with token."));
+        });
+    });
+  };
+
   setSession = (access_token, expiryTime) => {
     if (access_token && expiryTime) {
       localStorage.setItem("jwt_access_token", access_token);

@@ -11,6 +11,7 @@ use App\Http\Controllers\API\Admin\AccountController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\LeadController;
 use App\Http\Controllers\API\AssignLeadController;
+use App\Http\Controllers\API\AddProfileController;
 use App\Http\Controllers\API\Admin\CustomerLocationController;
 
 /*
@@ -32,6 +33,7 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
     Route::apiResource('customerTypes', CustomerTypeController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('leads', LeadController::class);
+    Route::post('/submit-profile', [AddProfileController::class, 'submitProfile']);
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);

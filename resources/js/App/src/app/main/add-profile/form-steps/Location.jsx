@@ -3,7 +3,7 @@ import BasicInfoTab from '../../pages/companies/company-details/tabs/BasicInfoTa
 
 const LocationStep = () => {
   return (
-    <BasicInfoTab />
+    <BasicInfoTab isAddProfile={true}/>
   );
 };
 
