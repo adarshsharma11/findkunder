@@ -71,7 +71,7 @@ export default function InquiryStepForm() {
   const defaultValues = [defaultValuesForContact, defaultValuesForCompany, defaultValuesForAdditionalInfo][activeStep];
 
   const methods = useForm({
-    mode: "onChange",
+    mode: "onTouched",
     defaultValues,
     resolver: yupResolver(schema),
   });
