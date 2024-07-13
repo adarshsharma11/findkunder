@@ -4,6 +4,7 @@ const authServiceConfig = {
   signIn: apiPrefix + 'login',
   signUp: apiPrefix + 'register',
   userInfo: apiPrefix + 'me',
+  submitProfile: apiPrefix + 'submit-profile',
   signOut: apiPrefix + 'logout',
   updateUser: apiPrefix + 'update-profile',
   deleteUser: apiPrefix + 'delete-profile',
