@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\ContactPerson;
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,12 @@ class AddProfileController extends Controller
             'postal_code' => 'required|string|max:20',
             'city' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'website' => 'nullable|url',
-            'linkedin' => 'nullable|url|regex:/^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/',
-            'facebook' => 'nullable|url|regex:/^(https?:\/\/)?(www\.)?facebook\.com\/.*$/',
+            'website' => 'nullable|string',
+            'linkedin' => 'nullable|string',
+            'contactLinkedin' => 'nullable|string',
+            'facebook' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'contactImage' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -56,6 +60,13 @@ class AddProfileController extends Controller
             }
         }
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = time().'.'.$image->extension();  
+            $image->move(public_path('assets/images/company-logo'), $image_name);
+            $data['image'] = $image_name;
+        }
+
         // Create or update the company
         $company = Company::updateOrCreate(
             ['user_id' => $user->id],
@@ -69,8 +80,16 @@ class AddProfileController extends Controller
                 'website' => $data['website'],
                 'linkedin' => $data['linkedin'],
                 'facebook' => $data['facebook'],
+                'image' => $data['image'] ?? null,
             ]
         );
+
+        if ($request->hasFile('contactImage')) {
+            $contactImage = $request->file('contactImage');
+            $contactImage_name = time().'_contact.'.$contactImage->extension();  
+            $contactImage->move(public_path('assets/images/contact-person'), $contactImage_name);
+            $data['contactImage'] = $contactImage_name;
+        }    
 
         // Create or update the contact person
         $contactPerson = ContactPerson::updateOrCreate(
@@ -81,8 +100,9 @@ class AddProfileController extends Controller
                 'title' => $data['title'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
-                'linkedin' => $data['linkedin'],
+                'linkedin' => $data['contactLinkedin'] ?? null,
                 'comment' => $data['comment'],
+                'image' => $data['contactImage'] ?? null,
             ]
         );
 

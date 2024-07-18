@@ -44,16 +44,19 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 function ContactImageTab(props) {
+  const { isAddProfile } = props;
   const methods = useFormContext();
   const { control, watch } = methods;
 
-  const image = watch("image");
+  const imageName = !isAddProfile ? "image" : "contactImage";
+
+  const image = watch(imageName);
 
   return (
     <Root>
       <div className="flex justify-center sm:justify-start flex-wrap -mx-16">
         <Controller
-          name="image"
+          name={imageName}
           control={control}
           render={({ field: { onChange, value } }) => (
             <div className="flex justify-center sm:justify-start flex-wrap flex-col">

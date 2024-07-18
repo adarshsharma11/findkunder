@@ -8,7 +8,7 @@ import CompanyImageTab from "./CompanyImageTab";
 import { validateNumberInput } from '../../../../../schemas/validationRulesSchemas';
 
 function BasicInfoTab(props) {
-  const { product, isAdmin, isAddProfile } = props;
+  const { product, isAdmin } = props;
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
@@ -172,9 +172,6 @@ function BasicInfoTab(props) {
           </div>
         )}
       />
-
-    {!isAddProfile && 
-      <>
       <CompanyImageTab />
       <Controller
         name="website"
@@ -226,11 +223,7 @@ function BasicInfoTab(props) {
             fullWidth
           />
         )}
-      />
-      </>
-    }
-
-      
+      />    
     </div>
   );
 }

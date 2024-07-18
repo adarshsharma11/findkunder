@@ -34,6 +34,9 @@ const defaultValues = {
   phone: '',
   comment: '',
   password: '',
+  image: '',
+  contactImage: '',
+  contactLinkedin: '',
   accountEmail: ''
 };
 
@@ -67,7 +70,7 @@ const AddProfileStepForm = () => {
       if (activeStep < steps.length - 1) {
         setActiveStep((prevStep) => prevStep + 1);
       } else {
-        // Submit the form
+        // Submit the form 
         await submitProfile(methods.getValues());
       }
     }

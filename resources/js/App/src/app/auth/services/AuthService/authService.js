@@ -194,12 +194,23 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   submitProfile = (data) => {
+    const formData = new FormData();
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+    if (data.contactImage) {
+      formData.append("contactImage", data.contactImage);
+    }
+    Object.keys(data).forEach((key) => {
+      if (key !== "image" && data[key] !== null || key !== 'contactImage' && data[key] !== null) {
+        formData.append(key, data[key]);
+      }
+    });
     return new Promise((resolve, reject) => {
       axios
-        .post(authServiceConfig.submitProfile, data)
+        .post(authServiceConfig.submitProfile, formData)
         .then((response) => {
           const userInfo = response.data.user;
-          console.log(response.data, 'ascsacac')
           if (response.data.user) {
             this.setSession(
               response.data.accessToken,

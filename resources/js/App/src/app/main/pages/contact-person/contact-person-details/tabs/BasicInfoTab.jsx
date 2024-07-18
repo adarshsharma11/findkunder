@@ -12,6 +12,7 @@ function BasicInfoTab(props) {
   const { t } = useTranslation("contactPerson");
   const { control, formState } = methods;
   const { errors } = formState;
+  const linkedInFieldName = isAddProfile ? "contactLinkedin" : "linkedin";
   const titleOptions = [
     {
       value: "approved_auditor",
@@ -152,29 +153,24 @@ function BasicInfoTab(props) {
           />
         )}
       />
-      {!isAddProfile && 
-      <>
-      <ContactImageTab />
+      <ContactImageTab isAddProfile={isAddProfile}/>
       <Controller
-        name="linkedin"
+        name={linkedInFieldName}
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="linkedin"
-            error={!!errors.linkedin}
-            helperText={errors?.linkedin?.message}
+            id={linkedInFieldName}
+            error={!isAddProfile ? !!errors.linkedin : !!errors.contactLinkedin}
+            helperText={!isAddProfile ? errors?.linkedin?.message : errors?.contactLinkedin?.message}
             label="Linkedin"
             type="text"
             variant="outlined"
             fullWidth
           />
         )}
-      />
-      </>
-      }
-      
+      />    
     </div>
   );
 }
