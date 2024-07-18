@@ -86,13 +86,21 @@ class AddProfileController extends Controller
             ]
         );
 
-        // Create a new customer record
-        $customer = Customer::create([
+         // Check if the customer record already exists
+         $customer = Customer::where('company_id', $company->id)
+         ->where('person_id', $contactPerson->id)
+         ->where('user_id', $user->id)
+         ->first();
+
+        if (!$customer) {
+        // Create a new customer record if it doesn't exist
+            $customer = Customer::create([
             'company_id' => $company->id,
             'person_id' => $contactPerson->id,
             'user_id' => $user->id,
             'status' => '0',
-        ]);
+            ]); 
+        }
 
         Auth::login($user);
         // Assign the "user" role to the new user
