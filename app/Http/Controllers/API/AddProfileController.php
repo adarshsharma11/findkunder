@@ -112,7 +112,7 @@ class AddProfileController extends Controller
          ->where('user_id', $user->id)
          ->first();
 
-        if (!$customer) {
+        if (!$customer && $isNewUser) {
         // Create a new customer record if it doesn't exist
             $customer = Customer::create([
             'company_id' => $company->id,
