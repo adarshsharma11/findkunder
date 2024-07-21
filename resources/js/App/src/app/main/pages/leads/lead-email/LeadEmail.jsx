@@ -44,13 +44,12 @@ function ComposeLeadEmail(props) {
   const statusParam = params.get("status");
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
-  const [assignLeadsData, setAssignLeadsData] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(composeEmailSchema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch } = methods;
   const form = watch();
   const { productId } = routeParams;
 

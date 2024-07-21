@@ -88,7 +88,7 @@ class AssignLeadController extends Controller
                             'selectedData' => $selectedData,
                         ];
                         Mail::send('emails.lead_assigned', $emailData, function ($message) use ($person, $emailSubject) {
-                            $message->to('adarshsharma002@gmail.com')
+                            $message->to($person->email)
                                 ->subject($emailSubject ?: 'New Lead Assigned');
                         });
                     }
