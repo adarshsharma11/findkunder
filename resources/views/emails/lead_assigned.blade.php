@@ -14,6 +14,14 @@
     <h1>New Lead Assigned</h1>
     <p>A new lead has been assigned to your customer account.</p>
     <p>Lead Details:</p>
+
+    @if (!empty($selectedFields) && !empty($selectedData))
+    <ul>
+        @foreach($selectedFields as $field)
+            <li><strong>{{ ucwords(str_replace('_', ' ', $field)) }}:</strong> {{ data_get($selectedData, $field, 'N/A') }}</li>
+        @endforeach
+    </ul>
+    @else
     <ul>
         <li>Company Name: {{ $lead->company_name }}</li>
         <li>Contact Name: {{ $lead->contact_name }}</li>
@@ -21,5 +29,6 @@
         <li>Contact Phone: {{ $lead->contact_phone }}</li>
         <!-- Add more lead details as needed -->
     </ul>
+    @endif
 </body>
 </html>

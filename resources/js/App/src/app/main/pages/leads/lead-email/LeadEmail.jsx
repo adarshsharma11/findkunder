@@ -149,7 +149,7 @@ function ComposeLeadEmail(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new")
+      routeParams.productId !== "new") || !product
   ) {
     return <FuseLoading />;
   }

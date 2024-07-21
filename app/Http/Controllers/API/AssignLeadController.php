@@ -46,9 +46,11 @@ class AssignLeadController extends Controller
         $status = $request->input('status');
         $emailSubject = $request->input('subject');
         $emailBody = $request->input('body');
+        $selectedFields = $request->input('selectedFields');
+        $selectedData = $request->input('selectedData');
 
         $lead = Lead::with(['location:id,name', 'customerType:id,name', 'user', 'categories:id,name'])
-        ->find($leadId);
+            ->find($leadId);
 
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
@@ -58,6 +60,7 @@ class AssignLeadController extends Controller
             $lead->status = $status;
             $lead->save();
         }
+
         if (!empty($customerIds)) {
             foreach ($customerIds as $customerId) {
                 // Check if the lead is already assigned to the customer
@@ -73,7 +76,7 @@ class AssignLeadController extends Controller
                         'customer_id' => $customerId,
                         'lead_id' => $leadId,
                     ]);
-    
+
                     // Retrieve the customer's person and send email if available
                     $customer = Customer::with('person')->find($customerId);
                     $person = $customer->person;
@@ -81,16 +84,18 @@ class AssignLeadController extends Controller
                         $emailData = [
                             'lead' => $lead,
                             'body' => $emailBody ?: '',
+                            'selectedFields' => $selectedFields,
+                            'selectedData' => $selectedData,
                         ];
                         Mail::send('emails.lead_assigned', $emailData, function ($message) use ($person, $emailSubject) {
-                            $message->to($person->email)
+                            $message->to('adarshsharma002@gmail.com')
                                 ->subject($emailSubject ?: 'New Lead Assigned');
                         });
                     }
                 }
             }
         }
-    
+
         return response()->json($lead);
     }
 }
