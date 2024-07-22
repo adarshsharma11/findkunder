@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { formatCategories } from '../../../../../utils/categoryHelpers';
 
+const inProgress = '1';
+
 function BasicInfoTab(props) {
   const { updateAssignLeads, leadId, assignedCustomers, data } = props;
   const dispatch = useDispatch();
@@ -46,7 +48,7 @@ function BasicInfoTab(props) {
       const params = {
         assigned_customers,
         lead_id: leadId,
-        status: '2',
+        status: inProgress,
         body: formData?.body,
         subject: formData?.subject,
         selectedData,
