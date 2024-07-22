@@ -83,6 +83,16 @@ function BasicInfoTab(props) {
   );
 
   const renderCategories = () => {
+    const formattedLabel = formattedCategories.length > 0
+      ? formattedCategories.map(category => {
+          const categoryName = category.name;
+          const subcategories = category.subcategories.length > 0
+            ? ` (${category.subcategories.map(sub => sub.name).join(', ')})`
+            : '';
+          return `${categoryName}${subcategories}`;
+        }).join(', ')
+      : 'N/A';
+  
     return (
       <FormControlLabel
         control={
@@ -91,10 +101,12 @@ function BasicInfoTab(props) {
             onChange={() => handleCheckboxChange("categories")}
           />
         }
-        label={`What do you need help for: ${formattedCategories.map(category => category.name).join(', ')}`}
+        label={`What do you need help for: ${formattedLabel}`}
       />
     );
   };
+  
+
 
   return (
     <Box
@@ -158,7 +170,6 @@ function BasicInfoTab(props) {
           {renderCategories()}
           {renderCheckbox("Do you have any specific preferences", "specific_preferences", data.specific_preferences)}
           {renderCheckbox("Is physical attendance required", "physical_attendance_required", data.physical_attendance_required)}
-          {renderCheckbox("Are there any bookkeepers/accountant we should not contact", "do_not_contact", data.do_not_contact)}
         </Box>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2, width: '28%' }}>
