@@ -22,7 +22,7 @@ const userRows = [
     id: "created_at",
     align: "left",
     disablePadding: true,
-    label: "Created DateTime",
+    label: "Created",
     sort: true,
   },
   {
@@ -95,7 +95,7 @@ const adminRows = [
     id: "created_at",
     align: "left",
     disablePadding: true,
-    label: "Created DateTime",
+    label: "Created",
     sort: true,
   },
   {
@@ -175,14 +175,14 @@ const adminCompletedRows = [
     id: "created_at",
     align: "left",
     disablePadding: true,
-    label: "Created DateTime",
+    label: "Created",
     sort: true,
   },
   {
     id: "updated_at",
     align: "left",
     disablePadding: true,
-    label: "Completed DateTime",
+    label: "Completed",
     sort: true,
   },
   {

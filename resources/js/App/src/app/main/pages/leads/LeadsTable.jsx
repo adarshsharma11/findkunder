@@ -222,7 +222,7 @@ function LeadsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {moment(n.created_at).format("YYYY-MM-DD") || "N/A"}
+                      {moment(n.created_at).format("DD.MM.YYYY") || "N/A"}
                     </TableCell>
                     {isAdmin && completedLeads && 
                       <TableCell
@@ -230,7 +230,7 @@ function LeadsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {moment(n.updated_at).format("YYYY-MM-DD") || "N/A"}
+                      {moment(n.updated_at).format("DD.MM.YYYY") || "N/A"}
                     </TableCell>
                     }
                     <TableCell
