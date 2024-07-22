@@ -262,7 +262,7 @@ function LeadsTable(props) {
                     >
                        <a
                         className="flex flex-auto items-center justify-center py-16 hover:bg-hover"
-                        href={`mailto:${member.email}`}
+                        href={`mailto:${n.contact_email}`}
                         role="button"
                       >
                       {n.contact_email || "N/A"}
