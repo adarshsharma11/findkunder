@@ -19,13 +19,6 @@ import { removeProducts } from "./store/leadsSlice";
 
 const userRows = [
   {
-    id: "image",
-    align: "left",
-    disablePadding: true,
-    label: "Image",
-    sort: false,
-  },
-  {
     id: "created_at",
     align: "left",
     disablePadding: true,
@@ -43,14 +36,14 @@ const userRows = [
     id: "company_name",
     align: "left",
     disablePadding: false,
-    label: "Company name",
+    label: "Company",
     sort: true,
   },
   {
     id: "contact_name",
     align: "left",
     disablePadding: false,
-    label: "Contact name",
+    label: "Contact",
     sort: true,
   },
   {
@@ -92,13 +85,6 @@ const userRows = [
 
 const adminRows = [
   {
-    id: "image",
-    align: "left",
-    disablePadding: true,
-    label: "Image",
-    sort: false,
-  },
-  {
     id: "status",
     align: "left",
     disablePadding: true,
@@ -123,14 +109,14 @@ const adminRows = [
     id: "company_name",
     align: "left",
     disablePadding: false,
-    label: "Company name",
+    label: "Company",
     sort: true,
   },
   {
     id: "contact_name",
     align: "left",
     disablePadding: false,
-    label: "Contact name",
+    label: "Contact",
     sort: true,
   },
   {
@@ -179,13 +165,6 @@ const adminRows = [
 
 const adminCompletedRows = [
   {
-    id: "image",
-    align: "left",
-    disablePadding: true,
-    label: "Image",
-    sort: false,
-  },
-  {
     id: "status",
     align: "left",
     disablePadding: true,
@@ -217,14 +196,14 @@ const adminCompletedRows = [
     id: "company_name",
     align: "left",
     disablePadding: false,
-    label: "Company name",
+    label: "Company",
     sort: true,
   },
   {
     id: "contact_name",
     align: "left",
     disablePadding: false,
-    label: "Contact name",
+    label: "Contact",
     sort: true,
   },
   {

@@ -207,38 +207,22 @@ function LeadsTable(props) {
                         onChange={(event) => handleCheck(event, n.id)}
                       />
                     </TableCell>
-                    <TableCell
-                      className="w-52 px-4 md:px-0"
-                      component="th"
-                      scope="row"
-                      padding="none"
-                    >
-                      <img
-                        className="w-full block rounded"
-                        src={
-                          n.image
-                            ? `assets/images/contact-person/${n.image}`
-                            : "assets/images/apps/ecommerce/product-image-placeholder.png"
-                        }
-                        alt={t(n.title)}
-                      />
-                    </TableCell>
-                    {isAdmin && 
-                        <TableCell
+                    {isAdmin &&
+                      <TableCell
                         className="p-4 md:p-16"
                         component="th"
                         scope="row"
                         align="right"
-                        >
-                        <PriorityStatus priority={n?.status} />
-                        </TableCell>
+                      >
+                      <PriorityStatus priority={n?.status} />
+                      </TableCell>
                     }
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                     >
-                      {moment(n.created_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                      {moment(n.created_at).format("YYYY-MM-DD") || "N/A"}
                     </TableCell>
                     {isAdmin && completedLeads && 
                       <TableCell
@@ -246,7 +230,7 @@ function LeadsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {moment(n.updated_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                      {moment(n.updated_at).format("YYYY-MM-DD") || "N/A"}
                     </TableCell>
                     }
                     <TableCell
@@ -276,7 +260,13 @@ function LeadsTable(props) {
                       component="th"
                       scope="row"
                     >
+                       <a
+                        className="flex flex-auto items-center justify-center py-16 hover:bg-hover"
+                        href={`mailto:${member.email}`}
+                        role="button"
+                      >
                       {n.contact_email || "N/A"}
+                      </a>
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -337,7 +327,7 @@ function LeadsTable(props) {
                            </FuseSvgIcon>
                          }
                        >
-                         {'Assign Contact Person' }
+                         { 'Assign' }
                        </Button>
                      </TableCell>
                     }
@@ -347,7 +337,7 @@ function LeadsTable(props) {
                       <LeadsCollapseMenu expanded={expanded === n.id} data={n} />
                     </TableCell>
                   </TableRow>
-                   </React.Fragment>
+                  </React.Fragment>
                 );
               })}
           </TableBody>

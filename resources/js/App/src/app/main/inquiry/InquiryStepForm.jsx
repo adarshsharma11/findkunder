@@ -210,7 +210,7 @@ export default function InquiryStepForm() {
               We will now look through your inquiry and find the bookkeepers who best match your wishes and needs. If we need further information, we will contact you. If not, you will be contacted by the bookkeeper(s) that we believe are relevant to you.
             </p>
             <p className="font-semibold mb-8">With best regards,</p>
-            <p>Findkunder.dk</p>
+            <p>Find bogholder/revisor</p>
         </div>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
@@ -220,7 +220,7 @@ export default function InquiryStepForm() {
       ) : (
         <React.Fragment>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            {!activeStep === 0 && 
+            {activeStep !== 0 && 
               <Button
                 color="inherit"
                 disabled={activeStep === 0}
