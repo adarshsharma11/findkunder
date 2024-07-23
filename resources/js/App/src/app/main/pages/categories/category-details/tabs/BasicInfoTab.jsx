@@ -110,6 +110,7 @@ function BasicInfoTab(props) {
                     field.onChange(updatedSubcategories);
                   }}
                   checked={subcategories.some((s) => s.id === subcategory.id)}
+                  disabled={true}
                 />
               }
               label={subcategory.name}
