@@ -1,4 +1,3 @@
-// CategoryEditModal.js
 import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -7,12 +6,13 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch } from "react-redux";
 import { removeProduct } from "../../store/categorySlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { v4 as uuidv4 } from 'uuid'; 
+import { arrayMoveImmutable } from 'array-move';
+import SortableList from './SortableList'; // Import SortableList
 
 function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, categoryId }) {
   const dispatch = useDispatch();
@@ -29,25 +29,24 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, cate
   const handleSave = () => {
     const updatedCategories = [...editedCategories];
     if (newCategoryName.trim() !== "") {
-      const newCategory = { id: uuidv4(), name: newCategoryName, parent_id: categoryId ? Number(categoryId) : null };
+      const newCategory = { id: uuidv4(), name: newCategoryName, parent_id: categoryId ? Number(categoryId) : null, order: updatedCategories.length };
       updatedCategories.push(newCategory);
-  }
+    }
     setEditedCategories([...updatedCategories]);
     onEditCategories([...updatedCategories]);
     
-    setNewCategoryName("")
+    setNewCategoryName("");
     onClose();
   };
 
   const handleNewCategory = (value) => {
-     setNewCategoryName(value);
-     if (value && value.trim() !== "" && editedCategories.length >= 10) {
+    setNewCategoryName(value);
+    if (value && value.trim() !== "" && editedCategories.length >= 10) {
       setShowAddMoreButton(false);
     } else {
       setShowAddMoreButton(true);
     }
-  }
-
+  };
 
   const handleCategoryNameChange = (index, newName) => {
     const updatedCategories = [...editedCategories];
@@ -70,7 +69,7 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, cate
 
   const handleAddMore = () => {
     if (newCategoryName.trim() !== "") {
-      setEditedCategories([...editedCategories, { id: uuidv4(), name: newCategoryName, parent_id: Number(categoryId)}]);
+      setEditedCategories([...editedCategories, { id: uuidv4(), name: newCategoryName, parent_id: Number(categoryId), order: editedCategories.length }]);
       setNewCategoryName("");
       if (editedCategories.length >= 9) {
         setShowAddMoreButton(false);
@@ -78,25 +77,26 @@ function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, cate
     }
   };
 
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    const updatedCategories = arrayMoveImmutable(editedCategories, oldIndex, newIndex).map((category, index) => ({
+      ...category,
+      order: index
+    }));
+    setEditedCategories(updatedCategories);
+    onEditCategories(updatedCategories);
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Edit Sub Skills</DialogTitle>
       <DialogContent>
-        {editedCategories.map((category, index) => (
-          <div key={category.id} className="flex items-center">
-          <TextField
-            label={`Skill ${index + 1} Name`}
-            variant="outlined"
-            fullWidth
-            value={category.name}
-            onChange={(e) => handleCategoryNameChange(index, e.target.value)}
-            className="mt-8 mb-16"
-          />
-          <IconButton onClick={() => handleDeleteCategory(category, index)} aria-label="delete">
-              <DeleteIcon />
-          </IconButton>
-          </div>
-        ))}
+        <SortableList
+          categories={editedCategories}
+          onSortEnd={onSortEnd}
+          handleCategoryNameChange={handleCategoryNameChange}
+          handleDeleteCategory={handleDeleteCategory}
+          useDragHandle
+        />
         {showAddMoreButton && (
           <div className="flex items-center">
             <TextField

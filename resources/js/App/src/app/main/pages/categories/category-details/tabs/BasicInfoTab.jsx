@@ -15,7 +15,7 @@ const EditButton = styled(Button)({
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
-  const { categories, categoryId, product } = props;
+  const { categoryId, product } = props;
   const { control, formState, setValue } = methods;
   const { errors } = formState;
   const [subcategories, setSubcategories] = React.useState([]);
@@ -89,7 +89,7 @@ function BasicInfoTab(props) {
                   />
                  }
                  
-                 </div>
+        </div>
         {subcategories?.length > 0 &&
         subcategories.map((subcategory) => (
           <div key={subcategory.id} className="flex items-center">
