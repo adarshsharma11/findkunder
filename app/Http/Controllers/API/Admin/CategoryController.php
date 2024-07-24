@@ -79,16 +79,17 @@ class CategoryController extends Controller
             'subcategories' => 'nullable|array',
             'subcategories.*.id' => 'nullable', // Allow nullable IDs (accept any value)
             'subcategories.*.name' => 'required|string',
+            'subcategories.*.order' => 'nullable|integer', // Validate the order field
         ]);
-    
+
         // Update the main category's name
         if ($request->filled('name') && $request->input('name') !== $category->name) {
             $category->update(['name' => $request->input('name')]);
         }
-    
+
         // Get current subcategory IDs
         $currentSubcategoryIds = $category->subcategories->pluck('id')->toArray();
-    
+
         // Prepare a list of new and updated subcategories
         $newSubcategories = [];
         $updatedSubcategories = [];
@@ -97,34 +98,45 @@ class CategoryController extends Controller
                 if (isset($subcategoryData['id'])) {
                     // Check if ID is valid (either numeric or UUID)
                     $subcategory = $subcategoryData['id'] ? Category::find($subcategoryData['id']) : null;
-    
+
                     if ($subcategory) {
                         // Update existing subcategory
-                        $subcategory->update(['name' => $subcategoryData['name']]);
+                        $subcategory->update([
+                            'name' => $subcategoryData['name'],
+                            'order' => $subcategoryData['order']
+                        ]);
                         $updatedSubcategories[] = $subcategory->id;
                     } else {
                         // Create new subcategory with null ID (or adjust for UUID logic if needed)
-                        $newSubcategories[] = ['name' => $subcategoryData['name'], 'parent_id' => $category->id];
+                        $newSubcategories[] = [
+                            'name' => $subcategoryData['name'],
+                            'parent_id' => $category->id,
+                            'order' => $subcategoryData['order']
+                        ];
                     }
                 } else {
                     // Create new subcategory with null ID (or adjust for UUID logic if needed)
-                    $newSubcategories[] = ['name' => $subcategoryData['name'], 'parent_id' => $category->id];
+                    $newSubcategories[] = [
+                        'name' => $subcategoryData['name'],
+                        'parent_id' => $category->id,
+                        'order' => $subcategoryData['order']
+                    ];
                 }
             }
         }
-    
+
         // Delete subcategories that are not in the updated list
         $subcategoriesToDelete = array_diff($currentSubcategoryIds, $updatedSubcategories);
         Category::destroy($subcategoriesToDelete);
-    
+
         // Create new subcategories
         if (!empty($newSubcategories)) {
             $category->subcategories()->createMany($newSubcategories);
         }
-    
+
         // Reload the category with its subcategories
         $category->load('subcategories');
-    
+
         return response()->json($category);
     }
     
