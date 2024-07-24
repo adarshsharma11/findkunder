@@ -12,22 +12,25 @@ const DragHandle = SortableHandle(() => (
   </IconButton>
 ));
 
-const SortableItem = SortableElement(({ category, index, handleCategoryNameChange, handleDeleteCategory }) => (
+const SortableItem = SortableElement(({ category, catIndex, handleCategoryNameChange, handleDeleteCategory }) => {
+  return (
   <div key={category.id} className="flex items-center" style={{ cursor: 'move', opacity: 1, zIndex: 9999, position: 'relative' }}>
     <DragHandle />
     <TextField
-      label={`Skill ${index + 1} Name`}
+      label={`Skill ${catIndex + 1} Name`}
       variant="outlined"
       fullWidth
       value={category.name}
-      onChange={(e) => handleCategoryNameChange(index, e.target.value)}
+      onChange={(e) => handleCategoryNameChange(catIndex, e.target.value)}
       className="mt-8 mb-16"
       style={{ backgroundColor: 'white', zIndex: 1 }}
     />
-    <IconButton onClick={() => handleDeleteCategory(category, index)} aria-label="delete">
+    <IconButton onClick={() => handleDeleteCategory(category, catIndex)} aria-label="delete">
       <DeleteIcon />
     </IconButton>
   </div>
-));
+  )
+
+});
 
 export default SortableItem;
