@@ -29,6 +29,7 @@ import { getProducts } from "../store/categoriesSlice";
 const defaultValues = {
   name: "",
   subcategories: [],
+  question: "",
 }
 
 function Category(props) {

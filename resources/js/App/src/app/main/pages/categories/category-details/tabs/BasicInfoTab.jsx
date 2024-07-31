@@ -62,8 +62,24 @@ function BasicInfoTab(props) {
           />
         )}
       />
-  
-        <Controller
+      <Controller
+        name="question"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            error={!!errors.question}
+            helperText={errors?.question?.message}
+            label="Question"
+            autoFocus
+            id="question"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
+      <Controller
           name="subcategories"
           control={control}
           render={({ field }) => (

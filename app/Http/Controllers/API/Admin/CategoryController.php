@@ -34,10 +34,11 @@ class CategoryController extends Controller
             'name' => 'required|string',
             'subcategories' => 'nullable|array',
             'subcategories.*.name' => 'required|string',
+            'question' => 'nullable|string',
         ]);
 
         // Create a new category with the provided data
-        $category = Category::create(['name' => $request->name]);
+        $category = Category::create(['name' => $request->name, 'question' => $request->question]);
 
         // Create subcategories if provided
         if ($request->has('subcategories')) {
@@ -77,14 +78,19 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string',
             'subcategories' => 'nullable|array',
-            'subcategories.*.id' => 'nullable', // Allow nullable IDs (accept any value)
+            'subcategories.*.id' => 'nullable',
             'subcategories.*.name' => 'required|string',
-            'subcategories.*.order' => 'nullable|integer', // Validate the order field
+            'subcategories.*.order' => 'nullable|integer',
+            'question' => 'nullable|string',
         ]);
 
         // Update the main category's name
         if ($request->filled('name') && $request->input('name') !== $category->name) {
             $category->update(['name' => $request->input('name')]);
+        }
+
+        if ($request->filled('question')) {
+            $category->update(['question' => $request->input('question')]);
         }
 
         // Get current subcategory IDs

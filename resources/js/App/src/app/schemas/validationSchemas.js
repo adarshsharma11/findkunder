@@ -121,6 +121,7 @@ const subcategorySchema = yup.object().shape({
 
 export const createCaterorySchema = yup.object().shape({
   name: yup.string().required("You must enter display name"),
+  question: yup.string().nullable(),
   subcategories: yup.array().of(subcategorySchema).optional().default([]),
 });
 

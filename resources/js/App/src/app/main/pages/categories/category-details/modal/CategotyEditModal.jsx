@@ -12,7 +12,7 @@ import { removeProduct } from "../../store/categorySlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { v4 as uuidv4 } from 'uuid'; 
 import { arrayMoveImmutable } from 'array-move';
-import SortableList from './SortableList'; // Import SortableList
+import SortableList from './SortableList';
 
 function CategoryEditModal({ isOpen, onClose, categories, onEditCategories, categoryId }) {
   const dispatch = useDispatch();

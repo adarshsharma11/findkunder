@@ -60,6 +60,8 @@ class LeadController extends Controller
             'website' => 'nullable|string',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id', // Validate each category ID in the array
+            'attachments_per_year' => 'nullable|integer',
+            'employees_count' => 'nullable|integer',
         ]);
 
         // If validation fails, return error response

@@ -31,6 +31,17 @@ function AdditionalInfo(props) {
     },
   ];
 
+  const getFieldNameByQuestion = (question) => {
+    switch (question) {
+      case "Approximately how many attachments per year?":
+        return "attachments_per_year";
+      case "Approximately how many employees?":
+        return "employees_count";
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
       {/* Who do you need? */}
@@ -84,6 +95,23 @@ function AdditionalInfo(props) {
                       }
                       label={category.name}
                     />
+                  {category.question && selectedCategories.includes(category.id) && (
+                   <Controller
+                    name={getFieldNameByQuestion(category.question)}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className="mt-8 mb-16"
+                        id={getFieldNameByQuestion(category.question)}
+                        label={category.question}
+                        variant="outlined"
+                        type="number"
+                        fullWidth
+                      />
+                    )}
+                  />
+                  )}
                     {category.subcategories && selectedCategories.includes(category.id) && (
                       <div style={{ marginLeft: 20 }}>
                         {category.subcategories.map((sub) => (

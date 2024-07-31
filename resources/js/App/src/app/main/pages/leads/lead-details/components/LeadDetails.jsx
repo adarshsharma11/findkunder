@@ -153,12 +153,22 @@ function LeadDetails(props) {
                       {data.categories.length > 0 && renderCategories()}
                       {data.categories.length === 0 && <Typography>N/A</Typography>}
                     </div>
-                    <div className="mb-24">
+                    {data.attachments_per_year &&
+                      <div className="mb-24">
                       <Typography className="font-semibold mb-4 text-15">
-                      Do you have any specific preferences
+                      Approximately attachments per year
                       </Typography>
-                      <Typography>{data.specific_preferences || "N/A"}</Typography>
-                    </div>
+                      <Typography>{data.attachments_per_year || "N/A"}</Typography>
+                      </div>
+                    }
+                    {data.employees_count &&
+                      <div className="mb-24">
+                      <Typography className="font-semibold mb-4 text-15">
+                      Approximately employees
+                      </Typography>
+                      <Typography>{data.employees_count || "N/A"}</Typography>
+                      </div>
+                    }
                     <div className="mb-24">
                       <Typography className="font-semibold mb-4 text-15">
                       Is physical attendance required
