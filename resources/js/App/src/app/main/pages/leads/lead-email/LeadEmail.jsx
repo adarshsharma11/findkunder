@@ -20,7 +20,7 @@ import {
   resetProduct,
   selectProduct,
   saveProduct,
-} from "../store/leadSlice";
+} from "../store/leadEmailSlice";
 import reducer from "../store";
 import ProductHeader from "./LeadEmailHeader";
 import BasicInfoTab from "./tabs/BasicTabInfo";
@@ -183,4 +183,4 @@ function ComposeLeadEmail(props) {
   );
 }
 
-export default withReducer("lead", reducer)(ComposeLeadEmail);
+export default withReducer("leadEmail", reducer)(ComposeLeadEmail);

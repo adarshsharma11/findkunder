@@ -204,6 +204,36 @@ export const inquiryCompanySchema = yup.object().shape({
   company_description: yup.string().optional(),
 });
 
+export const leadUpdateSchema = yup.object().shape({
+  contact_name: yup.string().required("You must enter a company").max(255, "First name must not exceed 255 characters"),
+  contact_email: yup.string().required("You must enter a contact person email").email('Please enter a valid email address'),
+  contact_phone: yup.string().required("You must enter a phone").matches(/^\d{8}$/, "Phone number must be exactly 8 digits"),
+  company_name: yup.string().optional().max(255, 'Company name must not exceed 255 characters'),
+  cvr_number: yup.string().optional().matches(/^\d+$/, 'CVR number must contain only digits'),
+  street: yup.string().optional(),
+  postal_code: yup.string().optional().matches(/^\d+$/, 'Postal code must contain only digits'),
+  city: yup.string().optional(),
+  location_id: yup.string().required('You must select your location'),
+  website: yup
+  .string()
+  .nullable()
+  .matches(/\.com$/, 'Website must end with .com'),
+  customer_type_id: yup.string().optional(),
+  company_description: yup.string().optional().trim().default(""),
+  who_do_you_need: yup.string().optional(),
+  specific_preferences: yup.string().optional(),
+  physical_attendance_required: yup.string().optional(),
+  physical_attendance_details: yup.string().when('physical_attendance_required', {
+    is: 'Yes',
+    then: yup.string().required('Please elaborate on your need regarding physical attendance'),
+    otherwise: yup.string(),
+  }),
+  do_not_contact: yup.string().optional(),
+  //attachments_per_year: yup.number().typeError('Attachments per year must be a number').min(0, 'Attachments per year must be at least 0').optional(),
+  //employees_count: yup.number().typeError('Employees count must be a number').min(0, 'Employees count must be at least 0').optional(),
+});
+
+
 export const additionalInfoSchema = yup.object().shape({
   who_do_you_need: yup.string().optional(),
   specific_preferences: yup.string().optional(),

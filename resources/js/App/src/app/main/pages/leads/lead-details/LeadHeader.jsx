@@ -6,15 +6,23 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useFormContext } from "react-hook-form";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { removeProduct } from "../store/leadSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
+import { updateLeadData } from "../store/leadSlice";
 
 function ProductHeader(props) {
   const { id, selected: assigned_customers, updateAssignLeads, leadId, leadStatus: status } = props;
   const dispatch = useDispatch();
+  const methods = useFormContext();
+  const { formState, watch, getValues } = methods;
+  const { isValid, dirtyFields } = formState;
+  
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isCompletedLoading, setIsCompletedLoading] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
@@ -52,6 +60,11 @@ function ProductHeader(props) {
     }
   };
 
+  const updateAssignLead = (params) => {
+    return dispatch(updateLeadData(params)).then(() => {
+      dispatch(showMessage({ message: "Lead updated successfully!" , variant: 'success'}));
+    });
+  };
   const completeLead = async () => {
     try {
       setIsCompletedLoading(true);
@@ -148,11 +161,21 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
+          disabled={_.isEmpty(dirtyFields) || !isValid || isUpdateLoading}
+          onClick={updateAssignLead}
+          endIcon={isUpdateLoading && <CircularProgress size={20}/>} 
+        >
+        Update
+        </Button>
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
           disabled={isNextButtonDisabled || isLoading}
           onClick={assignLead}
           endIcon={isLoading && <CircularProgress size={20}/>} 
         >
-        Assign lead
+         Assign lead
         </Button>
         <Button
           className="whitespace-nowrap mx-4"

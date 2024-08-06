@@ -21,3 +21,18 @@ export function getWhoDoYouNeed(value) {
       return 'N/A';
   }
 }
+
+export const titleOptions = [
+  {
+    value: "approved_auditor",
+    label: "Approved Auditor",
+  },
+  {
+    value: "bookkeeper",
+    label: "Bookkeeper",
+  },
+  {
+    value: "other",
+    label: "Other",
+  },
+];

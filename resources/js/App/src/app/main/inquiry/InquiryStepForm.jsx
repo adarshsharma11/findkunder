@@ -14,6 +14,7 @@ import ContactInfo from './form-steps/Contact';
 import AdditionalInfo from './form-steps/AdditionalInfo';
 import CompanyInfo from './form-steps/Company';
 import { useDispatch } from 'react-redux';
+
 import { getProducts as getCategories } from '../pages/categories/store/categoriesSlice';
 import { getProducts as getCustomerTypes } from '../pages/customer-types/store/customerTypesSlice';
 import { getProducts as getLocations } from '../pages/customer-locations/store/customerLocationsSlice';

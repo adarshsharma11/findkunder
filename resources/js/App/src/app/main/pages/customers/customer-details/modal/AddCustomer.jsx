@@ -10,6 +10,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import ContactImageTab from "../../../contact-person/contact-person-details/tabs/ContactImageTab";
+import { titleOptions } from "../../../../../utils/helpers";
 import { Controller, useFormContext } from "react-hook-form";
 
 const AddContact = ({
@@ -34,20 +35,6 @@ const AddContact = ({
   }, [firstName, lastName]);
 
   const { errors, isValid, dirtyFields } = formState;
-  const titleOptions = [
-    {
-      value: "approved_auditor",
-      label: "Approved Auditor",
-    },
-    {
-      value: "bookkeeper",
-      label: "Bookkeeper",
-    },
-    {
-      value: "other",
-      label: "Other",
-    },
-  ];
   return (
     <>
       <Dialog open={invalidContact} onClose={() => setInvalidContact(false)}>

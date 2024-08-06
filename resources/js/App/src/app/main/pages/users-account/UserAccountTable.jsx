@@ -212,7 +212,7 @@ function UserAccountTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {moment(n.created_at).format("YYYY-MM-DD HH:mm:ss") || "N/A"}
+                      {moment(n.created_at).format("dd.mm.yyyy") || "N/A"}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"

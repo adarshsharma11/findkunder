@@ -31,18 +31,6 @@ export const saveProduct = createAsyncThunk(
   }
 );
 
-export const updateLeadData = createAsyncThunk(
-  "contact/customerLead/updateLeadData",
-  async (productData, { dispatch, getState }) => {
-    const response = await axios.post(
-      `/api/leads/${productData.id}?_method=PUT`,
-      productData
-    );
-    const data = await response.data;
-    return data;
-  }
-);
-
 export const addNewLead = createAsyncThunk(
   "customer/customerLead/addNewLead",
   async (personData, { dispatch, getState }) => {
@@ -53,7 +41,7 @@ export const addNewLead = createAsyncThunk(
 );
 
 const customerLeadSlice = createSlice({
-  name: "customer/lead",
+  name: "customer/leadEmail",
   initialState: null,
   reducers: {
     resetProduct: () => null,
@@ -62,27 +50,6 @@ const customerLeadSlice = createSlice({
       prepare: (event) => ({
         payload: {
           status: "",
-          contact_name: '',
-          contact_email: '',
-          contact_phone: '',
-          company_name: '',
-          cvr_number: '',
-          street: '',
-          postal_code: '',
-          categories: [],
-          city: '',
-          location_id: '',
-          website: '',
-          customer_type_id: '',
-          company_description: '',
-          who_do_you_need: '',
-          specific_preferences: '',
-          physical_attendance_required: '',
-          physical_attendance_details: '',
-          do_not_contact: '',
-          attachments_per_year: null,
-          employees_count: null,
-          user_id: null,
         },
       }),
     },
@@ -90,7 +57,6 @@ const customerLeadSlice = createSlice({
   extraReducers: {
     [getProduct.fulfilled]: (state, action) => action.payload,
     [saveProduct.fulfilled]: (state, action) => action.payload,
-    [updateLeadData.fulfilled]: (state, action) => action.payload,
     [addNewLead.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },

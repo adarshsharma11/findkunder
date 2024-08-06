@@ -89,7 +89,7 @@ class LeadController extends Controller
      */
     public function show($id)
     {
-        $lead = Lead::with(['location:id,name', 'customerType:id,name', 'user', 'categories:id,name,parent_id', 'categories.subcategories:id,name,parent_id'])
+        $lead = Lead::with(['categories:id,name,parent_id', 'categories.subcategories:id,name,parent_id'])
                     ->find($id);
         if (!$lead) {
             return response()->json(['error' => 'Lead not found'], 404);
@@ -122,9 +122,10 @@ class LeadController extends Controller
             'customer_type_id' => 'sometimes|required|exists:customer_types,id',
             'location_id' => 'sometimes|required|exists:customer_locations,id',
             'categories' => 'nullable|array',
-            'user_id' => 'sometimes|required|string',
             'categories.*' => 'exists:categories,id',
-            'status' => 'nullable|in:0,1,2', 
+            'status' => 'nullable|in:0,1,2',
+            'attachments_per_year' => 'nullable|integer',
+            'employees_count' => 'nullable|integer',
         ]);
 
         // If validation fails, return error response
