@@ -60,11 +60,16 @@ function ProductHeader(props) {
     }
   };
 
-  const updateAssignLead = (params) => {
-    return dispatch(updateLeadData(params)).then(() => {
-      dispatch(showMessage({ message: "Lead updated successfully!" , variant: 'success'}));
+  function handleUpdateProduct() {
+   setIsUpdateLoading(true);
+    dispatch(updateLeadData(getValues())).then(() => {
+      setIsUpdateLoading(false);
+      dispatch(
+        showMessage({ message: "Lead updated successfully!", variant: "success" })
+      );
     });
-  };
+  }
+
   const completeLead = async () => {
     try {
       setIsCompletedLoading(true);
@@ -162,7 +167,7 @@ function ProductHeader(props) {
           variant="contained"
           color="secondary"
           disabled={_.isEmpty(dirtyFields) || !isValid || isUpdateLoading}
-          onClick={updateAssignLead}
+          onClick={handleUpdateProduct}
           endIcon={isUpdateLoading && <CircularProgress size={20}/>} 
         >
         Update

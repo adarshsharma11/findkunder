@@ -62,7 +62,7 @@ function Lead(props) {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const methods = useForm({
     mode: "onChange",
-    defaultValues,
+    defaultValues: {},
     resolver: yupResolver(leadUpdateSchema),
   });
 
@@ -81,10 +81,11 @@ function Lead(props) {
   });
   const { locations, customerTypes, customerCategories } = data;
   
-  const { productId } = routeParams;
+
 
   useDeepCompareEffect(() => {
     function updateProductState() {
+      const { productId } = routeParams;
 
       if (productId === "new") {
         /**
@@ -173,6 +174,7 @@ function Lead(props) {
   }
 
   const updateAssignLeads = (params) => {
+    const { productId } = routeParams;
     return dispatch(saveProduct(params)).then(() => {
       if (product && productId) {
         const param = {
@@ -186,8 +188,8 @@ function Lead(props) {
       );
     });
   };
-
   useEffect(() => {
+    const { productId } = routeParams;
     if (product && productId) {
       const param = {
         lead_id: productId,
@@ -195,7 +197,7 @@ function Lead(props) {
       }
     getContactPersons(param);
   }
-  }, [product, productId]);
+  }, [product, routeParams.productId]);
 
 
 
@@ -265,7 +267,7 @@ function Lead(props) {
   return (
     <FormProvider {...methods} >
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} selected={selected} updateAssignLeads={updateAssignLeads} leadId={productId} leadStatus={product?.status} />}
+        header={<ProductHeader id={routeParams?.productId} selected={selected} updateAssignLeads={updateAssignLeads} leadId={routeParams?.productId} leadStatus={product?.status} />}
         content={
           <>
             <Tabs
@@ -285,7 +287,7 @@ function Lead(props) {
                 <BasicInfoTab data={product} locations={locations} customerCategories={customerCategories} customerTypes={customerTypes}  />
               </div>
               <div className={tabValue !== 1 ? "hidden" : ""}>
-                <AssignContactTab data={assignLeadsData} leadStatus={product?.status} updateAssignLeads={updateAssignLeads} leadId={productId} selected={selected} setSelected={setSelected}/>
+                <AssignContactTab data={assignLeadsData} leadStatus={product?.status} updateAssignLeads={updateAssignLeads} leadId={routeParams?.productId} selected={selected} setSelected={setSelected}/>
               </div>
             </div>
           </>

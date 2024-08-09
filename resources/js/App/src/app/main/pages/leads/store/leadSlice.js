@@ -82,7 +82,8 @@ const customerLeadSlice = createSlice({
           do_not_contact: '',
           attachments_per_year: null,
           employees_count: null,
-          user_id: null,
+          id: '',
+          user_id: null
         },
       }),
     },
@@ -90,7 +91,7 @@ const customerLeadSlice = createSlice({
   extraReducers: {
     [getProduct.fulfilled]: (state, action) => action.payload,
     [saveProduct.fulfilled]: (state, action) => action.payload,
-    [updateLeadData.fulfilled]: (state, action) => action.payload,
+   // [updateLeadData.fulfilled]: (state, action) => action.payload,
     [addNewLead.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },

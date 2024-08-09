@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\Company;
 use App\Models\User;
+use App\Rules\UniqueCompany;
 use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
@@ -44,8 +45,8 @@ class CompanyController extends Controller
 
     public function store(Request $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'company_name' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'company_name' => ['required', 'string', 'max:255', new UniqueCompany($request)],
             'cvr' => 'required|string|max:20',
             'street' => 'nullable|string|max:255',
             'postal_code' => 'nullable|string|max:20',
@@ -56,28 +57,37 @@ class CompanyController extends Controller
             'facebook' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
+    
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation errors occurred',
+                'errors' => $validator->errors()
+            ], 422);
         }
+    
         $user = Auth::user();
         $data = $request->all();
+    
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $image_name = time().'.'.$image->extension();  
+            $image_name = time() . '.' . $image->extension();  
             $image->move(public_path('assets/images/company-logo'), $image_name);
             $data['image'] = $image_name;
         }
+    
         if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
             $company = Company::create($data);
         } else if ($user->hasRole('admin') && $data['user_id']) {
             $company = Company::create($data);
-        } 
-        else {
+        } else {
             $company = $user->companies()->create($data);
         }
+    
         return response()->json($company, 201);
     }
+    
 
     public function update(Request $request, $id)
     {

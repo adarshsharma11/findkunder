@@ -26,11 +26,30 @@ function ProductHeader(props) {
   const navigate = useNavigate();
 
   function handleSaveProduct() {
-    dispatch(addNewCompany(getValues())).then(() => {
-      dispatch(showMessage({ message: "Company added successfully!" }));
-      navigate("/locations");
-    });
+    const formData = getValues();
+    dispatch(addNewCompany(formData))
+      .then((response) => {
+        if (response.meta.requestStatus === 'fulfilled') {
+          dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
+          navigate("/locations");
+        } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
+          const errors = response.payload?.errors || response.error?.data?.errors;
+          if (errors) {
+            // Loop through the errors and show a message for each field
+            for (const [field, messages] of Object.entries(errors)) {
+              dispatch(showMessage({ message: `Error in ${field}: ${messages.join(', ')}`, variant: 'error' }));
+            }
+          } else {
+            dispatch(showMessage({ message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.", variant: 'error' }));
+          }
+        }
+      })
+      .catch((error) => {
+        // Handle any other errors
+        dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
+      });
   }
+  
 
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {

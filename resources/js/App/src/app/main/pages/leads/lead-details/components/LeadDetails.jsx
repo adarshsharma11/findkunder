@@ -13,17 +13,16 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { titleOptions } from "../../../../../utils/helpers";
-import { formatCategories } from "../../../../../utils/categoryHelpers";
+import { titleOptions, physicalAttendenceOptions  } from "../../../../../utils/helpers";
 
 function LeadDetails(props) {
   const { data, locations, customerTypes, customerCategories } = props;
   const methods = useFormContext();
-  const { control, formState, setValue } = methods;
+  const { control, formState, setValue, watch } = methods;
   const { errors } = formState;
   const [selectedCategories, setSelectedCategories] = React.useState([]);
-  const formattedCategories = data.categories && formatCategories(data.categories);
-  const preSelectedCategories = data.categories.length > 0 ? data.categories.map(category => category.id) : []
+  const preSelectedCategories = data.categories.length > 0 ? data.categories.map(category => category.id) : [];
+  const isPhysicalAttendenceRequired = watch('physical_attendance_required') === 'Yes';
 
   React.useEffect(() => {
     // Set form values based on data
@@ -508,39 +507,58 @@ function LeadDetails(props) {
                         name="physical_attendance_required"
                         control={control}
                         render={({ field }) => (
-                          <TextField
-                            {...field}
-                            error={!!errors.physical_attendance_required}
-                            required
-                            helperText={errors?.physical_attendance_required?.message}
-                            label="Is physical attendance required"
-                            autoFocus
-                            id="physical_attendance_required"
-                            variant="outlined"
-                            fullWidth
-                          />
+                          <>
+                            <FormControl sx={{ width: '100%'}} error={!!errors.physical_attendance_required}>
+                            <InputLabel id="physical_attendance_required">Is physical attendance required</InputLabel>
+                            <Select
+                              {...field}
+                              labelId="physical_attendance_required"
+                              required
+                              id="physical_attendance_required"
+                              variant="outlined"
+                              input={<OutlinedInput label="Is physical attendance required"/>}
+                              fullWidth
+                              inputProps={{ 'aria-label': 'Without label' }}
+                            >
+                              <MenuItem value="" disabled>
+                                Select Option
+                              </MenuItem>
+                              {physicalAttendenceOptions &&
+                                physicalAttendenceOptions?.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                            </Select>
+                            {errors.physical_attendance_required && 
+                              <FormHelperText>{errors?.physical_attendance_required?.message}</FormHelperText>
+                            }
+                            </FormControl>
+                          </>
                         )}
                       />
                     </div>
+                  {isPhysicalAttendenceRequired &&
                     <div className="mb-24">
-                    <Controller
-                        name="physical_attendance_details"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            error={!!errors.physical_attendance_details}
-                            required
-                            helperText={errors?.physical_attendance_details?.message}
-                            label="Physical Attendance Details"
-                            autoFocus
-                            id="physical_attendance_details"
-                            variant="outlined"
-                            fullWidth
-                          />
-                        )}
-                      />
+                            <Controller
+                            name="physical_attendance_details"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                error={!!errors.physical_attendance_details}
+                                required
+                                helperText={errors?.physical_attendance_details?.message}
+                                label="Physical Attendance Details"
+                                autoFocus
+                                id="physical_attendance_details"
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                            />
                     </div>
+                  }
                     <div className="mb-24">
                     <Controller
                         name="do_not_contact"

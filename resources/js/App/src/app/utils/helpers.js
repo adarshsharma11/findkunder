@@ -36,3 +36,14 @@ export const titleOptions = [
     label: "Other",
   },
 ];
+
+export const physicalAttendenceOptions = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
+];
