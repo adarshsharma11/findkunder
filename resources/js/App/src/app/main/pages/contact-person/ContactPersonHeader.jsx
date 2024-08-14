@@ -17,7 +17,7 @@ function ContactPersonHeader(props) {
   const searchText = useSelector(selectProductsSearchText);
 
   return (
-    <div>
+    <div className="w-full">
     <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
       <Typography
         component={motion.span}
