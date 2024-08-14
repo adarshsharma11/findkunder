@@ -17,7 +17,8 @@ function CompaniesHeader(props) {
   const searchText = useSelector(selectCompaniesSearchText);
 
   return (
-    <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
+    <div>
+    <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 b px-24 md:px-32">
       <Typography
         component={motion.span}
         initial={{ x: -20 }}
@@ -67,6 +68,22 @@ function CompaniesHeader(props) {
             </motion.div>
         }
       </div>
+    </div>
+    {!isAdmin && (
+       <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-16 px-24 md:px-32">
+          <motion.div
+          className="text-center sm:text-left"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
+          >
+          <Typography variant="body2" color="textSecondary">
+            Remember to create at least one contact on the <Link to="/contact-person">My Contacts</Link> page
+            and link your contact to one or more of your locations on the <Link to="/profiles">My Profiles</Link> page. 
+            Otherwise, we won't be able to connect you with potential customers.
+          </Typography>
+        </motion.div>
+        </div>
+      )}
     </div>
   );
 }

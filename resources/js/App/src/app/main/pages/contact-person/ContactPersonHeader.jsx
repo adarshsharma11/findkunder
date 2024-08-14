@@ -17,6 +17,7 @@ function ContactPersonHeader(props) {
   const searchText = useSelector(selectProductsSearchText);
 
   return (
+    <div>
     <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-24 md:px-32">
       <Typography
         component={motion.span}
@@ -67,6 +68,22 @@ function ContactPersonHeader(props) {
               </motion.div>
         }
       </div>
+    </div>
+    {!isAdmin && (
+        <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-8 px-24 md:px-32">
+          <motion.div
+            className="text-center sm:text-left"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
+          >
+            <Typography variant="body2" color="textSecondary">
+              Remember to create at least one location on the <Link to="/locations">My Locations</Link> page
+              and link your location to one or more of your contacts on the <Link to="/profiles">My Profiles</Link> page. 
+              Otherwise, we won't be able to connect you with potential customers.
+            </Typography>
+          </motion.div>
+        </div>
+    )}
     </div>
   );
 }
