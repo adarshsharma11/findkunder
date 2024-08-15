@@ -23,7 +23,7 @@ function Companies() {
   }
 
   useEffect(() => {
-    if (!data.totalProfiles ||  data.totalProfiles === 0) {
+    if ((!data.totalProfiles ||  data.totalProfiles === 0) && !isAdmin) {
       setOpen(true);
     }
   }, [data]);
