@@ -32,7 +32,7 @@ function Companies() {
   return (
     <>
     <FusePageCarded
-      header={<CompaniesHeader isAdmin={isAdmin} />}
+      header={<CompaniesHeader isAdmin={isAdmin} toggleProfileDialog={toggleProfileDialog} />}
       content={<CompaniesTable />}
       scroll={isMobile ? "normal" : "content"}
     />

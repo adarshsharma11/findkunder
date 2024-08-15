@@ -12,7 +12,7 @@ import {
 } from "./store/companiesSlice";
 
 function CompaniesHeader(props) {
-  const { isAdmin } = props;
+  const { isAdmin, toggleProfileDialog } = props;
   const dispatch = useDispatch();
   const searchText = useSelector(selectCompaniesSearchText);
 
@@ -56,7 +56,7 @@ function CompaniesHeader(props) {
               animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
               >
               <Button
-                className=""
+                className="whitespace-nowrap mx-4"
                 component={Link}
                 to="new"
                 variant="contained"
@@ -64,6 +64,16 @@ function CompaniesHeader(props) {
                 startIcon={<FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon>}
               >
                 Add
+              </Button>
+              <Button
+                className="whitespace-nowrap mx-4"
+                to="new"
+                variant="outlined"
+                color="secondary"
+                onClick={() => toggleProfileDialog()}
+                startIcon={<FuseSvgIcon>heroicons-outline:information-circle</FuseSvgIcon>}
+              >
+                How do I do that?
               </Button>
             </motion.div>
         }
