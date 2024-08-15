@@ -14,7 +14,6 @@ import ContactInfo from './form-steps/Contact';
 import AdditionalInfo from './form-steps/AdditionalInfo';
 import CompanyInfo from './form-steps/Company';
 import { useDispatch } from 'react-redux';
-
 import { getProducts as getCategories } from '../pages/categories/store/categoriesSlice';
 import { getProducts as getCustomerTypes } from '../pages/customer-types/store/customerTypesSlice';
 import { getProducts as getLocations } from '../pages/customer-locations/store/customerLocationsSlice';
@@ -23,30 +22,27 @@ import { inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema } from
 import { INITIAL_INQUIRY_DATA } from '../../InquiryContext';
 import _ from "@lodash";
 
-const defaultValuesForContact = {
-  contact_name: "",
-  contact_email: "",
-  contact_phone: ""
-};
-
-const defaultValuesForCompany = {
-  company_name: "",
-  cvr_number: "",
-  street: "",
-  postal_code: "",
-  city: "",
-  location_id: "",
-  customer_type_id: "",
-  company_description: "",
-  website: "",
-};
-
-const defaultValuesForAdditionalInfo = {
-  who_do_you_need: "",
-  specific_preferences: "",
-  physical_attendance_required: "",
-  physical_attendance_details: "",
-  do_not_contact: ""
+const defaultValues = {
+  contact_name: '',
+  contact_email: '',
+  contact_phone: '',
+  company_name: '',
+  cvr_number: '',
+  street: '',
+  postal_code: '',
+  categories: [],
+  city: '',
+  location_id: '',
+  website: '',
+  customer_type_id: '',
+  company_description: '',
+  who_do_you_need: '',
+  specific_preferences: '',
+  physical_attendance_required: '',
+  physical_attendance_details: '',
+  do_not_contact: '',
+  attachments_per_year: null,
+  employees_count: null,
 };
 
 
@@ -69,7 +65,6 @@ export default function InquiryStepForm() {
   });
   const { locations, customerTypes, customerCategories } = data;
   const schema = [inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema][activeStep];
-  const defaultValues = [defaultValuesForContact, defaultValuesForCompany, defaultValuesForAdditionalInfo][activeStep];
 
   const methods = useForm({
     mode: "onTouched",
