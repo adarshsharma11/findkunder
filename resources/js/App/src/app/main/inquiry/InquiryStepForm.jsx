@@ -7,7 +7,6 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useStepper } from '../../InquiryContext';
-import { blue } from '@mui/material/colors';
 import { makeStyles } from '@mui/styles';
 import { useForm, FormProvider } from 'react-hook-form';
 import ContactInfo from './form-steps/Contact';
@@ -218,32 +217,20 @@ export default function InquiryStepForm() {
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             {activeStep !== 0 && 
               <Button
-                color="inherit"
+                color="primary"
                 disabled={activeStep === 0}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
+                variant="outlined"
                 >
                 Back
               </Button>
             }
             <Box sx={{ flex: '1 1 auto' }} />
             <Box sx={{ m: 1, position: 'relative' }}>
-            <Button onClick={handleNext} disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}>
+            <Button onClick={handleNext} color="secondary" disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}  endIcon={isLoading && <CircularProgress size={20}/>} variant="outlined" >
               {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Button>
-            {isLoading && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  color: blue[500],
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  marginTop: '-12px',
-                  marginLeft: '-12px',
-                }}
-              />
-            )}
           </Box>
           </Box>
         </React.Fragment>
