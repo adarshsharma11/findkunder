@@ -2,9 +2,9 @@
 <html lang='en'>
     <head>
         <meta charset='utf-8'>
-        <meta name='description' content='Fuse React - Material design admin template with pre-built apps and pages'>
+        <meta name='description' content='Join a growing community of companies leveraging our marketing network to attract relevant leads affordably. Boost your business with targeted and cost-effective lead generation.'>
         <meta name='keywords'
-              content='React,Redux,Material UI Next,Material,Material Design,Google Material Design,HTML,CSS,Firebase,Authentication,Material Redux Theme,Material Redux Template'>
+              content='marketing network, relevant leads, affordable lead generation, business growth, targeted marketing, attract leads, cost-effective marketing, lead generation solutions'>
         <meta name='author' content='Withinpixels'>
         <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
         <meta name='theme-color' content='#000000'>
