@@ -36,12 +36,14 @@ function AuthProvider({ children }) {
 
     AuthService.on("onLogout", () => {
       pass("Signed out");
+      resetProfileDialogFlag();
 
       dispatch(logoutUser());
     });
 
     AuthService.on("onAutoLogout", (message) => {
       pass(message);
+      resetProfileDialogFlag();
 
       dispatch(logoutUser());
     });
@@ -51,6 +53,10 @@ function AuthProvider({ children }) {
     });
 
     AuthService.init();
+
+    function resetProfileDialogFlag() {
+      localStorage.removeItem("hasShownProfileDialog");
+    };
 
     function success(user, message) {
       // if (message) {

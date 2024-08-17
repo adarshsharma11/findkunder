@@ -23,8 +23,10 @@ function Companies() {
   }
 
   useEffect(() => {
-    if ((!data.totalProfiles ||  data.totalProfiles === 0) && !isAdmin) {
+    const hasShownDialog = localStorage.getItem("hasShownProfileDialog");
+    if ((!data.totalProfiles ||  data.totalProfiles === 0) && !isAdmin && !hasShownDialog) {
       setOpen(true);
+      localStorage.setItem("hasShownProfileDialog", "true");
     }
   }, [data]);
 

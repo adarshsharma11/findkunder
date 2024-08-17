@@ -21,6 +21,7 @@ function BasicInfoTab(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const methods = useFormContext();
+  console.log(data, 'asfsaasvas');
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
   const formattedCategories = data.categories && formatCategories(data.categories);
@@ -158,7 +159,7 @@ function BasicInfoTab(props) {
           {renderCheckbox("Tell us a bit about your company", "company_description", data.company_description)}
           {renderCheckbox("Website", "website", data.website)}
           {renderCheckbox("CVR number", "cvr_number", data.cvr_number)}
-          {renderCheckbox("Who are you", "who_are_you", data.customer_type.name)}
+          {renderCheckbox("Who are you", "who_are_you", data?.customer_type?.name)}
           {renderCheckbox("Street", "street", data.street)}
           {renderCheckbox("Postal code", "postal_code", data.postal_code)}
           {renderCheckbox("City", "city", data.city)}
