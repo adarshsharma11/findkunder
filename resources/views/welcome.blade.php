@@ -2,9 +2,9 @@
 <html lang='en'>
     <head>
         <meta charset='utf-8'>
-        <meta name='description' content='Join a growing community of companies leveraging our marketing network to attract relevant leads affordably. Boost your business with targeted and cost-effective lead generation.'>
+        <meta name='description' content='Join find regnet a growing community of companies leveraging our marketing network to attract relevant leads affordably. Boost your business with targeted and cost-effective lead generation.'>
         <meta name='keywords'
-              content='marketing network, relevant leads, affordable lead generation, business growth, targeted marketing, attract leads, cost-effective marketing, lead generation solutions'>
+              content='find regnet, find regnet leads, marketing network, relevant leads, affordable lead generation, business growth, targeted marketing, attract leads, cost-effective marketing, lead generation solutions'>
         <meta name='author' content='Withinpixels'>
         <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
         <meta name='theme-color' content='#000000'>
