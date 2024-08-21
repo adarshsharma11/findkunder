@@ -21,30 +21,6 @@ import { inquiryContactSchema, inquiryCompanySchema, additionalInfoSchema } from
 import { INITIAL_INQUIRY_DATA } from '../../InquiryContext';
 import _ from "@lodash";
 
-const defaultValues = {
-  contact_name: '',
-  contact_email: '',
-  contact_phone: '',
-  company_name: '',
-  cvr_number: '',
-  street: '',
-  postal_code: '',
-  categories: [],
-  city: '',
-  location_id: '',
-  website: '',
-  customer_type_id: '',
-  company_description: '',
-  who_do_you_need: '',
-  specific_preferences: '',
-  physical_attendance_required: '',
-  physical_attendance_details: '',
-  do_not_contact: '',
-  attachments_per_year: null,
-  employees_count: null,
-};
-
-
 const useStyles = makeStyles((theme) => ({
   formFields: {
     display: 'flex',
@@ -67,7 +43,7 @@ export default function InquiryStepForm() {
 
   const methods = useForm({
     mode: "onTouched",
-    defaultValues,
+    defaultValues: formData,
     resolver: yupResolver(schema),
   });
   const { reset, watch, control, onChange, formState, handleSubmit, getValues } = methods;
@@ -77,6 +53,10 @@ export default function InquiryStepForm() {
   const [isLoading, setIsLoading] = useState(false); 
 
   const steps = ['Contact', 'Company', 'Additional information'];
+
+  useEffect(() => {
+    reset(formData);
+  }, [formData, reset]);
 
   useEffect(() => {
     // Dispatch the getProducts action and handle the response
@@ -158,20 +138,20 @@ export default function InquiryStepForm() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    try {
-      const response = await dispatch(addNewLead(formData));
-      if (response.payload) {
-        await localStorage.removeItem('inquiry-data');
-        setFormData(INITIAL_INQUIRY_DATA);
-        setTimeout(() => {
-          setActiveStep(steps.length);
-        }, 1000);  
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsLoading(false);
-    }
+        dispatch(addNewLead(getValues())).then((response) => {
+          if (response.meta.requestStatus === "fulfilled") {
+            localStorage.removeItem('inquiry-data');
+             setFormData(INITIAL_INQUIRY_DATA);
+              setTimeout(() => {
+                setActiveStep(steps.length);
+              }, 1000);  
+          } else {
+            // Handle error if needed
+            console.error("Error fetching locations:", response.error);
+          }
+      }).finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -209,7 +189,7 @@ export default function InquiryStepForm() {
         </div>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Restart</Button>
+            <Button onClick={handleReset} color="warning" variant='outlined'>Restart</Button>
           </Box>
         </React.Fragment>
       ) : (

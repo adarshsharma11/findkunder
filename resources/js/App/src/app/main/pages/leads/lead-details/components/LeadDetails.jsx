@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { titleOptions, physicalAttendenceOptions  } from "../../../../../utils/helpers";

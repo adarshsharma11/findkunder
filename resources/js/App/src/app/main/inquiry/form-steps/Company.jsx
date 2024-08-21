@@ -3,6 +3,9 @@ import TextField from '@mui/material/TextField';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import { Controller, useFormContext } from 'react-hook-form';
 
 function CompanyInfo(props) {
@@ -100,64 +103,74 @@ function CompanyInfo(props) {
         )}
       />
       <Controller
-        name="location_id"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">Your Location</InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.location_id}
-              required
-              displayEmpty
-              helperText={errors?.location_id?.message}
-              id="title"
-              variant="outlined"
-              fullWidth
-            >
-              <MenuItem value="" disabled>
-                Select Location
-              </MenuItem>
-              {locations &&
-                locations?.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-            </Select>
-          </>
-        )}
-      />
+          name="location_id"
+          control={control}
+          render={({ field }) => (
+            <>
+              <FormControl sx={{ width: '100%'}}  error={!!errors.location_id}>
+              <InputLabel id="location_id">Your Location</InputLabel>
+              <Select
+                {...field}
+                required
+                className="mt-8 mb-16"
+                labelId="location_id"
+                id="location_id"
+                variant="outlined"
+                input={<OutlinedInput label="Your Location"/>}
+                fullWidth
+                inputProps={{ 'aria-label': 'Without label' }}
+              >
+                <MenuItem value="" disabled>
+                  Select Location
+                </MenuItem>
+                {locations &&
+                  locations?.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              {errors.location_id && 
+                <FormHelperText>{errors?.location_id?.message}</FormHelperText>
+              }
+              </FormControl>
+            </>
+          )}
+        />
        <Controller
-        name="customer_type_id"
-        control={control}
-        render={({ field }) => (
-          <>
-            <InputLabel id="demo-simple-select-label">Who are you</InputLabel>
-            <Select
-              {...field}
-              className="mt-8 mb-16"
-              error={!!errors.customer_type_id}
-              required
-              displayEmpty
-              helperText={errors?.customer_type_id?.message}
-              id="title"
-              variant="outlined"
-              fullWidth
-            >
-              <MenuItem value="" disabled>
-                Select Customer Type
-              </MenuItem>
-              {customerTypes &&
-                customerTypes?.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-            </Select>
-          </>
-        )}
+          name="customer_type_id"
+          control={control}
+          render={({ field }) => (
+            <>
+              <FormControl sx={{ width: '100%'}}  error={!!errors.customer_type_id}>
+              <InputLabel id="customer_type_id">Who are you</InputLabel>
+              <Select
+                {...field}
+                required
+                labelId="customer_type_id"
+                id="customer_type_id"
+                className="mt-8 mb-16"
+                variant="outlined"
+                input={<OutlinedInput label="Who are you"/>}
+                fullWidth
+                inputProps={{ 'aria-label': 'Without label' }}
+              >
+                <MenuItem value="" disabled>
+                  Select Customer Type
+                </MenuItem>
+                {customerTypes &&
+                  customerTypes?.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              {errors.customer_type_id && 
+                <FormHelperText>{errors?.customer_type_id?.message}</FormHelperText>
+              }
+              </FormControl>
+            </>
+          )}
       />
       <Controller
         name="website"
