@@ -6,7 +6,6 @@ import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { changeLanguage, selectCurrentLanguage, selectLanguages } from 'app/store/i18nSlice';
 
 function LanguageSwitcher(props) {
@@ -71,15 +70,6 @@ function LanguageSwitcher(props) {
             <ListItemText primary={lng.title} />
           </MenuItem>
         ))}
-
-        <MenuItem
-          component={Link}
-          to="/documentation/configuration/multi-language"
-          onClick={langMenuClose}
-          role="button"
-        >
-          <ListItemText primary="Learn More" />
-        </MenuItem>
       </Popover>
     </>
   );
