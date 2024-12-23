@@ -18,6 +18,7 @@ const AddContact = ({
   setInvalidContact,
   contactName,
   handleSaveContact,
+  locations,
 }) => {
   const methods = useFormContext();
   const { control, formState, getValues, setValue } = methods;
@@ -72,6 +73,39 @@ const AddContact = ({
                 </>
               )}
             />
+
+            <Controller
+              name="location_id"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <>
+                  <InputLabel id="demo-simple-select-label">Select Location</InputLabel>
+                  <Select
+                    {...field}
+                    className="mt-8 mb-16"
+                    error={!!errors.location_id}
+                    displayEmpty
+                    required
+                    helperText={errors?.location_id?.message}
+                    id="title"
+                    variant="outlined"
+                    fullWidth
+                  >
+                    <MenuItem value="" disabled>
+                      Select Location
+                    </MenuItem>
+                    {locations &&
+                      locations?.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.street}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </>
+              )}
+            />
+            
             <Controller
               name="first_name"
               control={control}

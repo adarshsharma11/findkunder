@@ -55,7 +55,6 @@ const productSlice = createSlice({
       reducer: (state, action) => action.payload,
       prepare: (event) => ({
         payload: {
-          location_id: "",
           person_id: "",
           categories: [],
           customer_types: [],

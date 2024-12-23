@@ -17,11 +17,6 @@ class Customer extends Model
         'status',
     ];
 
-    public function location()
-    {
-        return $this->belongsTo(CompanyLocation::class, 'location_id');
-    }
-
     public function person()
     {
         return $this->belongsTo(ContactPerson::class, 'person_id');

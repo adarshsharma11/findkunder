@@ -143,10 +143,6 @@ export const updateProfilePasswordSchema = yup.object().shape({
 });
 
 export const profileSchema = yup.object().shape({
-  location_id: yup
-    .string()
-    .required("You must enter a location")
-    .max(255, "Location name must not exceed 255 characters"),
   person_id: yup
     .string()
     .required("You must enter a contact person")
@@ -155,10 +151,6 @@ export const profileSchema = yup.object().shape({
 });
 
 export const adminProfileSchema = yup.object().shape({
-  location_id: yup
-    .string()
-    .required("You must enter a location")
-    .max(255, "Location name must not exceed 255 characters"),
   person_id: yup
     .string()
     .required("You must enter a contact person")

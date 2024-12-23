@@ -61,6 +61,13 @@ const navigationConfig = [
         url: "/profiles",
       },
       {
+        id: "apps.companies",
+        title: "Companies",
+        type: "item",
+        icon: "material-outline:account_balance",
+        url: "/companies",
+      },
+      {
         id: "apps.locations",
         title: "Locations",
         type: "item",
@@ -73,13 +80,6 @@ const navigationConfig = [
         type: "item",
         icon: "heroicons-outline:user-circle",
         url: "/contact-person",
-      },
-      {
-        id: "apps.companies",
-        title: "Companies",
-        type: "item",
-        icon: "material-outline:account_balance",
-        url: "/companies",
       },
     ],
   },

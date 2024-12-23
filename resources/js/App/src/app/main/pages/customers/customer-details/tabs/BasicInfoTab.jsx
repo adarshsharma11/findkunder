@@ -131,7 +131,7 @@ function BasicInfoTab(props) {
         />
        </div>
       )}
-      <div className="w-full">
+      {/* <div className="w-full">
         <Controller
           name="location_id"
           control={control}
@@ -205,7 +205,7 @@ function BasicInfoTab(props) {
             />
           )}
         />
-      </div>
+      </div> */}
       <div className="w-full">
         <Controller
           name="person_id"
@@ -480,6 +480,7 @@ function BasicInfoTab(props) {
       />
       <FormProvider {...contactMethods}>
         <AddContact
+          locations={companies}
           setInvalidContact={setInvalidContact}
           invalidContact={invalidContact}
           contactName={contactName}

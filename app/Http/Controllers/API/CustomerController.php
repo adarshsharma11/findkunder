@@ -7,8 +7,6 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Models\CompanyLocation;
-use App\Models\ContactPerson;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\CustomerType;
@@ -18,49 +16,34 @@ class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
         $user = Auth::user();
         $userId = $request->userId;
+
         if ($userId) {
             $user = User::find($userId);
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
-                $query->with('subcategories');
-            }, 'customerTypes', 'customerLocations'])
-            ->where('user_id', $userId)
-            ->get();
+            $customers = Customer::with(['person.location', 'categories.subcategories', 'customerTypes', 'customerLocations'])
+                ->where('user_id', $userId)
+                ->get();
         } else {
-            if ($user->hasRole('admin')) {
-                $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
-                    $query->with('subcategories');
-                }, 'customerTypes', 'customerLocations'])->get();
-            } else {
-            $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
-                $query->with('subcategories');
-            }, 'customerTypes', 'customerLocations'])
-            ->where('user_id', $user->id)
-            ->get();
-            }
+            $query = Customer::with(['person.location', 'categories.subcategories', 'customerTypes', 'customerLocations']);
+            $customers = $user->hasRole('admin') ? $query->get() : $query->where('user_id', $user->id)->get();
         }
+
         return response()->json($customers);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'location_id' => 'required|exists:company_locations,id',
             'person_id' => 'required|exists:contact_person,id',
             'notes' => 'nullable|string',
             'categories' => 'array',
@@ -72,26 +55,21 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 422);
         }
+
         $user = Auth::user();
         $data = $request->all();
 
-        $existingCustomer = Customer::where('location_id', $data['location_id'])
-        ->where('person_id', $data['person_id'])
-        ->first();
-
+        $existingCustomer = Customer::where('person_id', $data['person_id'])->first();
         if ($existingCustomer) {
-            return response()->json(['message' => ' Profile already exists with the same location and contact person','status' => false], 201);
+            return response()->json([
+                'message' => 'A profile already exists for this contact person.',
+                'status' => false
+            ], 201);
         }
-        if ($user->hasRole('admin') && !$data['user_id']) {
-            $data['user_id'] = $user->id;
-            $customer = Customer::create($data);
-        } 
-        else if ($user->hasRole('admin') && $data['user_id']) {
-            $customer = Customer::create($data);
-        } 
-        else {
-            $customer = $user->customers()->create($data);
-        }
+
+        $data['user_id'] = $user->hasRole('admin') && isset($data['user_id']) ? $data['user_id'] : $user->id;
+
+        $customer = Customer::create($data);
 
         if (!empty($data['categories'])) {
             $categories = Category::whereIn('id', $data['categories'])->get();
@@ -103,163 +81,101 @@ class CustomerController extends Controller
             $customer->customerLocations()->attach($locations);
         }
 
-       // Attach customer types to the customer
         if (!empty($data['customer_types'])) {
             $customerTypes = CustomerType::whereIn('id', $data['customer_types'])->get();
             $customer->customerTypes()->attach($customerTypes);
         }
-        return response()->json(['status' => true, 'data' => $customer, 'message' => ' Profile created successfully!']);
+
+        return response()->json([
+            'status' => true,
+            'data' => $customer,
+            'message' => 'Profile created successfully!'
+        ]);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        $customer = Customer::with(['location', 'person','user','categories' => function ($query) {
-            $query->with('subcategories');
-        }, 'customerTypes', 'customerLocations'])->find($id);
+        $customer = Customer::with(['person.location', 'user', 'categories.subcategories', 'customerTypes', 'customerLocations'])->find($id);
+
         if (!$customer) {
             return response()->json(['error' => 'Profile not found'], 404);
         }
+
         return response()->json($customer);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'location_id' => 'exists:locations,id',
             'person_id' => 'exists:contact_person,id',
             'notes' => 'nullable|string',
             'status' => 'nullable|string',
         ]);
 
-    
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 422);
         }
-        try {
-            $customer = Customer::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
+
+        $customer = Customer::find($id);
+        if (!$customer) {
             return response()->json(['status' => 'error', 'message' => 'Customer not found.'], 404);
         }
-        $data = $request->all();
-    
-        $customer->update([
-            'location_id' => $request->input('location_id'),
-            'person_id' => $request->input('person_id'),
-            'status' => $request->input('status'),
-            'notes' => $request->input('notes'),
-        ]);
 
+        $data = $request->only(['person_id', 'status', 'notes']);
+        $customer->update($data);
+
+        // Sync categories, customer types, and customer locations
         if (isset($data['categories'])) {
-            if (count($data['categories']) > 0) {
-                $categoryIds = [];
-                if (!empty($data['categories'])) {
-                    if (is_array($data['categories']) && !empty($data['categories'][0]['id'])) {
-                        $categoryIds = array_map(function($type) {
-                            return $type['id'];
-                        }, $data['categories']);
-                    } else {
-                        $categoryIds = $data['categories'];
-                    }
-                }
-                $categories = Category::whereIn('id', $categoryIds)->get();
-                $customer->categories()->sync($categories->pluck('id'));
-            } else {
-                $customer->categories()->detach();
-            }
+            $customer->categories()->sync($data['categories'] ?? []);
         }
-    
+
         if (isset($data['customer_locations'])) {
-            if (count($data['customer_locations']) > 0) {
-                $locationIds = [];
-                if (!empty($data['customer_locations'])) {
-                    if (is_array($data['customer_locations']) && !empty($data['customer_locations'][0]['id'])) {
-                        $locationIds = array_map(function($type) {
-                            return $type['id'];
-                        }, $data['customer_locations']);
-                    } else {
-                        $locationIds = $data['customer_locations'];
-                    }
-                }
-                $locations = CustomerLocation::whereIn('id', $locationIds)->get();
-                $customer->customerLocations()->sync($locations->pluck('id'));
-            } else {
-                $customer->customerLocations()->detach();
-            }
+            $customer->customerLocations()->sync($data['customer_locations'] ?? []);
         }
-    
+
         if (isset($data['customer_types'])) {
-            if (count($data['customer_types']) > 0) {
-                $customerTypeIds = [];
-                if (!empty($data['customer_types'])) {
-                    if (is_array($data['customer_types']) && !empty($data['customer_types'][0]['id'])) {
-                        $customerTypeIds = array_map(function($type) {
-                            return $type['id'];
-                        }, $data['customer_types']);
-                    } else {
-                        $customerTypeIds = $data['customer_types'];
-                    }
-                }
-                $customerTypes = CustomerType::whereIn('id', $customerTypeIds)->get();
-                $customer->customerTypes()->sync($customerTypes->pluck('id'));
-            } else {
-                $customer->customerTypes()->detach();
-            }
+            $customer->customerTypes()->sync($data['customer_types'] ?? []);
         }
-    
-        $updatedCustomer = Customer::with(['company', 'person', 'categories', 'customerTypes', 'customerLocations'])->find($id);
+
+        $updatedCustomer = Customer::with(['person.location', 'categories', 'customerTypes', 'customerLocations'])->find($id);
         return response()->json($updatedCustomer);
-    
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, $id)
     {
         $customer = Customer::find($id);
-    
         if (!$customer) {
             return response()->json(['error' => 'Profile not found'], 404);
         }
-    
+
         $deleteCompany = $request->input('deleteCompany', false);
         $deleteContact = $request->input('deleteContact', false);
-    
-        // Delete the customer profile
+
         $customer->delete();
-    
-        // Delete associated company and contact if specified
+
         if ($deleteCompany || $deleteContact) {
-            $customer->load(['company', 'person']);
-    
-            if ($deleteCompany && $customer->company) {
-                CompanyLocation::where('id', $customer->company->id)->delete();
+            $customer->load(['person.location']);
+
+            if ($deleteCompany && $customer->person->location) {
+                $customer->person->location->delete();
             }
-    
-            if ($deleteContact && $customer->person) {
-                ContactPerson::where('id', $customer->person->id)->delete();
+
+            if ($deleteContact) {
+                $customer->person->delete();
             }
-    
+
             return response()->json(['message' => 'Profile and associated location/contact deleted successfully']);
         }
-    
-        // If no association deletion is specified, just delete the customer profile
+
         return response()->json(['message' => 'Profile deleted successfully']);
-    }    
+    }
 }
