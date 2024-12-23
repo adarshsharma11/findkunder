@@ -12,22 +12,7 @@ export const companySchema = yup.object().shape({
     .string()
     .required("You must enter a CVR")
     .max(20, "CVR must not exceed 20 characters"),
-  street: yup
-    .string()
-    .required("You must enter a street")
-    .max(255, "Street must not exceed 255 characters"),
-  postal_code: yup
-    .string()
-    .required("You must enter a postal code")
-    .max(20, "Postal code must not exceed 20 characters"),
-  city: yup
-    .string()
-    .required("You must enter a city")
-    .max(255, "City must not exceed 255 characters"),
-  location: yup
-    .string()
-    .required("You must enter a location")
-    .max(255, "Location must not exceed 255 characters"),
+  description: yup.string().optional(),
   website: yup.string().nullable(),
   linkedin: yup
     .string()
@@ -47,11 +32,28 @@ export const companySchema = yup.object().shape({
     ),
 });
 
+export const locationSchema = yup.object().shape({
+  company_id: yup.string().required('You must select company'),
+  street: yup
+    .string()
+    .required("You must enter a street")
+    .max(255, "Street must not exceed 255 characters"),
+  postal_code: yup
+    .string()
+    .required("You must enter a postal code")
+    .max(20, "Postal code must not exceed 20 characters"),
+  city: yup
+    .string()
+    .required("You must enter a city")
+    .max(255, "City must not exceed 255 characters"),
+});
+
 export const contactSchema = yup.object().shape({
   first_name: yup
     .string()
     .required("You must enter a first name")
     .max(255, "First name must not exceed 255 characters"),
+  location_id: yup.string().required('You must select location'),
   title: yup
     .string()
     .required("You must enter a title")
@@ -141,10 +143,10 @@ export const updateProfilePasswordSchema = yup.object().shape({
 });
 
 export const profileSchema = yup.object().shape({
-  company_id: yup
+  location_id: yup
     .string()
-    .required("You must enter a company")
-    .max(255, "First name must not exceed 255 characters"),
+    .required("You must enter a location")
+    .max(255, "Location name must not exceed 255 characters"),
   person_id: yup
     .string()
     .required("You must enter a contact person")
@@ -153,10 +155,10 @@ export const profileSchema = yup.object().shape({
 });
 
 export const adminProfileSchema = yup.object().shape({
-  company_id: yup
+  location_id: yup
     .string()
-    .required("You must enter a company")
-    .max(255, "Company name must not exceed 255 characters"),
+    .required("You must enter a location")
+    .max(255, "Location name must not exceed 255 characters"),
   person_id: yup
     .string()
     .required("You must enter a contact person")

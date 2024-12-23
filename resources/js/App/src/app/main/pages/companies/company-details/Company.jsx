@@ -110,7 +110,7 @@ function Company(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no such location!
+          There is no such company!
         </Typography>
         <Button
           className="mt-24"
@@ -119,7 +119,7 @@ function Company(props) {
           to="/locations"
           color="inherit"
         >
-          Go to location Page
+          Go to company Page
         </Button>
       </motion.div>
     );

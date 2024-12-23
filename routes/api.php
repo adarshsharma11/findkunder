@@ -12,6 +12,7 @@ use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\LeadController;
 use App\Http\Controllers\API\AssignLeadController;
 use App\Http\Controllers\API\AddProfileController;
+use App\Http\Controllers\API\CompanyLocationController;
 use App\Http\Controllers\API\Admin\CustomerLocationController;
 
 /*
@@ -37,6 +38,7 @@ use App\Http\Controllers\API\Admin\CustomerLocationController;
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('/companies', CompanyController::class);
+        Route::apiResource('/company-locations', CompanyLocationController::class);
         Route::post('/delete-profile', [AuthController::class, 'softDeleteUser']);
         Route::post('/leads/get-profiles', [AssignLeadController::class, 'getRelevantLeadProfiles']);
         Route::post('/lead/assign-profiles', [AssignLeadController::class, 'assignLeadToCustomers']);

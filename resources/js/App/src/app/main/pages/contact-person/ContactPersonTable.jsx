@@ -219,6 +219,14 @@ function ContactPersonTable(props) {
                       component="th"
                       scope="row"
                     >
+                      {n?.location?.street || "N/A"}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
                       {n.first_name}
                     </TableCell>
 

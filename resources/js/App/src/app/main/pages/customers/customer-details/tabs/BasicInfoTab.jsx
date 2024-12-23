@@ -6,7 +6,7 @@ import AddContact from "../modal/AddCustomer";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
-import AddCompany from "../modal/AddCompany";
+import AddLocation from "../modal/AddLocation";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormProvider, useForm } from "react-hook-form";
@@ -87,10 +87,10 @@ function BasicInfoTab(props) {
   const handleSaveCompany = (values) => {
     dispatch(addNewCompany(values)).then((addedCompany) => {
       const payload = addedCompany?.payload;
-      dispatch(showMessage({ message: "Company added successfully!" }));
+      dispatch(showMessage({ message: "Location added successfully!" }));
       setCompanies((prevCompanies) => [...prevCompanies, payload]);
-      setValue("company_id", payload.id, { shouldDirty: true });
-      trigger("company_id");
+      setValue("location_id", payload.id, { shouldDirty: true });
+      trigger("location_id");
       setInvalidCompany(false);
     });
   };
@@ -133,7 +133,7 @@ function BasicInfoTab(props) {
       )}
       <div className="w-full">
         <Controller
-          name="company_id"
+          name="location_id"
           control={control}
           defaultValue={[]}
           render={({ field: { onChange, value } }) => (
@@ -160,7 +160,7 @@ function BasicInfoTab(props) {
                 if (params.inputValue !== "") {
                   filtered.push({
                     inputValue: params.inputValue,
-                    company_name: `Add "${params.inputValue}"`,
+                    street: `Add "${params.inputValue}"`,
                   });
                 }
 
@@ -176,23 +176,23 @@ function BasicInfoTab(props) {
                 if (option.inputValue) {
                   return option.inputValue;
                 }
-                return option.company_name;
+                return option.street;
               }}
               selectOnFocus
               clearOnBlur
               handleHomeEndKeys
               renderOption={(props, option) => (
-                <li {...props}>{option.company_name}</li>
+                <li {...props}>{option.street}</li>
               )}
               freeSolo
               renderInput={(params) => (
                 <>
                   <TextField
                     {...params}
-                    id="company_id"
-                    error={!!errors.company_id}
+                    id="location_id"
+                    error={!!errors.location_id}
                     required
-                    helperText={errors?.company_id?.message}
+                    helperText={errors?.location_id?.message}
                     placeholder="Select location"
                     label="Select Location"
                     variant="outlined"
@@ -471,7 +471,8 @@ function BasicInfoTab(props) {
           )}
         />
       </div>
-      <AddCompany
+      <AddLocation
+        companies={companies}
         invalidCompany={invalidCompany}
         setInvalidCompany={setInvalidCompany}
         companyName={companyName}

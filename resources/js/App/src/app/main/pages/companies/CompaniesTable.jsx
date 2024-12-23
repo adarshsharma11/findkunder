@@ -81,7 +81,7 @@ function CompaniesTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/locations/${item.id}`);
+    props.navigate(`/companies/${item.id}`);
   }
 
   function handleCheck(event, id) {
@@ -128,7 +128,7 @@ function CompaniesTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no locations!
+          There are no companies!
         </Typography>
       </motion.div>
     );
@@ -218,40 +218,12 @@ function CompaniesTable(props) {
                     >
                       {n.cvr}
                     </TableCell>
-
                     <TableCell
-                      className="p-4 md:p-16"
+                      className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
-                      align="right"
                     >
-                      {n.street}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.postal_code}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.city}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.location}
+                      {n.description || 'N/A'}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -338,6 +310,7 @@ function CompaniesTable(props) {
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
+                      align="right"
                     >
                       <Button
                         className="whitespace-nowrap"

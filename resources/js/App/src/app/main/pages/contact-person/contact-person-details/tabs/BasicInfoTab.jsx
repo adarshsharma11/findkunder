@@ -7,7 +7,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
-  const { isAdmin, product, isAddProfile } = props;
+  const { isAdmin, product, isAddProfile, locations } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
   const { control, formState } = methods;
@@ -74,6 +74,36 @@ function BasicInfoTab(props) {
                 titleOptions?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
+                  </MenuItem>
+                ))}
+            </Select>
+          </>
+        )}
+      />
+       <Controller
+        name="location_id"
+        control={control}
+        render={({ field }) => (
+          <>
+            <InputLabel id="demo-simple-select-label">Select Location</InputLabel>
+            <Select
+              {...field}
+              className="mt-8 mb-16"
+              error={!!errors.location_id}
+              required
+              displayEmpty
+              helperText={errors?.location_id?.message}
+              id="location_id"
+              variant="outlined"
+              fullWidth
+            >
+              <MenuItem value="" disabled>
+                Select Location
+              </MenuItem>
+              {locations &&
+                locations?.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.street}
                   </MenuItem>
                 ))}
             </Select>

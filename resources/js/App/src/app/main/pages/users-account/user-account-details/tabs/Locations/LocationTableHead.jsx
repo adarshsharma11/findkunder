@@ -19,24 +19,10 @@ import { removeProducts } from "../../../store/userAccountsSlice";
 
 const rows = [
   {
-    id: "image",
-    align: "left",
-    disablePadding: true,
-    label: "Image",
-    sort: false,
-  },
-  {
     id: "company_name",
     align: "left",
     disablePadding: false,
-    label: "Name",
-    sort: true,
-  },
-  {
-    id: "cvr",
-    align: "left",
-    disablePadding: false,
-    label: "CVR",
+    label: "Company",
     sort: true,
   },
   {
@@ -58,34 +44,6 @@ const rows = [
     align: "right",
     disablePadding: false,
     label: "City",
-    sort: true,
-  },
-  {
-    id: "location",
-    align: "right",
-    disablePadding: false,
-    label: "Location",
-    sort: true,
-  },
-  {
-    id: "website",
-    align: "right",
-    disablePadding: false,
-    label: "Website",
-    sort: true,
-  },
-  {
-    id: "linkedin",
-    align: "right",
-    disablePadding: false,
-    label: "Linkedin",
-    sort: true,
-  },
-  {
-    id: "facebook",
-    align: "right",
-    disablePadding: false,
-    label: "Facebook",
     sort: true,
   },
   {

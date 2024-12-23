@@ -25,17 +25,20 @@ import ProductHeader from "./ContactPersonHeader";
 import authRoles from "../../../../auth/authRoles";
 import { selectUser } from "../../../../store/userSlice";
 import BasicInfoTab from "./tabs/BasicInfoTab";
+import { getLocations } from "../../locations/store/locationsSlice";
 import { contactSchema } from "../../../../schemas/validationSchemas";
 
 function Contact(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
+  const {uuid: userId} = user;
   const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
+  const [locations, setLocations] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
@@ -92,6 +95,14 @@ function Contact(props) {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getLocations(userId && userId)).then((action) => {
+      if (action.payload) {
+          setLocations(action.payload);
+      }
+    });
+  }, []);
+
   /**
    * Tab Change
    */
@@ -131,7 +142,7 @@ function Contact(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new")
+      routeParams.productId !== "new") || !locations
   ) {
     return <FuseLoading />;
   }
@@ -155,7 +166,7 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab isAdmin={isAdmin} product={product} />
+                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} />
               </div>
             </div>
           </>

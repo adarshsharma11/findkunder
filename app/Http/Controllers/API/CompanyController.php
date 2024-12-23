@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\Company;
 use App\Models\User;
-use App\Rules\UniqueCompany;
 use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
@@ -46,12 +45,9 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'company_name' => ['required', 'string', 'max:255', new UniqueCompany($request)],
+            'company_name' => 'required|string|max:255',
             'cvr' => 'required|string|max:20',
-            'street' => 'nullable|string|max:255',
-            'postal_code' => 'nullable|string|max:20',
-            'city' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'website' => 'nullable|string|max:255',
             'linkedin' => 'nullable|string|max:255',
             'facebook' => 'nullable|string|max:255',

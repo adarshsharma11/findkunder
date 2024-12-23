@@ -12,15 +12,12 @@ class Company extends Model
     protected $fillable = [
         'company_name',
         'cvr',
-        'street',
-        'postal_code',
-        'city',
-        'location',
         'website',
         'linkedin',
         'facebook',
         'image',
         'user_id',
+        'description',
     ];
 
     public function customers()
@@ -31,4 +28,14 @@ class Company extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function locations()
+    {
+        return $this->hasMany(CompanyLocation::class, 'company_id', 'id');
+    }
+    public function contactPersons()
+    {
+        return $this->hasManyThrough(ContactPerson::class, CompanyLocation::class, 'company_id', 'location_id', 'id', 'id');
+    }
+
+
 }

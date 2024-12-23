@@ -17,6 +17,9 @@ const UserAccount = React.lazy(() =>
 const UserAccountLocation = React.lazy(() =>
   import("./user-account-details/locations/Location")
 );
+const UserAccountCompany = React.lazy(() =>
+  import("./user-account-details/companies/Company")
+);
 const UserAccountPerson = React.lazy(() =>
   import("./user-account-details/contact-persons/ContactPerson")
 );
@@ -43,6 +46,10 @@ const UserAccountConfig = {
     {
       path: "account-location/:productId/:userId/*",
       element: <UserAccountLocation />,
+    },
+    {
+      path: "account-company/:productId/:userId/*",
+      element: <UserAccountCompany />,
     },
     {
       path: "account-person/:productId/:userId/*",

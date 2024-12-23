@@ -35,6 +35,19 @@ export const getCompanies = createAsyncThunk(
   }
 );
 
+export const getLocations = createAsyncThunk(
+  "admin/userAccounts/getCompanies",
+  async (userId) => {
+    let url = "/api/company-locations";
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const response = await axios.get(url);
+    const data = await response.data;
+    return data;
+  }
+);
+
 export const getPersons = createAsyncThunk(
   "admin/userAccounts/getPersons",
   async (userId) => {

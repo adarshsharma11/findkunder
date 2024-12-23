@@ -31,7 +31,7 @@ function ProductHeader(props) {
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
           dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
-          navigate("/locations");
+          navigate("/companies");
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
@@ -54,7 +54,7 @@ function ProductHeader(props) {
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload?.message }));
-      navigate("/locations");
+      navigate("/companies");
     });
   }
 
@@ -75,7 +75,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/locations"
+            to="/companies"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
@@ -83,7 +83,7 @@ function ProductHeader(props) {
                 ? "heroicons-outline:arrow-sm-left"
                 : "heroicons-outline:arrow-sm-right"}
             </FuseSvgIcon>
-            <span className="flex mx-4 font-medium">Locations</span>
+            <span className="flex mx-4 font-medium">Companies</span>
           </Typography>
         </motion.div>
       </div>
@@ -122,10 +122,10 @@ function ProductHeader(props) {
             animate={{ x: 0, transition: { delay: 0.3 } }}
           >
             <Typography className="text-16 sm:text-20 truncate font-semibold">
-              {name || "New Location"}
+              {name || "New Company"}
             </Typography>
             <Typography variant="caption" className="font-medium">
-              Location Detail
+              Company Detail
             </Typography>
           </motion.div>
         </div>

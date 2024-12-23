@@ -251,21 +251,14 @@ function CutomersTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.company?.company_name}
+                      {n?.location?.street}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
                     >
-                      {n.company?.postal_code}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16 truncate"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.company?.location}
+                      {n.location?.postal_code}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16 truncate"

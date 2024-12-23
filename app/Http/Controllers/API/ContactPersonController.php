@@ -22,13 +22,13 @@ class ContactPersonController extends Controller
             if (!$reqUser) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $contactPersons = $reqUser->contact_person;
+            $contactPersons = ContactPerson::with('location')->where('user_id', $userId)->get();
             return response()->json($contactPersons);
         } else {
             if ($user->hasRole('admin')) {
-                $contactPersons = ContactPerson::all();
+                $contactPersons = ContactPerson::with('location')->get();
             } else {
-                $contactPersons = $user->contact_person;
+                $contactPersons = $user->contact_person()->with('location')->get();
             }
             return response()->json($contactPersons);
         }

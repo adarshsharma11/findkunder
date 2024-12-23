@@ -19,10 +19,10 @@ import { removeProducts } from "./store/customersSlice";
 
 const userRows = [
   {
-    id: "company_id",
+    id: "location_id",
     align: "left",
     disablePadding: false,
-    label: "Company Name",
+    label: "Location Name",
     sort: true,
   },
   {
@@ -30,13 +30,6 @@ const userRows = [
     align: "left",
     disablePadding: false,
     label: "Postal Code",
-    sort: true,
-  },
-  {
-    id: "region",
-    align: "left",
-    disablePadding: false,
-    label: "Region",
     sort: true,
   },
   {

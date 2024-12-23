@@ -10,16 +10,16 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'location_id',
         'person_id',
         'notes',
         'user_id',
         'status',
     ];
 
-    public function company()
+    public function location()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(CompanyLocation::class, 'location_id');
     }
 
     public function person()

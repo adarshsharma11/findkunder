@@ -20,6 +20,7 @@ class ContactPerson extends Model
         'comment',
         'image',
         'user_id',
+        'location_id'
     ];
 
     public function customers()
@@ -30,6 +31,10 @@ class ContactPerson extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    public function location()
+    {
+        return $this->belongsTo(CompanyLocation::class, 'location_id');
     }
     
 }

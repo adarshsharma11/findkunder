@@ -74,6 +74,13 @@ const navigationConfig = [
         icon: "heroicons-outline:user-circle",
         url: "/contact-person",
       },
+      {
+        id: "apps.companies",
+        title: "Companies",
+        type: "item",
+        icon: "material-outline:account_balance",
+        url: "/companies",
+      },
     ],
   },
   {

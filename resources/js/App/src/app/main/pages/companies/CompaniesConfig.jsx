@@ -20,11 +20,11 @@ const CompaniesConfig = {
   },
   routes: [
     {
-      path: "locations",
+      path: "companies",
       element: <Companies />,
     },
     {
-      path: "locations/:productId/*",
+      path: "companies/:productId/*",
       element: <Company />,
     },
   ],

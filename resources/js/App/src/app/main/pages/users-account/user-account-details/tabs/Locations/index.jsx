@@ -16,7 +16,7 @@ import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Link } from "react-router-dom";
-import { getCompanies, selectCompaniesSearchText } from "../../../store/userAccountsSlice";
+import { getLocations, selectCompaniesSearchText } from "../../../store/userAccountsSlice";
 import LocationTableHead from "./LocationTableHead";
 import AccountTabsHeader from "../AccountTabsHeader";
 
@@ -37,7 +37,7 @@ function LocationsTable(props) {
   });
 
   useEffect(() => {
-    dispatch(getCompanies(userId && userId)).then((response) => {
+    dispatch(getLocations(userId && userId)).then((response) => {
       if (response?.payload && Object.keys(response.payload).length !== 0){
         setData(response?.payload);
         setFilteredData(response?.payload);
@@ -208,35 +208,11 @@ function LocationsTable(props) {
                       />
                     </TableCell>
                     <TableCell
-                      className="w-52 px-4 md:px-0"
-                      component="th"
-                      scope="row"
-                      padding="none"
-                    >
-                      <img
-                        className="w-full block rounded"
-                        src={
-                          n.image
-                            ? `assets/images/company-logo/${n.image}`
-                            : "assets/images/apps/ecommerce/product-image-placeholder.png"
-                        }
-                        alt={n.company_name}
-                      />
-                    </TableCell>
-                    <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                     >
-                      {n.company_name}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16 truncate"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.cvr}
+                      {n.company.company_name}
                     </TableCell>
 
                     <TableCell
@@ -265,99 +241,12 @@ function LocationsTable(props) {
                     >
                       {n.city}
                     </TableCell>
+                   
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
                       align="right"
-                    >
-                      {n.location}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.website ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.website}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="secondary"
-                            >
-                              heroicons-outline:eye
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.linkedin ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.linkedin}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="secondary"
-                            >
-                              heroicons-outline:information-circle
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.facebook ? (
-                        <div className="flex justify-end">
-                          <a
-                            target="_blank"
-                            href={`https://${n.facebook}`}
-                            rel="noopener noreferrer"
-                            role="button"
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="secondary"
-                            >
-                              material-solid:facebook
-                            </FuseSvgIcon>
-                          </a>
-                        </div>
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
                     >
                       <Button
                         className="whitespace-nowrap"

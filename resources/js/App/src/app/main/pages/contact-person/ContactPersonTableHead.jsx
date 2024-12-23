@@ -33,6 +33,13 @@ const rows = [
     sort: true,
   },
   {
+    id: "location_id",
+    align: "left",
+    disablePadding: false,
+    label: "Location",
+    sort: true,
+  },
+  {
     id: "first_name",
     align: "left",
     disablePadding: false,

@@ -22,7 +22,7 @@ import {
   removeProduct,
 } from "../store/customerSlice";
 import { selectUser } from "../../../../store/userSlice";
-import { getCompanies } from "../../companies/store/companiesSlice";
+import { getLocations } from "../../locations/store/locationsSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
 import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
 import { getProducts as getCustomerTypes } from "../../customer-types/store/customerTypesSlice";
@@ -39,13 +39,14 @@ function Customer(props) {
   const user = useSelector(selectUser);
   const isAdmin = user?.role === "admin";
   const product = useSelector(selectProduct);
+  const { uuid: userId} = user;
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
-  const [companies, setCompanies] = useState(false);
+  const [locations, setLocations] = useState(false);
   const [categories, setCategories] = useState(false);
   const [customerTypes, setCustomerTypes] = useState(false);
   const [customerLocations, setCustomerLocation] = useState(false);
@@ -88,9 +89,9 @@ function Customer(props) {
   }, [dispatch, routeParams]);
 
   useEffect(() => {
-    dispatch(getCompanies()).then((action) => {
+    dispatch(getLocations(userId && userId)).then((action) => {
       if (action.payload) {
-        setCompanies(action.payload);
+        setLocations(action.payload);
       }
     });
   }, []);
@@ -200,7 +201,7 @@ function Customer(props) {
       </motion.div>
     );
   }
-  if (companies && companies?.length == 0) {
+  if (locations && locations?.length == 0) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -208,16 +209,16 @@ function Customer(props) {
         className="flex flex-col flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no companies added to system!
+          There are no locations added to system!
         </Typography>
         <Button
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/companies/new"
+          to="/locations/new"
           color="inherit"
         >
-          Go to Companies Page & add one
+          Go to Locations Page & add one
         </Button>
       </motion.div>
     );
@@ -250,7 +251,7 @@ function Customer(props) {
    */
   if ( _.isEmpty(form) ||
     (!product && routeParams.productId !== "new") ||
-    !companies ||
+    !locations ||
     !contact ||
     !categories ||
     !customerLocations ||
@@ -281,9 +282,9 @@ function Customer(props) {
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab
-                  companies={companies}
+                  companies={locations}
                   contacts={contact}
-                  setCompanies={setCompanies}
+                  setCompanies={setLocations}
                   setContacts={setContacts}
                   categories={categories}
                   customerTypes={customerTypes}

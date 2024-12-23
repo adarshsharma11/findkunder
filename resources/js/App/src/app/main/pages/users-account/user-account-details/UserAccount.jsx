@@ -27,6 +27,7 @@ import ProductHeader from "./UserAccountHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { createUserAccountSchema, adminProfileSchema, profileSchema } from "../../../../schemas/validationSchemas";
 import Locations from "./tabs/Locations";
+import Companies from "./tabs/Companies";
 import { getCompanies, getPersons, getProfiles } from "../store/userAccountsSlice";
 import Persons from "./tabs/Persons";
 import { showMessage } from "app/store/fuse/messageSlice";
@@ -251,6 +252,9 @@ function UserAccount(props) {
             >
               <Tab className="h-64" label="Basic Info" />
               {routeParams?.productId !== 'new' && 
+               <Tab className="h-64" label="Companies" />
+              }
+              {routeParams?.productId !== 'new' && 
                <Tab className="h-64" label="Locations" />
               }
               {routeParams?.productId !== 'new' && 
@@ -264,18 +268,23 @@ function UserAccount(props) {
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab productId={routeParams.productId} />
               </div>
-              {routeParams?.productId !== 'new' && 
+               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 1 ? "hidden" : ""}>
-               <Locations userId={routeParams.productId} />
+               <Companies userId={routeParams.productId} />
                </div>
               }
               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 2 ? "hidden" : ""}>
-               <Persons userId={routeParams.productId}  />
+               <Locations userId={routeParams.productId} />
                </div>
               }
               {routeParams?.productId !== 'new' && 
                <div className={tabValue !== 3 ? "hidden" : ""}>
+               <Persons userId={routeParams.productId}  />
+               </div>
+              }
+              {routeParams?.productId !== 'new' && 
+               <div className={tabValue !== 4 ? "hidden" : ""}>
                <Profiles userId={routeParams.productId} isAdmin={isAdmin} handleOpenDialog={handleOpenDialog} handleDeleteDialog={handleDeleteDialog} setData={setData} data={data} filteredData={filteredData} setFilteredData={setFilteredData} />
                </div>
               }

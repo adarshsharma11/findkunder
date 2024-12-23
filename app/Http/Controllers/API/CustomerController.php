@@ -7,7 +7,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Company;
+use App\Models\CompanyLocation;
 use App\Models\ContactPerson;
 use App\Models\Category;
 use App\Models\User;
@@ -30,18 +30,18 @@ class CustomerController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+            $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
                 $query->with('subcategories');
             }, 'customerTypes', 'customerLocations'])
             ->where('user_id', $userId)
             ->get();
         } else {
             if ($user->hasRole('admin')) {
-                $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+                $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
                     $query->with('subcategories');
                 }, 'customerTypes', 'customerLocations'])->get();
             } else {
-            $customers = Customer::with(['company', 'person', 'categories' => function ($query) {
+            $customers = Customer::with(['location', 'person', 'categories' => function ($query) {
                 $query->with('subcategories');
             }, 'customerTypes', 'customerLocations'])
             ->where('user_id', $user->id)
@@ -60,7 +60,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'company_id' => 'required|exists:companies,id',
+            'location_id' => 'required|exists:company_locations,id',
             'person_id' => 'required|exists:contact_person,id',
             'notes' => 'nullable|string',
             'categories' => 'array',
@@ -75,12 +75,12 @@ class CustomerController extends Controller
         $user = Auth::user();
         $data = $request->all();
 
-        $existingCustomer = Customer::where('company_id', $data['company_id'])
+        $existingCustomer = Customer::where('location_id', $data['location_id'])
         ->where('person_id', $data['person_id'])
         ->first();
 
         if ($existingCustomer) {
-            return response()->json(['message' => ' Profile already exists with the same company and contact person','status' => false], 201);
+            return response()->json(['message' => ' Profile already exists with the same location and contact person','status' => false], 201);
         }
         if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
@@ -119,7 +119,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::with(['company', 'person','user','categories' => function ($query) {
+        $customer = Customer::with(['location', 'person','user','categories' => function ($query) {
             $query->with('subcategories');
         }, 'customerTypes', 'customerLocations'])->find($id);
         if (!$customer) {
@@ -138,7 +138,7 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'company_id' => 'exists:companies,id',
+            'location_id' => 'exists:locations,id',
             'person_id' => 'exists:contact_person,id',
             'notes' => 'nullable|string',
             'status' => 'nullable|string',
@@ -156,7 +156,7 @@ class CustomerController extends Controller
         $data = $request->all();
     
         $customer->update([
-            'company_id' => $request->input('company_id'),
+            'location_id' => $request->input('location_id'),
             'person_id' => $request->input('person_id'),
             'status' => $request->input('status'),
             'notes' => $request->input('notes'),
@@ -249,14 +249,14 @@ class CustomerController extends Controller
             $customer->load(['company', 'person']);
     
             if ($deleteCompany && $customer->company) {
-                Company::where('id', $customer->company->id)->delete();
+                CompanyLocation::where('id', $customer->company->id)->delete();
             }
     
             if ($deleteContact && $customer->person) {
                 ContactPerson::where('id', $customer->person->id)->delete();
             }
     
-            return response()->json(['message' => 'Profile and associated company/contact deleted successfully']);
+            return response()->json(['message' => 'Profile and associated location/contact deleted successfully']);
         }
     
         // If no association deletion is specified, just delete the customer profile

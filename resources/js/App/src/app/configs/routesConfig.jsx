@@ -16,6 +16,7 @@ import appsConfigs from "../main/apps/appsConfigs";
 import pagesConfigs from "../main/pages/pagesConfigs";
 import authRoleExamplesConfigs from "../main/auth/authRoleExamplesConfigs";
 import CompaniesConfig from "../main/pages/companies/CompaniesConfig";
+import LocationsConfig from "../main/pages/locations/LocationsConfig";
 import ContactPersonConfig from "../main/pages/contact-person/ContactPersonConfig";
 import CustomersConfig from "../main/pages/customers/CustomersConfig";
 import CustomerTypeConfig from "../main/pages/customer-types/CustomerTypeConfig";
@@ -36,6 +37,7 @@ const routeConfigs = [
   AddProfileConfig,
   LeadsConfig,
   CompaniesConfig,
+  LocationsConfig,
   ContactPersonConfig,
   CustomersConfig,
   ForgotPasswordConfig,

@@ -19,10 +19,11 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
-} from "../../../companies/store/companySlice";
+} from "../../../locations/store/locationSlice";
 import reducer from "../../../companies/store";
 import LocationHeader from "./LocationHeader";
-import BasicInfoTab from "../../../companies/company-details/tabs/BasicInfoTab";
+import { getCompanies } from "../../store/userAccountsSlice";
+import BasicInfoTab from "../../../locations/location-details/tabs/BasicInfoTab";
 import { companySchema } from "../../../../../schemas/validationSchemas";
 
 function Location(props) {
@@ -33,6 +34,7 @@ function Location(props) {
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
+  const [companies, setCompanies] = useState([]);
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
@@ -87,6 +89,14 @@ function Location(props) {
     };
   }, [dispatch]);
 
+    useEffect(() => {
+        dispatch(getCompanies(userId && userId)).then((action) => {
+          if (action.payload) {
+            setCompanies(action.payload);
+          }
+        });
+      }, []);
+     
   /**
    * Tab Change
    */
@@ -150,7 +160,7 @@ function Location(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab />
+                <BasicInfoTab product={product} companies={companies} />
               </div>
             </div>
           </>
@@ -161,4 +171,4 @@ function Location(props) {
   );
 }
 
-export default withReducer("company", reducer)(Location);
+export default withReducer("location", reducer)(Location);
