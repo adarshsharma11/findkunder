@@ -24,6 +24,10 @@ class User extends Authenticatable
         'email',
         'password',
         'remember_token',
+        'telephone', 
+        'company', 
+        'cvr', 
+        'is_profile_completed'
     ];
 
     /**

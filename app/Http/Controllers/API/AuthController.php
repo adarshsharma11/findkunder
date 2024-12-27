@@ -183,17 +183,25 @@ public function update(Request $request)
         'email' => 'nullable|email|unique:users,email,' . auth()->id(),
         'password' => 'nullable|min:6',
         'old_password' => ['nullable', 'min:6', new PasswordCheck],
+        'telephone' => ['nullable', 'digits_between:8,10'],
+        'company' => ['nullable', 'string'],
+        'cvr' => ['nullable', 'digits_between:8,10'],
+        'is_profile_completed' => ['nullable', 'boolean'],
     ]);
     // If validation fails, return an error response
     if ($validator->fails()) {
         return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()->first()]);
     }
     // Get the authenticated user
-    $user = $request->user();
+    $user =  $request->user();
     // Update user details
     $user->update([
         'email' => $request->email ? $request->email : $user->email,
         'password' => $request->password ? bcrypt($request->password) : $user->password,
+        'telephone' => $request->telephone ? $request->telephone : null,
+        'company' => $request->company ? $request->company : null,
+        'cvr' => $request->cvr ? $request->cvr : null,
+        'is_profile_completed' => $request->is_profile_completed ? $request->is_profile_completed : false,
     ]);
     $role = $user->roles()->pluck('name')->first();
     // Load updated counts
