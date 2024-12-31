@@ -72,7 +72,7 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
         // Assign the "user" role to the new user
-        $role = Role::where('name', 'user')->first();
+        $role = Role::where('name', 'guest')->first();
         $user->assignRole($role);
         $expirationTime = now()->addDay();
         $token = $user->createToken('auth-token', ['*'], $expirationTime)->accessToken->token;
@@ -187,6 +187,7 @@ public function update(Request $request)
         'company' => ['nullable', 'string'],
         'cvr' => ['nullable', 'digits_between:8,10'],
         'is_profile_completed' => ['nullable', 'boolean'],
+        'role' => ['nullable', 'exists:roles,name'],
     ]);
     // If validation fails, return an error response
     if ($validator->fails()) {
@@ -203,10 +204,15 @@ public function update(Request $request)
         'cvr' => $request->cvr ? $request->cvr : null,
         'is_profile_completed' => $request->is_profile_completed ? $request->is_profile_completed : false,
     ]);
+    if ($request->has('role')) {
+        $newRole = $request->role;
+        // Remove all current roles and assign the new role
+        $user->syncRoles([$newRole]);
+    }
+
+    // Load the updated role and counts
     $role = $user->roles()->pluck('name')->first();
-    // Load updated counts
     $user->loadCount('companies', 'contact_person', 'customers');
-    // Return the updated user information
     return response()->json([
         'status' => true,
         'user' => $user,

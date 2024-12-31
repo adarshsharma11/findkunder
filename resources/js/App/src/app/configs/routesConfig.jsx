@@ -55,7 +55,7 @@ const routes = [
   ),
   {
     path: "/",
-    element: <Navigate to="locations" />,
+    element: <Navigate to="companies" />,
     auth: settingsConfig.defaultAuth,
   },
   {

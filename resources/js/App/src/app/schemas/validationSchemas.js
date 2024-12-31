@@ -3,6 +3,37 @@ import * as yup from "yup";
 /**
  * Form Validation Schema
  */
+
+export const updateAccountProfileSchema = yup.object().shape({
+  role: yup.string()
+    .required("Role is required")
+    .oneOf(["admin", "user"], "Invalid role selection"),
+  first_name: yup.string()
+    .required("First name is required")
+    .min(2, "First name must be at least 2 characters")
+    .max(50, "First name must be less than 50 characters"),
+  last_name: yup.string()
+    .required("Last name is required")
+    .min(2, "Last name must be at least 2 characters")
+    .max(50, "Last name must be less than 50 characters"),
+  email: yup.string()
+    .required("Email is required")
+    .email("Invalid email format"),
+  telephone: yup
+  .string()
+  .required("You must enter a phone")
+  .matches(/^\d{8}$/, "Phone number must be exactly 8 digits"),
+  company: yup.string()
+    .required("Company name is required")
+    .min(2, "Company name must be at least 2 characters")
+    .max(100, "Company name must be less than 100 characters"),
+  cvr: yup.string()
+    .required("Company CVR is required")
+    .matches(/^\d+$/, "CVR must contain only numbers")
+    .min(8, "CVR must be at least 8 digits")
+    .max(10, "CVR must be less than 10 digits"),
+});
+
 export const companySchema = yup.object().shape({
   company_name: yup
     .string()

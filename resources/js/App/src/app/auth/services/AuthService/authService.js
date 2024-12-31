@@ -50,12 +50,23 @@ class AuthService extends FuseUtils.EventEmitter {
     }
   };
 
-  updateUserData = (user) => {
-    return axios.put(authServiceConfig.updateUser, {
-      name: user.name || null,
+  updateUserData = (user, is_profile_completed = undefined) => {
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
+    const payload = {
+      name: fullName || null,
+      company: user.company || null,
+      telephone: user.telephone,
+      cvr: user.cvr,
       old_password: user.oldPassword || null,
       password: user.password || null,
-    });
+      role: user.role
+    };
+  
+    if (is_profile_completed !== undefined) {
+      payload.is_profile_completed = is_profile_completed;
+    }
+  
+    return axios.put(authServiceConfig.updateUser, payload);
   };
 
   forgotPassword = (user) => {
@@ -102,6 +113,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
+                is_profile_completed: userInfo.is_profile_completed,
                 settings: {},
                 shortcuts: [],
               },
@@ -143,6 +155,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
+                is_profile_completed: userInfo.is_profile_completed,
                 settings: {},
                 shortcuts: [],
               },
@@ -176,6 +189,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
+                is_profile_completed: userInfo.is_profile_completed,
                 settings: {},
                 shortcuts: [],
               },
@@ -225,6 +239,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
+                is_profile_completed: userInfo.is_profile_completed,
                 settings: {},
                 shortcuts: [],
               },

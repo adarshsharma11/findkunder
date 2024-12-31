@@ -1,6 +1,5 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
 import AboutTab from "./tabs/AboutTab";
 import useThemeMediaQuery from "../../../../@fuse/hooks/useThemeMediaQuery";
 import { useForm, FormProvider } from "react-hook-form";

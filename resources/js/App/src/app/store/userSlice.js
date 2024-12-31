@@ -3,9 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import history from "@history";
 import _ from "@lodash";
 import { setInitialSettings } from "app/store/fuse/settingsSlice";
-import { showMessage } from "app/store/fuse/messageSlice";
 import settingsConfig from "app/configs/settingsConfig";
-import AuthService from "../auth/services/AuthService";
 
 export const setUser = createAsyncThunk(
   "user/setUser",
@@ -91,8 +89,12 @@ const initialState = {
     email: "johndoe@withinpixels.com",
     shortcuts: ["apps.calendar", "apps.mailbox", "apps.contacts", "apps.tasks"],
     totalCompanies: 0,
+    company: '',
+    cvr: '',
+    telephone: '',
     totalContactPersons: 0,
     totalProfiles: 0,
+    is_profile_completed: false,
   },
 };
 

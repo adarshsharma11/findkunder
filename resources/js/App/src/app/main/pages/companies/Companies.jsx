@@ -14,17 +14,20 @@ import authRoles from "../../../auth/authRoles";
 function Companies() {
   const user = useSelector(selectUser);
   const [open, setOpen] = useState(false);
+  const [openFromClick, setOpenFromClick] = useState(false);
   const { data } = user;
   const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const toggleProfileDialog = () => {
+    setOpenFromClick(true);
     setOpen(!open);
   }
 
   useEffect(() => {
     const hasShownDialog = localStorage.getItem("hasShownProfileDialog");
-    if ((!data.totalProfiles ||  data.totalProfiles === 0) && !isAdmin && !hasShownDialog) {
+    if ((!data.is_profile_completed ||  data.is_profile_completed === 0) && !isAdmin) {
+      setOpenFromClick(false);
       setOpen(true);
       localStorage.setItem("hasShownProfileDialog", "true");
     }
@@ -38,7 +41,7 @@ function Companies() {
       content={<CompaniesTable />}
       scroll={isMobile ? "normal" : "content"}
     />
-    {open && <ProfileCreationDialog open={open} handleClose={toggleProfileDialog}/> }
+    {open && <ProfileCreationDialog open={open} handleClose={toggleProfileDialog} user={user} openFromClick={openFromClick}/> }
     </>
   );
 }
