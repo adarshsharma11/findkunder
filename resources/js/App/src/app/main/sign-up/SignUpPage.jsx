@@ -13,6 +13,12 @@ import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import _ from "@lodash";
 import Paper from "@mui/material/Paper";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import FormHelperText from "@mui/material/FormHelperText";
 import AuthService from "../../auth/services/AuthService";
 import { signUpSchema } from "../../schemas/validationSchemas";
@@ -34,6 +40,20 @@ function SignUpPage() {
     defaultValues,
     resolver: yupResolver(signUpSchema),
   });
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+  
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
 
   const { isLoading, setIsLoading } = useAuth();
   const { isValid, dirtyFields, errors, setError } = formState;
@@ -104,17 +124,35 @@ function SignUpPage() {
               name="password"
               control={control}
               render={({ field }) => (
-                <TextField
+                <FormControl sx={{ width: "100%"}} className="mb-24" variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">Password<span> *</span></InputLabel>
+                <OutlinedInput
                   {...field}
-                  className="mb-24"
-                  label="Password"
-                  type="password"
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message}
-                  variant="outlined"
                   required
-                  fullWidth
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword ? "hide the password" : "display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
                 />
+                {errors.password && (
+                  <FormHelperText error>{errors.password.message}</FormHelperText>
+                )}
+              </FormControl>
               )}
             />
 
@@ -122,17 +160,35 @@ function SignUpPage() {
               name="passwordConfirm"
               control={control}
               render={({ field }) => (
-                <TextField
+                <FormControl sx={{ width: "100%"}} className="mb-24" variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password-confirm">Password (Confirm)<span> *</span></InputLabel>
+                <OutlinedInput
                   {...field}
-                  className="mb-24"
-                  label="Password (Confirm)"
-                  type="password"
+                  id="outlined-adornment-password-confirm"
+                  type={showConfirmPassword ? "text" : "password"}
                   error={!!errors.passwordConfirm}
-                  helperText={errors?.passwordConfirm?.message}
-                  variant="outlined"
                   required
-                  fullWidth
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showConfirmPassword ? "hide the password" : "display the password"
+                        }
+                        onClick={handleClickShowConfirmPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password (Confirm)"
                 />
+                {errors.passwordConfirm && (
+                  <FormHelperText error>{errors.passwordConfirm.message}</FormHelperText>
+                )}
+              </FormControl>
               )}
             />
 

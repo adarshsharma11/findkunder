@@ -110,6 +110,10 @@ class AuthService extends FuseUtils.EventEmitter {
               role: response.data.role,
               data: {
                 email: userInfo.email,
+                company: userInfo.company,
+                cvr: userInfo.cvr,
+                displayName: userInfo.name,
+                telephone: userInfo.telephone,
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
@@ -152,6 +156,10 @@ class AuthService extends FuseUtils.EventEmitter {
               role: response.data.role,
               data: {
                 email: userInfo.email,
+                company: userInfo.company,
+                cvr: userInfo.cvr,
+                displayName: userInfo.name,
+                telephone: userInfo.telephone,
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
@@ -186,6 +194,10 @@ class AuthService extends FuseUtils.EventEmitter {
               role: response.data.role,
               data: {
                 email: userInfo.email,
+                company: userInfo.company,
+                cvr: userInfo.cvr,
+                displayName: userInfo.name,
+                telephone: userInfo.telephone,
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,
@@ -236,6 +248,10 @@ class AuthService extends FuseUtils.EventEmitter {
               role: response.data.role,
               data: {
                 email: userInfo.email,
+                company: userInfo.company,
+                cvr: userInfo.cvr,
+                displayName: userInfo.name,
+                telephone: userInfo.telephone,
                 totalCompanies: userInfo.companies_count,
                 totalProfiles: userInfo.customers_count,
                 totalContactPersons: userInfo.contact_person_count,

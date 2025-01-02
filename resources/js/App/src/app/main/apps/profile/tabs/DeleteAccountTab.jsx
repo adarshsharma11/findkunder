@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
@@ -39,7 +40,8 @@ function DeleteAccountTab(props) {
             <Button
               className="whitespace-nowrap mx-4"
               variant="contained"
-              color="secondary"
+              color="warning"
+              startIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
               onClick={() => setConfirmationOpen(true)}
             >
               Delete your account

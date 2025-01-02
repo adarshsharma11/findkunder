@@ -10,6 +10,13 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
 import { Link } from "react-router-dom";
 import * as yup from "yup";
 import _ from "@lodash";
@@ -42,6 +49,16 @@ const defaultValues = {
 
 function SignInPage() {
   const { customersCount, isLoading: isLoadingCustomersCount } = useCustomersCount();
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
   const { control, formState, handleSubmit, setError, setValue } = useForm({
     mode: "onChange",
     defaultValues,
@@ -112,17 +129,35 @@ function SignInPage() {
               name="password"
               control={control}
               render={({ field }) => (
-                <TextField
+                <FormControl sx={{ width: "100%" }} className="mb-24" variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">Password<span> *</span></InputLabel>
+                <OutlinedInput
                   {...field}
-                  className="mb-24"
-                  label="Password"
-                  type="password"
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message}
-                  variant="outlined"
                   required
-                  fullWidth
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword ? "hide the password" : "display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
                 />
+                {errors.password && (
+                  <FormHelperText error>{errors.password.message}</FormHelperText>
+                )}
+              </FormControl>
               )}
             />
 

@@ -100,10 +100,13 @@ function ProfileCreationDialog(props) {
           role: response.data.role,
           data: {
             email: userInfo.email,
+            displayName: userInfo.name, 
             totalCompanies: userInfo.companies_count,
             totalProfiles: userInfo.customers_count,
             totalContactPersons: userInfo.contact_person_count,
             company: userInfo.company,
+            cvr: userInfo.cvr,
+            telephone: userInfo.telephone,
             is_profile_completed: userInfo.is_profile_completed,
             cvr: userInfo.cvr,
             settings: {},

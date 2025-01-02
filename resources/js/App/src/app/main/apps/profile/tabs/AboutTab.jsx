@@ -1,16 +1,29 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { motion } from "framer-motion";
-import DeleteAccountTab from "./DeleteAccountTab";
-import UpdatePasswordTab from "./UpdatePasswordTab";
+import { useNavigate } from "react-router-dom";
 
 function AboutTab(props) {
-  const { user, isAdmin, handleDeleteProfile, handleUpdateProfile } = props;
+  const { user } = props;
 
   if (!user) {
     return null;
   }
+
+  const fullName = user.data.displayName || "";
+  const nameParts = fullName.trim().split(" ");
+  const firstName = nameParts[0] || "N/A";
+  const lastName = nameParts.slice(1).join(" ") || "N/A";
+  const navigate = useNavigate();
+
+
+  function handleEditProfile() {
+     navigate(`/profile/${user.uuid}`);
+  }
+
 
   const container = {
     show: {
@@ -36,72 +49,74 @@ function AboutTab(props) {
       <div className="md:flex">
         <div className="flex flex-col flex-1 md:ltr:pr-32 md:rtl:pl-32">
           <Card component={motion.div} variants={item} className="w-full mb-32">
-            <div className="px-32 pt-24">
-              <Typography className="text-2xl font-semibold leading-tight">
-                General Information
-              </Typography>
-            </div>
+            <CardContent className="px-32 py-24 w-full">
+              <div className="flex justify-between w-full px-24 py-12">
+              <div>
+              <div className="mb-24">
+                <Typography className="font-semibold mb-4 text-15">
+                  First name
+                </Typography>
+                <Typography>{firstName}</Typography>
+              </div>
+              <div className="mb-24">
+                <Typography className="font-semibold mb-4 text-15">
+                  Role
+                </Typography>
+                <Typography>{user.role}</Typography>
+              </div>
 
-            <CardContent className="px-32 py-24">
+              <div className="mb-24">
+                <Typography className="font-semibold mb-4 text-15">
+                  Company
+                </Typography>
+                <Typography>{user.data.company}</Typography>
+              </div>
+
+              <div className="mb-24">
+                <Typography className="font-semibold mb-4 text-15">
+                  Telephone
+                </Typography>
+                <Typography>{user.data.telephone}</Typography>
+              </div>
+              </div>
+              <div>
+              <div className="mb-24">
+                <Typography className="font-semibold mb-4 text-15">
+                  Last name
+                </Typography>
+                <Typography>{lastName}</Typography>
+              </div>
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">
                   Email
                 </Typography>
                 <Typography>{user.data.email}</Typography>
               </div>
-              <div className="mb-24">
-                <Typography className="font-semibold mb-4 text-15">
-                  Total companies
-                </Typography>
-                <Typography>{user.data.totalCompanies}</Typography>
-              </div>
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">
-                  Total contacts
+                  CVR
                 </Typography>
-                <Typography>{user.data.totalContactPersons}</Typography>
+                <Typography>{user.data.cvr}</Typography>
               </div>
-
-              <div className="mb-24">
-                <Typography className="font-semibold mb-4 text-15">
-                  Total profiles
-                </Typography>
-                <Typography>{user.data.totalProfiles}</Typography>
+              </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         <div className="flex flex-col md:w-320" >
-        {!isAdmin && <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} /> }
+        <div className="w-3/4 mb-12">
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          onClick={() => handleEditProfile()}
+          startIcon={<FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>}
+        >
+             Edit
+        </Button>
         </div>
-      </div>
-    </motion.div>
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="w-full mt-8"
-    >
-      <div className="md:flex">
-        <div className="flex flex-col flex-1 md:ltr:pr-32 md:rtl:pl-32">
-          <Card component={motion.div} variants={item} className="w-full mb-32">
-            <div className="px-32 pt-24">
-              <Typography className="text-2xl font-semibold leading-tight">
-                Update Password
-              </Typography>
-            </div>
-
-            <CardContent className="px-32 py-24">
-              <div className="mb-24">
-              <UpdatePasswordTab handleUpdateProfile={handleUpdateProfile}/>
-              </div>
-            </CardContent>
-          </Card>
         </div>
-
-        <div className="flex flex-col md:w-320" />
       </div>
     </motion.div>
     </div>

@@ -185,6 +185,7 @@ public function update(Request $request)
         'old_password' => ['nullable', 'min:6', new PasswordCheck],
         'telephone' => ['nullable', 'digits_between:8,10'],
         'company' => ['nullable', 'string'],
+        'name' => ['nullable', 'string'],
         'cvr' => ['nullable', 'digits_between:8,10'],
         'is_profile_completed' => ['nullable', 'boolean'],
         'role' => ['nullable', 'exists:roles,name'],
@@ -198,6 +199,7 @@ public function update(Request $request)
     // Update user details
     $user->update([
         'email' => $request->email ? $request->email : $user->email,
+        'name' => $request->name ? $request->name : $user->name,
         'password' => $request->password ? bcrypt($request->password) : $user->password,
         'telephone' => $request->telephone ? $request->telephone : null,
         'company' => $request->company ? $request->company : null,
