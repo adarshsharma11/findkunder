@@ -108,7 +108,6 @@ function ProfileCreationDialog(props) {
             cvr: userInfo.cvr,
             telephone: userInfo.telephone,
             is_profile_completed: userInfo.is_profile_completed,
-            cvr: userInfo.cvr,
             settings: {},
             shortcuts: [],
           },
