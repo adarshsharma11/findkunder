@@ -68,6 +68,13 @@ const rows = [
     sort: true,
   },
   {
+    id: "locations",
+    align: "right",
+    disablePadding: false,
+    label: "Locations",
+    sort: true,
+  },
+  {
     id: "action",
     align: "right",
     disablePadding: false,

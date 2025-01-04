@@ -1,5 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
+import UpdateProfile from "../../../../../shared-components/welcome-dialog/steps/UpdateProfile";
 
 function BasicInfoTab(props) {
   const { productId } = props;

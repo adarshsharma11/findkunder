@@ -85,6 +85,11 @@ function LocationsTable(props) {
     props.navigate(`/locations/${item.id}`);
   }
 
+
+  function handleAddContact() {
+    props.navigate(`/contact-person/new`);
+  }
+
   function handleCheck(event, id) {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -221,6 +226,31 @@ function LocationsTable(props) {
                       align="right"
                     >
                       {n.city}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
+                       {n.contact_persons_count === 0 ? (
+                          <Button
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            color="secondary"
+                            size="small"
+                            onClick={() => handleAddContact(n)}
+                            startIcon={
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:plus
+                              </FuseSvgIcon>
+                            }
+                          >
+                            Add Contact
+                          </Button>
+                        ) : (
+                          <span>{n.contact_persons_count}</span>
+                        )}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"

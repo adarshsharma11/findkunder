@@ -5,12 +5,12 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';
 
-function FuseLoading(props) {
-  const [showLoading, setShowLoading] = useState(!props.delay);
+function FuseLoading({ delay = false }) {
+  const [showLoading, setShowLoading] = useState(!delay);
 
   useTimeout(() => {
     setShowLoading(true);
-  }, props.delay);
+  }, delay);
 
   return (
     <div
@@ -40,10 +40,6 @@ function FuseLoading(props) {
 
 FuseLoading.propTypes = {
   delay: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
-};
-
-FuseLoading.defaultProps = {
-  delay: false,
 };
 
 export default FuseLoading;

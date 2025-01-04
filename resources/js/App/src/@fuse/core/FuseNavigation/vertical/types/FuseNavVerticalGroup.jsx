@@ -95,8 +95,6 @@ FuseNavVerticalGroup.propTypes = {
   }),
 };
 
-FuseNavVerticalGroup.defaultProps = {};
-
 const NavVerticalGroup = FuseNavVerticalGroup;
 
 export default NavVerticalGroup;

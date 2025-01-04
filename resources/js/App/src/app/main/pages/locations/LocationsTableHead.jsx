@@ -22,7 +22,7 @@ const rows = [
     id: "company",
     align: "right",
     disablePadding: false,
-    label: "Company",
+    label: "Linked Company",
     sort: true,
   },
   {
@@ -44,6 +44,13 @@ const rows = [
     align: "right",
     disablePadding: false,
     label: "City",
+    sort: true,
+  },
+  {
+    id: "contacts",
+    align: "right",
+    disablePadding: false,
+    label: "Linked Contacts",
     sort: true,
   },
   {

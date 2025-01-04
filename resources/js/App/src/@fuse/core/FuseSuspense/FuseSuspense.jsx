@@ -5,18 +5,12 @@ import { Suspense } from 'react';
 /**
  * React Suspense defaults
  * For to Avoid Repetition
- */ function FuseSuspense(props) {
-  return <Suspense fallback={<FuseLoading {...props.loadingProps} />}>{props.children}</Suspense>;
+ */ function FuseSuspense({children, loadingProps = { delay: 0 }}) {
+  return <Suspense fallback={<FuseLoading {...loadingProps} />}>{children}</Suspense>;
 }
 
 FuseSuspense.propTypes = {
   loadingProps: PropTypes.object,
-};
-
-FuseSuspense.defaultProps = {
-  loadingProps: {
-    delay: 0,
-  },
 };
 
 export default FuseSuspense;

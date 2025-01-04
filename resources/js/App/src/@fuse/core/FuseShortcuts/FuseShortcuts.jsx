@@ -14,10 +14,10 @@ import { memo, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FuseSvgIcon from '../FuseSvgIcon';
 
-function FuseShortcuts(props) {
-  const { navigation, shortcuts, onChange } = props;
+function FuseShortcuts({variant= 'horizontal', shortcuts, onChange, className, ...props }) {
 
   const searchInputRef = useRef(null);
+  const { navigation } = props;
   const [addMenu, setAddMenu] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState(null);
@@ -92,8 +92,8 @@ function FuseShortcuts(props) {
     <div
       className={clsx(
         'flex flex-1',
-        props.variant === 'vertical' && 'flex-col grow-0 shrink',
-        props.className
+        variant === 'vertical' && 'flex-col grow-0 shrink',
+        className
       )}
     >
       {useMemo(() => {
@@ -113,7 +113,7 @@ function FuseShortcuts(props) {
             variants={container}
             initial="hidden"
             animate="show"
-            className={clsx('flex flex-1', props.variant === 'vertical' && 'flex-col')}
+            className={clsx('flex flex-1', variant === 'vertical' && 'flex-col')}
           >
             {shortcutItems.map(
               (_item) =>
@@ -121,7 +121,7 @@ function FuseShortcuts(props) {
                   <Link to={_item.url} key={_item.id} role="button">
                     <Tooltip
                       title={_item.title}
-                      placement={props.variant === 'horizontal' ? 'bottom' : 'left'}
+                      placement={variant === 'horizontal' ? 'bottom' : 'left'}
                     >
                       <IconButton
                         className="w-40 h-40 p-0"
@@ -141,7 +141,7 @@ function FuseShortcuts(props) {
             )}
           </motion.div>
         );
-      }, [addMenu, props.variant, shortcutItems])}
+      }, [addMenu, variant, shortcutItems])}
 
       <Menu
         id="add-menu"
@@ -210,8 +210,5 @@ function FuseShortcuts(props) {
 }
 
 FuseShortcuts.propTypes = {};
-FuseShortcuts.defaultProps = {
-  variant: 'horizontal',
-};
 
 export default memo(FuseShortcuts);

@@ -21,12 +21,12 @@ class CompanyController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $companies = $user->companies;
+            $companies = $user->companies()->withCount('locations')->get();
         } else {
             if ($user->hasRole('admin')) {
-                $companies = Company::all();
+                $companies = Company::withCount('locations')->get();
             } else {
-                $companies = $user->companies;
+                $companies = $user->companies()->withCount('locations')->get();
             }
         }
     

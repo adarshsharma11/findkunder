@@ -84,6 +84,10 @@ function CompaniesTable(props) {
     props.navigate(`/companies/${item.id}`);
   }
 
+  function handleAddLocation(item) {
+    props.navigate('/locations/new');
+  }
+
   function handleCheck(event, id) {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -305,6 +309,31 @@ function CompaniesTable(props) {
                       ) : (
                         "N/A"
                       )}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
+                       {n.locations_count === 0 ? (
+                          <Button
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            color="secondary"
+                            size="small"
+                            onClick={() => handleAddLocation(n)}
+                            startIcon={
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:plus
+                              </FuseSvgIcon>
+                            }
+                          >
+                            Add Location
+                          </Button>
+                        ) : (
+                          <span>{n.locations_count}</span>
+                        )}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"

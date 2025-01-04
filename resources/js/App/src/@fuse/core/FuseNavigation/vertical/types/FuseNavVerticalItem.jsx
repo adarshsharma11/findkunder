@@ -99,7 +99,6 @@ FuseNavVerticalItem.propTypes = {
   }),
 };
 
-FuseNavVerticalItem.defaultProps = {};
 
 const NavVerticalItem = FuseNavVerticalItem;
 

@@ -56,7 +56,10 @@ registerComponent('horizontal-link', FuseNavHorizontalLink);
 registerComponent('vertical-divider', () => <Divider className="my-16" />);
 registerComponent('horizontal-divider', () => <Divider className="my-16" />);
 
-function FuseNavigation(props) {
+function FuseNavigation({
+  layout = 'vertical', 
+  ...props 
+}) {
   const options = _.pick(props, [
     'navigation',
     'layout',
@@ -67,13 +70,14 @@ function FuseNavigation(props) {
     'firstLevel',
     'selectedId',
   ]);
+
   if (props.navigation.length > 0) {
     return (
       <>
         {inputGlobalStyles}
-        {props.layout === 'horizontal' && <FuseNavHorizontalLayout1 {...options} />}
-        {props.layout === 'vertical' && <FuseNavVerticalLayout1 {...options} />}
-        {props.layout === 'vertical-2' && <FuseNavVerticalLayout2 {...options} />}
+        {layout === 'horizontal' && <FuseNavHorizontalLayout1 {...options} />}
+        {layout === 'vertical' && <FuseNavVerticalLayout1 {...options} />}
+        {layout === 'vertical-2' && <FuseNavVerticalLayout2 {...options} />}
       </>
     );
   }
@@ -82,10 +86,7 @@ function FuseNavigation(props) {
 
 FuseNavigation.propTypes = {
   navigation: PropTypes.array.isRequired,
-};
-
-FuseNavigation.defaultProps = {
-  layout: 'vertical',
+  layout: PropTypes.string,
 };
 
 export default memo(FuseNavigation);

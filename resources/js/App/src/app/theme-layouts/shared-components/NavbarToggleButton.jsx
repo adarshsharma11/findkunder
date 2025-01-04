@@ -6,7 +6,7 @@ import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import { navbarToggle, navbarToggleMobile } from 'app/store/fuse/navbarSlice';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 
-function NavbarToggleButton(props) {
+function NavbarToggleButton({ className, children = (<FuseSvgIcon size={20} color="action">heroicons-outline:view-list</FuseSvgIcon>)}) {
   const dispatch = useDispatch();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
   const settings = useSelector(selectFuseCurrentSettings);
@@ -14,7 +14,7 @@ function NavbarToggleButton(props) {
 
   return (
     <IconButton
-      className={props.className}
+      className={className}
       color="inherit"
       size="small"
       onClick={(ev) => {
@@ -31,17 +31,10 @@ function NavbarToggleButton(props) {
         }
       }}
     >
-      {props.children}
+      {children}
     </IconButton>
   );
 }
 
-NavbarToggleButton.defaultProps = {
-  children: (
-    <FuseSvgIcon size={20} color="action">
-      heroicons-outline:view-list
-    </FuseSvgIcon>
-  ),
-};
 
 export default NavbarToggleButton;
