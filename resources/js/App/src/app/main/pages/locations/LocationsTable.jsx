@@ -86,8 +86,8 @@ function LocationsTable(props) {
   }
 
 
-  function handleAddContact() {
-    props.navigate(`/contact-person/new`);
+  function handleAddContact(item) {
+    props.navigate(`/contact-person/new/${item.id}`);
   }
 
   function handleCheck(event, id) {

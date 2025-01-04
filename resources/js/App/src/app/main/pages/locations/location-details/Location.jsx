@@ -28,6 +28,13 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
 import authRoles from "../../../../auth/authRoles";
 import { locationSchema } from "../../../../schemas/validationSchemas";
 
+const defaultValues = {
+  company_id: '',
+  street: '',
+  postal_code: '',
+  city: '',
+}
+
 function Company(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
@@ -41,15 +48,15 @@ function Company(props) {
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues,
     resolver: yupResolver(locationSchema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch, control, onChange, formState, setValue } = methods;
   const form = watch();
+  const { productId, companyId } = routeParams;
 
   useDeepCompareEffect(() => {
     function updateProductState() {
-      const { productId } = routeParams;
 
       if (productId === "new") {
         /**
@@ -102,6 +109,13 @@ function Company(props) {
         }
       });
     }, []);
+
+  useEffect(() => {
+    if (companyId && companies) {
+      const numericCompanyId = parseInt(companyId, 10);
+      setValue('company_id', 45);
+     }
+  }, [companyId, companies]);
 
   /**
    * Tab Change

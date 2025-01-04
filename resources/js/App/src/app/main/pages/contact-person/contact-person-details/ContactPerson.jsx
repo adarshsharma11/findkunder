@@ -45,12 +45,12 @@ function Contact(props) {
     defaultValues: {},
     resolver: yupResolver(contactSchema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch, control, onChange, formState, setValue } = methods;
   const form = watch();
+  const { productId, locationId } = routeParams;
 
   useDeepCompareEffect(() => {
     function updateProductState() {
-      const { productId } = routeParams;
 
       if (productId === "new") {
         /**
@@ -102,6 +102,13 @@ function Contact(props) {
       }
     });
   }, []);
+
+
+  useEffect(() => {
+    if (locationId && locations) {
+      setValue('location_id', locationId);
+    }
+  }, [locationId, locations]);
 
   /**
    * Tab Change

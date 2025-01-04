@@ -21,7 +21,6 @@ function BasicInfoTab(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const methods = useFormContext();
-  console.log(data, 'asfsaasvas');
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
   const formattedCategories = data.categories && formatCategories(data.categories);

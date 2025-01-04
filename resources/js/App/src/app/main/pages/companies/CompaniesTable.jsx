@@ -85,7 +85,7 @@ function CompaniesTable(props) {
   }
 
   function handleAddLocation(item) {
-    props.navigate('/locations/new');
+    props.navigate(`/locations/new/${item.id}`);
   }
 
   function handleCheck(event, id) {

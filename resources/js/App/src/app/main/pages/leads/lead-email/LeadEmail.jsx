@@ -38,7 +38,6 @@ function ComposeLeadEmail(props) {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
-  console.log(product, 'ascsac')
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const assignedCustomersParam = params.get("assigned_customers");

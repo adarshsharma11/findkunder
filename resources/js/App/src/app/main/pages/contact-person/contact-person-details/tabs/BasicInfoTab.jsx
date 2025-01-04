@@ -3,6 +3,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
@@ -85,9 +86,14 @@ function BasicInfoTab(props) {
         control={control}
         render={({ field }) => (
           <>
+            <FormControl sx={{ width: '100%'}}  error={!!errors.location_id}>
             <InputLabel id="demo-simple-select-label">Select Location</InputLabel>
             <Select
               {...field}
+              value={field.value || ""}
+              onChange={(e) => {
+                field.onChange(e.target.value);
+              }}
               className="mt-8 mb-16"
               error={!!errors.location_id}
               required
@@ -107,6 +113,7 @@ function BasicInfoTab(props) {
                   </MenuItem>
                 ))}
             </Select>
+            </FormControl>
           </>
         )}
       />

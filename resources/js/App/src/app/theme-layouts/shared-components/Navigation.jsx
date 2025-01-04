@@ -6,7 +6,7 @@ import { selectNavigation } from 'app/store/fuse/navigationSlice';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import { navbarCloseMobile } from 'app/store/fuse/navbarSlice';
 
-function Navigation(props) {
+function Navigation({ className, layout = 'vertical', dense, active}) {
   const navigation = useSelector(selectNavigation);
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
 
@@ -21,19 +21,15 @@ function Navigation(props) {
 
     return (
       <FuseNavigation
-        className={clsx('navigation', props.className)}
+        className={clsx('navigation', className)}
         navigation={navigation}
-        layout={props.layout}
-        dense={props.dense}
-        active={props.active}
+        layout={layout}
+        dense={dense}
+        active={active}
         onItemClick={handleItemClick}
       />
     );
-  }, [dispatch, isMobile, navigation, props.active, props.className, props.dense, props.layout]);
+  }, [dispatch, isMobile, navigation, active, className, dense, layout]);
 }
-
-Navigation.defaultProps = {
-  layout: 'vertical',
-};
 
 export default memo(Navigation);

@@ -25,7 +25,6 @@ const AddLocation = ({
     defaultValues: {},
     resolver: yupResolver(companySchema),
   });
-  console.log(companies, 'ghchgcghc')
   const { control, formState, getValues, setValue } = methods;
   const { errors, isValid, dirtyFields } = formState;
   React.useEffect(() => {

@@ -42,10 +42,14 @@ function BasicInfoTab(props) {
           render={({ field }) => (
             <>
               <FormControl sx={{ width: '100%'}}  error={!!errors.company_id}>
-              <InputLabel id="location_id">Select Company</InputLabel>
+              <InputLabel id="company_id">Select Company</InputLabel>
               <Select
                 {...field}
                 required
+                value={field.value || ""}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                }}
                 className="mt-8 mb-16"
                 labelId="company_id"
                 id="company_id"

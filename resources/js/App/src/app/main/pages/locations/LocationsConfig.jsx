@@ -24,6 +24,10 @@ const LocationsConfig = {
       element: <Locations />,
     },
     {
+      path: "locations/:productId/:companyId/*",
+      element: <Location />,
+    },
+    {
       path: "locations/:productId/*",
       element: <Location />,
     },
