@@ -112,8 +112,7 @@ function Company(props) {
 
   useEffect(() => {
     if (companyId && companies) {
-      const numericCompanyId = parseInt(companyId, 10);
-      setValue('company_id', 45);
+      setValue('company_id', companyId);
      }
   }, [companyId, companies]);
 
