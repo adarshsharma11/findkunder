@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
@@ -15,7 +16,7 @@ import {
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id } = props;
+  const { id, loading, setLoading } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -26,10 +27,13 @@ function ProductHeader(props) {
   const navigate = useNavigate();
 
   function handleSaveProduct() {
+    setLoading(true);
     dispatch(addNewCustomerType(getValues())).then(({ payload }) => {
       dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error' }));
       navigate("/accounts");
-    });
+    }).finally(() => {
+      setLoading(false);
+    });;
   }
 
   function handleRemoveProduct() {
@@ -132,15 +136,16 @@ function ProductHeader(props) {
         >
           Remove
         </Button>
-        <Button
+        <LoadingButton
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
-          disabled={_.isEmpty(dirtyFields) || !isValid}
+          loading={loading}
+          disabled={_.isEmpty(dirtyFields) || !isValid || loading}
           onClick={id !== "new" ? handleUpdateProduct : handleSaveProduct}
         >
           {id !== "new" ? "Update" : "Save"}
-        </Button>
+        </LoadingButton>
       </motion.div>
     </div>
   );

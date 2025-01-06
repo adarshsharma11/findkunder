@@ -25,7 +25,7 @@ import { selectUser } from "../../../../store/userSlice";
 import reducer from "../store";
 import ProductHeader from "./UserAccountHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
-import { createUserAccountSchema, adminProfileSchema, profileSchema } from "../../../../schemas/validationSchemas";
+import { adminProfileSchema, profileSchema, updateAccountProfileSchema } from "../../../../schemas/validationSchemas";
 import Locations from "./tabs/Locations";
 import Companies from "./tabs/Companies";
 import { getCompanies, getPersons, getProfiles } from "../store/userAccountsSlice";
@@ -47,6 +47,7 @@ function UserAccount(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedItem, setSelected] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState(false);
   const [contact, setContacts] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
@@ -56,7 +57,7 @@ function UserAccount(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
-    resolver: yupResolver(createUserAccountSchema),
+    resolver: yupResolver(updateAccountProfileSchema),
   });
 
   const editProfileMethods = useForm({
@@ -238,7 +239,7 @@ function UserAccount(props) {
     <>
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} />}
+        header={<ProductHeader id={routeParams?.productId} loading={loading} setLoading={setLoading} />}
         content={
           <>
             <Tabs

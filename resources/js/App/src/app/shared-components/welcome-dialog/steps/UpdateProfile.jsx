@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import { Controller, useFormContext } from "react-hook-form";
 
 function UpdateProfile(props) {
-  const { isAdmin, product, isAddProfile, locations } = props;
+  const { isAdmin, product, isAddProfile, locations, productId } = props;
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
@@ -105,9 +105,7 @@ function UpdateProfile(props) {
             {...field}
             className="mt-8 mb-16"
             id="email"
-            InputProps={{
-                readOnly: true,
-            }}
+            InputProps={{ readOnly: field.value && productId !== 'new' ? true : false }} 
             error={!!errors.email}
             helperText={errors?.email?.message}
             label="Contact Email"

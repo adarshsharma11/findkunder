@@ -38,6 +38,12 @@ class AccountController extends Controller
         // Consider using a CreateUserRequest class for better validation
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|unique:users',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'telephone' => 'required|string|max:15',
+            'company' => 'required|string|max:255',
+            'cvr' => 'required|string|max:255',
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         if ($validator->fails()) {
@@ -62,10 +68,16 @@ class AccountController extends Controller
 
         // Generate a strong, random temporary password
         $password = Str::random(12);
+        $name = trim($request->first_name . ' ' . $request->last_name);
 
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($password),
+            'name' => $name,
+            'telephone' => $request->telephone,
+            'company' => $request->company,
+            'cvr' => $request->cvr,
+            'is_profile_completed' => 1,
         ]);
         $role = Role::where('name', 'user')->first();
         $user->assignRole($role);
