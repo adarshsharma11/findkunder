@@ -36,5 +36,9 @@ class ContactPerson extends Model
     {
         return $this->belongsTo(CompanyLocation::class, 'location_id');
     }
+    public function services()
+    {
+        return $this->belongsToMany(Category::class, 'contact_person_category', 'contact_person_id', 'category_id');
+    }
     
 }

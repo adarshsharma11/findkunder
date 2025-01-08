@@ -1,5 +1,10 @@
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormHelperText from "@mui/material/FormHelperText";
+import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,9 +13,10 @@ import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
-  const { isAdmin, product, isAddProfile, locations } = props;
+  const { isAdmin, product, isAddProfile, locations, categories } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const { control, formState } = methods;
   const { errors } = formState;
   const linkedInFieldName = isAddProfile ? "contactLinkedin" : "linkedin";
@@ -28,6 +34,15 @@ function BasicInfoTab(props) {
       label: t("other"),
     },
   ];
+
+    useEffect(() => {
+      if (product && product?.services?.length > 0) {
+        const categoryIds = product.services.map(category => category.id);
+        setSelectedCategories(categoryIds);
+      } else {
+        setSelectedCategories([]);
+      }
+    }, [product]);
 
   return (
     <div>
@@ -87,7 +102,7 @@ function BasicInfoTab(props) {
         render={({ field }) => (
           <>
             <FormControl sx={{ width: '100%'}}  error={!!errors.location_id}>
-            <InputLabel id="demo-simple-select-label">Select Location</InputLabel>
+            <InputLabel id="location_id">Select Location</InputLabel>
             <Select
               {...field}
               value={field.value || ""}
@@ -95,13 +110,13 @@ function BasicInfoTab(props) {
                 field.onChange(e.target.value);
               }}
               className="mt-8 mb-16"
-              error={!!errors.location_id}
               required
-              displayEmpty
-              helperText={errors?.location_id?.message}
+              labelId="location_id"
               id="location_id"
               variant="outlined"
+              input={<OutlinedInput label="Select Location"/>}
               fullWidth
+              inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="" disabled>
                 Select Location
@@ -113,6 +128,9 @@ function BasicInfoTab(props) {
                   </MenuItem>
                 ))}
             </Select>
+            {errors.location_id && 
+                <FormHelperText>{errors?.location_id?.message}</FormHelperText>
+              }
             </FormControl>
           </>
         )}
@@ -190,6 +208,64 @@ function BasicInfoTab(props) {
           />
         )}
       />
+       <div className="w-full">
+       <InputLabel id="categories-label">Services offer:</InputLabel>
+        <Controller
+          name="services"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {categories &&
+                categories?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const updatedCategories = isChecked  && !selectedCategories.includes(category.id)
+                            ? [...selectedCategories, category.id]
+                            : selectedCategories.filter(
+                                (id) => id !== category.id
+                              );
+                          setSelectedCategories(updatedCategories);
+                          onChange(updatedCategories);
+                        }}
+                        checked={selectedCategories.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+                    {category.subcategories && selectedCategories.includes(category.id) && (
+                      <div style={{ marginLeft: 20 }}>
+                        {category.subcategories.map((sub) => (
+                          <FormControlLabel
+                            key={sub.id}
+                            control={
+                              <Checkbox
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  const updatedCategories = isChecked && !selectedCategories.includes(sub.id)
+                                    ? [...selectedCategories, sub.id]
+                                    : selectedCategories.filter((id) => id !== sub.id);
+                                  setSelectedCategories(updatedCategories);
+                                  onChange(updatedCategories);
+                                }}
+                                checked={selectedCategories.includes(sub.id)}
+                              />
+                            }
+                            label={sub.name}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+      </div>
       <ContactImageTab isAddProfile={isAddProfile}/>
       <Controller
         name={linkedInFieldName}

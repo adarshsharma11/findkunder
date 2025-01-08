@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Category;
 
 class ContactPersonController extends Controller
 {
@@ -22,13 +23,13 @@ class ContactPersonController extends Controller
             if (!$reqUser) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $contactPersons = ContactPerson::with('location')->where('user_id', $userId)->get();
+            $contactPersons = ContactPerson::with(['location', 'services'])->where('user_id', $userId)->get();
             return response()->json($contactPersons);
         } else {
             if ($user->hasRole('admin')) {
-                $contactPersons = ContactPerson::with('location')->get();
+                $contactPersons = ContactPerson::with(['location', 'services'])->get();
             } else {
-                $contactPersons = $user->contact_person()->with('location')->get();
+                $contactPersons = $user->contact_person()->with(['location', 'services'])->get();
             }
             return response()->json($contactPersons);
         }
@@ -36,7 +37,7 @@ class ContactPersonController extends Controller
 
     public function show($id)
     {
-        $contactPerson = ContactPerson::with('user')->find($id);
+        $contactPerson = ContactPerson::with(['user', 'services'])->find($id);
         if (!$contactPerson) {
             return response()->json(['error' => 'Contact person not found'], 404);
         }
@@ -50,6 +51,8 @@ class ContactPersonController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:contact_person',
             'phone' => 'nullable|string|max:20',
+            'services' => 'nullable|array',
+            'services.*' => 'exists:categories,id',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -65,7 +68,7 @@ class ContactPersonController extends Controller
             $image_name = time().'.'.$image->extension();  
             $image->move(public_path('assets/images/contact-person'), $image_name);
             $data['image'] = $image_name;
-        }
+        }  
         if ($user->hasRole('admin') && !$data['user_id']) {
             $data['user_id'] = $user->id;
             $contactPerson = ContactPerson::create($data);
@@ -75,6 +78,10 @@ class ContactPersonController extends Controller
         } 
         else {
             $contactPerson = $user->contact_person()->create($data);
+        }
+
+        if (!empty($data['services'])) {
+            $contactPerson->services()->sync($data['services']);
         }
 
         return response()->json($contactPerson, 201);

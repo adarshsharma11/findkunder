@@ -25,10 +25,6 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class);
-    }
     public function customerTypes()
     {
         return $this->belongsToMany(CustomerType::class);

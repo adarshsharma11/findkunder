@@ -31,8 +31,6 @@ function BasicInfoTab(props) {
     contacts,
     setCompanies,
     setContacts,
-    categories,
-    customerTypes,
     isAdmin,
     customerLocations,
     product,
@@ -42,21 +40,9 @@ function BasicInfoTab(props) {
   const [invalidCompany, setInvalidCompany] = useState(false);
   const [companyName, setCompany] = useState(false);
   const [contactName, setContact] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedCustomerTypes, setSelectedCutomerTypes] = useState([]);
   const { errors } = formState;
-
-
-  useEffect(() => {
-    if (product && product?.customer_locations?.length > 0) {
-      const locationIds = product.customer_locations.map(location => location.id);
-      setSelectedLocations(locationIds);
-      //setValue("customer_locations", locationIds);
-    } else {
-      setSelectedLocations([]);
-    }
-  }, [product]);
 
   useEffect(() => {
     if (product && product?.customer_types?.length > 0) {
@@ -65,16 +51,6 @@ function BasicInfoTab(props) {
       //setValue("customer_types", typeIds);
     } else {
       setSelectedCutomerTypes([]);
-    }
-  }, [product]);
-
-  useEffect(() => {
-    if (product && product?.categories?.length > 0) {
-      const categoryIds = product.categories.map(category => category.id);
-      setSelectedCategories(categoryIds);
-      //setValue("categories", categoryIds);
-    } else {
-      setSelectedCategories([]);
     }
   }, [product]);
 
@@ -318,40 +294,6 @@ function BasicInfoTab(props) {
       </div>
     </div>
     <div className="flex justify-between w-full space-x-8">
-      <div className="w-full">
-        <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
-        <Controller
-          name="customer_types"
-          control={control}
-          defaultValue={[]}
-          //value={selectedCustomerTypes}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {customerTypes &&
-                customerTypes?.map((category) => (
-                  <div key={category.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(category.id)
-                              ? [...selectedCustomerTypes, category.id]
-                              : selectedCustomerTypes.filter((id) => id !== category.id);
-                              setSelectedCutomerTypes(updatedCategories);
-                            onChange(updatedCategories);
-                          }}
-                          checked={selectedCustomerTypes.includes(category.id)}
-                        />
-                      }
-                      label={category.name}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        </div>
         <div className="w-full">
         <InputLabel id="customerTypes-label">The customer must be located in:</InputLabel>
         <Controller
@@ -385,64 +327,6 @@ function BasicInfoTab(props) {
                       }
                       label={category.name}
                     />
-                  </div>
-                ))}
-            </div>
-          )}
-        />
-        </div>
-        <div className="w-full">
-        <InputLabel id="categories-label">I/We offer:</InputLabel>
-        <Controller
-          name="categories"
-          control={control}
-          defaultValue={[]}
-          render={({ field: { onChange, value } }) => (
-            <div className="mt-8 mb-16">
-              {categories &&
-                categories?.map((category) => (
-                  <div key={category.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const updatedCategories = isChecked  && !selectedCategories.includes(category.id)
-                            ? [...selectedCategories, category.id]
-                            : selectedCategories.filter(
-                                (id) => id !== category.id
-                              );
-                          setSelectedCategories(updatedCategories);
-                          onChange(updatedCategories);
-                        }}
-                        checked={selectedCategories.includes(category.id)}
-                        />
-                      }
-                      label={category.name}
-                    />
-                    {category.subcategories && selectedCategories.includes(category.id) && (
-                      <div style={{ marginLeft: 20 }}>
-                        {category.subcategories.map((sub) => (
-                          <FormControlLabel
-                            key={sub.id}
-                            control={
-                              <Checkbox
-                                onChange={(e) => {
-                                  const isChecked = e.target.checked;
-                                  const updatedCategories = isChecked && !selectedCategories.includes(sub.id)
-                                    ? [...selectedCategories, sub.id]
-                                    : selectedCategories.filter((id) => id !== sub.id);
-                                  setSelectedCategories(updatedCategories);
-                                  onChange(updatedCategories);
-                                }}
-                                checked={selectedCategories.includes(sub.id)}
-                              />
-                            }
-                            label={sub.name}
-                          />
-                        ))}
-                      </div>
-                    )}
                   </div>
                 ))}
             </div>

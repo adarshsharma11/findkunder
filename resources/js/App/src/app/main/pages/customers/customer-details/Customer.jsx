@@ -24,8 +24,6 @@ import {
 import { selectUser } from "../../../../store/userSlice";
 import { getLocations } from "../../locations/store/locationsSlice";
 import { getProducts as getContactPerson } from "../../contact-person/store/contactPersonsSlice";
-import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
-import { getProducts as getCustomerTypes } from "../../customer-types/store/customerTypesSlice";
 import { getProducts as getCustomerLocations } from "../../customer-locations/store/customerLocationsSlice";
 import reducer from "../store";
 import { profileSchema, adminProfileSchema } from "../../../../schemas/validationSchemas";
@@ -47,8 +45,6 @@ function Customer(props) {
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
   const [locations, setLocations] = useState(false);
-  const [categories, setCategories] = useState(false);
-  const [customerTypes, setCustomerTypes] = useState(false);
   const [customerLocations, setCustomerLocation] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [contact, setContacts] = useState(false);
@@ -108,22 +104,6 @@ function Customer(props) {
     dispatch(getContactPerson()).then((action) => {
       if (action.payload) {
         setContacts(action.payload);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch(getCategories()).then((action) => {
-      if (action.payload) {
-        setCategories(action.payload);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch(getCustomerTypes()).then((action) => {
-      if (action.payload) {
-        setCustomerTypes(action.payload);
       }
     });
   }, []);
@@ -253,9 +233,7 @@ function Customer(props) {
     (!product && routeParams.productId !== "new") ||
     !locations ||
     !contact ||
-    !categories ||
-    !customerLocations ||
-    !customerTypes
+    !customerLocations
   ) {
     return <FuseLoading />;
   }
@@ -286,8 +264,6 @@ function Customer(props) {
                   contacts={contact}
                   setCompanies={setLocations}
                   setContacts={setContacts}
-                  categories={categories}
-                  customerTypes={customerTypes}
                   isAdmin={isAdmin}
                   product={product}
                   customerLocations={customerLocations}

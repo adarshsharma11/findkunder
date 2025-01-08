@@ -27,8 +27,11 @@ function ProductHeader(props) {
 
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
-      dispatch(showMessage({ message: "Contact person added successfully!" }));
+      dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
       navigate("/contact-person");
+    }).catch((err) => {
+      console.error("Error saving contact person:", err);
+      dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
     });
   }
 

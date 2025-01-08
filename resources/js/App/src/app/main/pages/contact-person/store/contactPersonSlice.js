@@ -52,9 +52,13 @@ export const addNewPerson = createAsyncThunk(
     if (personData.image) {
       formData.append("image", personData.image);
     }
-    // Append other person data to the form data
     Object.keys(personData).forEach((key) => {
-      if (key !== "image" && personData[key] !== null && personData[key]) {
+      if (key === "services" && Array.isArray(personData.services)) {
+        // Append each service value separately
+        personData.services.forEach((service) => {
+          formData.append("services[]", service);
+        });
+      } else if (key !== "image" && personData[key] !== null && personData[key] !== undefined) {
         formData.append(key, personData[key]);
       }
     });

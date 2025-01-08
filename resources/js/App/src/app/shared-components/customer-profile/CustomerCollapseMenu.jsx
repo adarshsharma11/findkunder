@@ -49,34 +49,6 @@ function CustomerCollapseMenu({ expanded, data }) {
         </div>
         <div className="flex justify-between mb-8 mt-12">
           <div className="w-full md:w-1/2 lg:w-1/3">
-            <strong>The customer can be:</strong><br />
-            {data.customer_types.map((type) => (
-              <div key={type.id}>
-                {type.name}
-              </div>
-            ))}
-            {data.customer_types.length === 0 && <div>N/A</div>}
-          </div>
-          <div className="w-full md:w-1/2 lg:w-1/3">
-            <strong>I/we offer:</strong><br />
-            {data.categories.map((category) => (
-              <div key={category.id}>
-                <div>{category.name}
-                  {category.subcategories && category.subcategories.length > 0 && (
-                    <span>
-                      (
-                      {category.subcategories.map((sub) => (
-                        <span key={sub.id}>{sub.name}, </span>
-                      ))}
-                      )
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-            {data.categories.length === 0 && <div>N/A</div>}
-          </div>
-          <div className="w-full md:w-1/2 lg:w-1/3">
             <strong>Customer location:</strong><br />
             {data.customer_locations.map((location) => (
               <div key={location.id}>

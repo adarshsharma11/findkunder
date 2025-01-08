@@ -24,9 +24,20 @@ import reducer from "../store";
 import ProductHeader from "./ContactPersonHeader";
 import authRoles from "../../../../auth/authRoles";
 import { selectUser } from "../../../../store/userSlice";
+import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { getLocations } from "../../locations/store/locationsSlice";
 import { contactSchema } from "../../../../schemas/validationSchemas";
+
+const defaultValues = {
+  location_id: '',
+  title: '',
+  first_name: '',
+  last_name: '',
+  phone: '',
+  email: '',
+  services: [],
+}
 
 function Contact(props) {
   const dispatch = useDispatch();
@@ -39,10 +50,11 @@ function Contact(props) {
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [locations, setLocations] = useState(false);
+  const [categories, setCategories] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues,
     resolver: yupResolver(contactSchema),
   });
   const { reset, watch, control, onChange, formState, setValue } = methods;
@@ -102,6 +114,14 @@ function Contact(props) {
       }
     });
   }, []);
+
+   useEffect(() => {
+      dispatch(getCategories()).then((action) => {
+        if (action.payload) {
+          setCategories(action.payload);
+        }
+      });
+    }, []);
 
 
   useEffect(() => {
@@ -173,7 +193,7 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} />
+                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} categories={categories} />
               </div>
             </div>
           </>

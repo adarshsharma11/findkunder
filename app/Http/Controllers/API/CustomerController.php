@@ -27,11 +27,11 @@ class CustomerController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['person.location', 'categories.subcategories', 'customerTypes', 'customerLocations'])
+            $customers = Customer::with(['person.location', 'customerTypes', 'customerLocations'])
                 ->where('user_id', $userId)
                 ->get();
         } else {
-            $query = Customer::with(['person.location', 'categories.subcategories', 'customerTypes', 'customerLocations']);
+            $query = Customer::with(['person.location', 'customerTypes', 'customerLocations']);
             $customers = $user->hasRole('admin') ? $query->get() : $query->where('user_id', $user->id)->get();
         }
 
