@@ -60,7 +60,7 @@ class Lead extends Model
 
     public function findBestMatches($locationId)
     {
-        $customers = Customer::with(['person', 'customerTypes', 'categories', 'company'])->get();
+        $customers = Customer::with(['person', 'customerTypes'])->get();
 
         foreach ($customers as $customer) {
             $score = $this->getMatchingScore($customer, $locationId);
@@ -82,16 +82,16 @@ class Lead extends Model
         // Ensure we have collections to work with
         $leadCustomerTypes = $this->customerType->pluck('id');
         $customerCustomerTypes = $customer->customerTypes->pluck('id');
-        $leadCategories = $this->categories->pluck('id');
-        $customerCategories = $customer->categories->pluck('id');
+        // $leadCategories = $this->categories->pluck('id');
+        // $customerCategories = $customer->categories->pluck('id');
 
         // Calculate the score based on common customer types
         $commonCustomerTypesCount = $leadCustomerTypes->intersect($customerCustomerTypes)->count();
         $score += $commonCustomerTypesCount * 5;
 
         // Calculate the score based on common categories
-        $commonCategoriesCount = $leadCategories->intersect($customerCategories)->count();
-        $score += $commonCategoriesCount  * 5;
+        // $commonCategoriesCount = $leadCategories->intersect($customerCategories)->count();
+        // $score += $commonCategoriesCount  * 5;
 
         // Add score for physical attendance requirement
         if ($this->physical_attendance_required && $customer->physical_attendance_available) {
