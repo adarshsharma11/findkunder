@@ -261,6 +261,17 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
+                     {n.services && n.services.length > 0
+                      ? n.services.map(service => service.name).join(', ')
+                      : 'N/A'}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
                       {n.linkedin ? (
                         <div className="flex justify-end">
                           <a

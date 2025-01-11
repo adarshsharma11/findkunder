@@ -27,7 +27,11 @@ export const saveProduct = createAsyncThunk(
       formData.append("image", productData.image);
     }
     Object.keys(productData).forEach((key) => {
-      if (key !== "image" && productData[key] !== null) {
+      if (key === "services" && Array.isArray(productData.services)) {
+        productData.services.forEach((service) => {
+          formData.append("services[]", service);
+        });
+      } else if (key !== "image" && productData[key] !== null && productData[key] !== undefined) {
         formData.append(key, productData[key]);
       }
     });
@@ -54,7 +58,6 @@ export const addNewPerson = createAsyncThunk(
     }
     Object.keys(personData).forEach((key) => {
       if (key === "services" && Array.isArray(personData.services)) {
-        // Append each service value separately
         personData.services.forEach((service) => {
           formData.append("services[]", service);
         });

@@ -68,6 +68,13 @@ const rows = [
     sort: true,
   },
   {
+    id: "services",
+    align: "right",
+    disablePadding: false,
+    label: "My Services",
+    sort: true,
+  },
+  {
     id: "linkedin",
     align: "right",
     disablePadding: false,

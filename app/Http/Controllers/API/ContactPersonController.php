@@ -100,6 +100,8 @@ class ContactPersonController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:contact_person,email,' . $id,
             'phone' => 'nullable|string|max:20',
+            'services' => 'nullable|array',
+            'services.*' => 'exists:categories,id',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
             'image' => $request->hasFile('image') ? 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048' : 'nullable|string',
@@ -119,6 +121,10 @@ class ContactPersonController extends Controller
             }
         }
         $contactPerson->update($data);
+        if (!empty($data['services'])) {
+            $contactPerson->services()->sync($data['services']);
+        }
+        $contactPerson->load(['services']);
         return response()->json($contactPerson);
     }
 

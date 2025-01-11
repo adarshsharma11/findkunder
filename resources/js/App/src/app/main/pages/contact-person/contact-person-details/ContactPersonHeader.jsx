@@ -45,8 +45,11 @@ function ProductHeader(props) {
   function handleUpdateProduct() {
     dispatch(saveProduct(getValues())).then(() => {
       dispatch(
-        showMessage({ message: "Contact person updated successfully!" })
+        showMessage({ message: "Contact person updated successfully!", variant: 'success' })
       );
+    }).catch((err) => {
+      console.error("Error updating contact person:", err);
+      dispatch(showMessage({ message: "Failed to update contact person. Please try again.", variant: "error" }));
     });
   }
 
