@@ -69,14 +69,14 @@ function AboutTab(props) {
                 <Typography className="font-semibold mb-4 text-15">
                   Company
                 </Typography>
-                <Typography>{user.data.company}</Typography>
+                <Typography>{user.data.company || 'N/A'}</Typography>
               </div>
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">
                   Telephone
                 </Typography>
-                <Typography>{user.data.telephone}</Typography>
+                <Typography>{user.data.telephone || 'N/A'}</Typography>
               </div>
               </div>
               <div>
@@ -97,7 +97,7 @@ function AboutTab(props) {
                 <Typography className="font-semibold mb-4 text-15">
                   CVR
                 </Typography>
-                <Typography>{user.data.cvr}</Typography>
+                <Typography>{user.data.cvr || 'N/A'}</Typography>
               </div>
               </div>
               </div>
