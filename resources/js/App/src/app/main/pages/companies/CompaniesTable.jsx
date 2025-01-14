@@ -21,6 +21,7 @@ import {
   selectCompaniesSearchText,
 } from "./store/companiesSlice";
 import CompaniesTableHead from "./CompaniesTableHead";
+import ViewDescriptionDialog from "../../../shared-components/view-description-dialog";
 
 function CompaniesTable(props) {
   const dispatch = useDispatch();
@@ -36,6 +37,14 @@ function CompaniesTable(props) {
     direction: "asc",
     id: null,
   });
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState('');
+
+  const handleToggleDialog = (content) => {
+    setDialogContent(content);
+    setDialogOpen(!dialogOpen);
+  };
 
   useEffect(() => {
     dispatch(getCompanies()).then(() => setLoading(false));
@@ -227,7 +236,24 @@ function CompaniesTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.description || 'N/A'}
+                  {n.description ? (
+                      <>
+                        {n.description.length > 20 ? (
+                          <>
+                            {n.description.substring(0, 20)}...
+                            <Button
+                              variant="text"
+                              color="primary"
+                              onClick={() => handleToggleDialog(n.description)}
+                            >
+                              See More
+                            </Button>
+                          </>
+                        ) : (
+                          n.description
+                        )}
+                      </>
+                    ) : 'N/A'}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -377,6 +403,12 @@ function CompaniesTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <ViewDescriptionDialog
+        open={dialogOpen}
+        toggleDialog={setDialogOpen}
+        dialogTitle="Description"
+        dialogContent={dialogContent}
       />
     </div>
   );
