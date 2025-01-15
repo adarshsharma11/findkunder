@@ -9,7 +9,7 @@ import UpdatePasswordTab from "./UpdatePasswordTab";
 import UpdateProfile from "../../../../shared-components/welcome-dialog/steps/UpdateProfile";
 
 function ProfileDetailTab(props) {
-  const { user, isAdmin, handleDeleteProfile, handleUpdateProfile, loading, methods, securityMethods, handleSubmitSecurityProfile, loadingPassword } = props;
+  const { user, isAdmin, isOwner, handleDeleteProfile, handleUpdateProfile, loading, methods, securityMethods, handleSubmitSecurityProfile, loadingPassword } = props;
 
   if (!user) {
     return null;
@@ -61,7 +61,7 @@ function ProfileDetailTab(props) {
         <div className="w-3/4 mb-12">
         <FormProvider {...securityMethods}><UpdatePasswordTab handleUpdateProfile={handleSubmitSecurityProfile} loading={loadingPassword} /> </FormProvider>
         </div>
-        {!isAdmin && <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} /> }
+        {!isAdmin && !isOwner && <DeleteAccountTab handleDeleteProfile={handleDeleteProfile} /> }
         </div>
       </div>
     </motion.div>

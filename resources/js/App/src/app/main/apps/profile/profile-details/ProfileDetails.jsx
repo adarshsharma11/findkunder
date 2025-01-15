@@ -42,6 +42,7 @@ const defaultSecurityValues = {
 function ProfileAppDetails() {
   const user = useSelector(selectUser);
   const isAdmin = user?.role === authRoles.admin[0];
+  const isOwner = user?.role === authRoles.owner[0];
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
@@ -123,11 +124,8 @@ const handleSubmitProfile = async () => {
 
 handleSubmit(async (values) => {
     setLoading(true);
-    const isSuccess = await handleUpdateProfile(values);
+    await handleUpdateProfile(values);
     setLoading(false);
-    if (isSuccess) {
-        setCurrentStep((prev) => prev + 1);
-    }
     })();
 };
 
@@ -161,7 +159,7 @@ const handleSubmitSecurityProfile = async () => {
     <Root
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-        <ProfileDetailTab user={user} isAdmin={isAdmin} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleSubmitProfile} handleSubmitSecurityProfile={handleSubmitSecurityProfile} loading={loading} loadingPassword={loadingPassword} methods={methods} securityMethods={securityMethods} />
+        <ProfileDetailTab user={user} isAdmin={isAdmin} isOwner={isOwner} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleSubmitProfile} handleSubmitSecurityProfile={handleSubmitSecurityProfile} loading={loading} loadingPassword={loadingPassword} methods={methods} securityMethods={securityMethods} />
         </div>
       }
       scroll={isMobile ? "normal" : "page"}

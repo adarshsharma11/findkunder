@@ -14,7 +14,7 @@ function UpdateProfile(props) {
   const { errors } = formState;
   const roleOptions = [
     {
-      value: "admin",
+      value: "owner",
       label: "Admin",
     },
     {
