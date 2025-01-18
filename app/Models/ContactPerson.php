@@ -40,5 +40,10 @@ class ContactPerson extends Model
     {
         return $this->belongsToMany(Category::class, 'contact_person_category', 'contact_person_id', 'category_id');
     }
+    public function customerTypes()
+    {
+        return $this->belongsToMany(CustomerType::class, 'contact_person_customer_type', 'contact_person_id', 'customer_type_id');
+    }
+
     
 }

@@ -23,13 +23,13 @@ class ContactPersonController extends Controller
             if (!$reqUser) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $contactPersons = ContactPerson::with(['location', 'services'])->where('user_id', $userId)->get();
+            $contactPersons = ContactPerson::with(['location', 'services', 'customerTypes'])->where('user_id', $userId)->get();
             return response()->json($contactPersons);
         } else {
             if ($user->hasRole('admin')) {
-                $contactPersons = ContactPerson::with(['location', 'services'])->get();
+                $contactPersons = ContactPerson::with(['location', 'services', 'customerTypes'])->get();
             } else {
-                $contactPersons = $user->contact_person()->with(['location', 'services'])->get();
+                $contactPersons = $user->contact_person()->with(['location', 'services', 'customerTypes'])->get();
             }
             return response()->json($contactPersons);
         }
@@ -37,7 +37,7 @@ class ContactPersonController extends Controller
 
     public function show($id)
     {
-        $contactPerson = ContactPerson::with(['user', 'services'])->find($id);
+        $contactPerson = ContactPerson::with(['user', 'services', 'customerTypes'])->find($id);
         if (!$contactPerson) {
             return response()->json(['error' => 'Contact person not found'], 404);
         }
@@ -53,6 +53,8 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'services' => 'nullable|array',
             'services.*' => 'exists:categories,id',
+            'customer_types' => 'nullable|array',
+            'customer_types.*' => 'exists:customer_types,id',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -83,13 +85,16 @@ class ContactPersonController extends Controller
         if (!empty($data['services'])) {
             $contactPerson->services()->sync($data['services']);
         }
+        if (!empty($data['customer_types'])) {
+            $contactPerson->customerTypes()->sync($data['customer_types']);
+        }
 
         return response()->json($contactPerson, 201);
     }
 
     public function update(Request $request, $id)
     {
-        $contactPerson = ContactPerson::find($id);
+        $contactPerson = ContactPerson::with(['user', 'services', 'customerTypes'])->find($id);
         if (!$contactPerson) {
             return response()->json(['error' => 'Contact person not found'], 404);
         }
@@ -102,6 +107,8 @@ class ContactPersonController extends Controller
             'phone' => 'nullable|string|max:20',
             'services' => 'nullable|array',
             'services.*' => 'exists:categories,id',
+            'customer_types' => 'nullable|array',
+            'customer_types.*' => 'exists:customer_types,id',
             'linkedin' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
             'image' => $request->hasFile('image') ? 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048' : 'nullable|string',
@@ -124,7 +131,11 @@ class ContactPersonController extends Controller
         if (!empty($data['services'])) {
             $contactPerson->services()->sync($data['services']);
         }
+        if (!empty($data['customer_types'])) {
+            $contactPerson->customerTypes()->sync($data['customer_types']);
+        }
         $contactPerson->load(['services']);
+        $contactPerson->load(['customer_types']);
         return response()->json($contactPerson);
     }
 

@@ -27,11 +27,11 @@ class CustomerController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
-            $customers = Customer::with(['person.location', 'customerTypes', 'customerLocations'])
+            $customers = Customer::with(['person.location', 'customerLocations'])
                 ->where('user_id', $userId)
                 ->get();
         } else {
-            $query = Customer::with(['person.location', 'customerTypes', 'customerLocations']);
+            $query = Customer::with(['person.location', 'customerLocations']);
             $customers = $user->hasRole('admin') ? $query->get() : $query->where('user_id', $user->id)->get();
         }
 
@@ -46,8 +46,6 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'person_id' => 'required|exists:contact_person,id',
             'notes' => 'nullable|string',
-            'categories' => 'array',
-            'customer_types' => 'array',
             'customer_locations' => 'array',
             'status' => 'nullable|string',
         ]);
@@ -71,19 +69,9 @@ class CustomerController extends Controller
 
         $customer = Customer::create($data);
 
-        if (!empty($data['categories'])) {
-            $categories = Category::whereIn('id', $data['categories'])->get();
-            $customer->categories()->attach($categories);
-        }
-
         if (!empty($data['customer_locations'])) {
             $locations = CustomerLocation::whereIn('id', $data['customer_locations'])->get();
             $customer->customerLocations()->attach($locations);
-        }
-
-        if (!empty($data['customer_types'])) {
-            $customerTypes = CustomerType::whereIn('id', $data['customer_types'])->get();
-            $customer->customerTypes()->attach($customerTypes);
         }
 
         return response()->json([
@@ -128,21 +116,13 @@ class CustomerController extends Controller
         }
 
         $data = $request->only(['person_id', 'status', 'notes']);
-        $customer->update($data);
-
-        // Sync categories, customer types, and customer locations
-        if (isset($data['categories'])) {
-            $customer->categories()->sync($data['categories'] ?? []);
-        }
+        $customer->update($data);    
 
         if (isset($data['customer_locations'])) {
             $customer->customerLocations()->sync($data['customer_locations'] ?? []);
         }
 
-        if (isset($data['customer_types'])) {
-            $customer->customerTypes()->sync($data['customer_types'] ?? []);
-        }
-
+   
         $updatedCustomer = Customer::with(['person.location', 'categories', 'customerTypes', 'customerLocations'])->find($id);
         return response()->json($updatedCustomer);
     }

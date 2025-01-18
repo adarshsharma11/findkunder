@@ -13,11 +13,12 @@ import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
-  const { isAdmin, product, isAddProfile, locations, categories } = props;
+  const { isAdmin, product, isAddProfile, locations, categories, contactTypes } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const { control, formState } = methods;
+  const [selectedCustomerTypes, setSelectedCutomerTypes] = useState([]);
+  const { control, formState, setValue } = methods;
   const { errors } = formState;
   const linkedInFieldName = isAddProfile ? "contactLinkedin" : "linkedin";
   const titleOptions = [
@@ -39,8 +40,19 @@ function BasicInfoTab(props) {
       if (product && product?.services?.length > 0) {
         const categoryIds = product.services.map(category => category.id);
         setSelectedCategories(categoryIds);
+        setValue("services", categoryIds); 
       } else {
         setSelectedCategories([]);
+      }
+    }, [product]);
+    
+    useEffect(() => {
+      if (product && product?.customer_types?.length > 0) {
+        const typeIds = product.customer_types.map(type => type.id);
+        setSelectedCutomerTypes(typeIds);
+        setValue("customer_types", typeIds); 
+      } else {
+        setSelectedCutomerTypes([]);
       }
     }, [product]);
 
@@ -208,6 +220,7 @@ function BasicInfoTab(props) {
           />
         )}
       />
+      <div className="flex justify-between w-full space-x-8">
        <div className="w-full">
        <InputLabel id="categories-label">Services offer:</InputLabel>
         <Controller
@@ -265,6 +278,40 @@ function BasicInfoTab(props) {
             </div>
           )}
         />
+      </div>
+      <div className="w-full">
+        <InputLabel id="customerTypes-label">The customer can be:</InputLabel>
+        <Controller
+          name="customer_types"
+          control={control}
+          defaultValue={[]}
+          render={({ field: { onChange, value } }) => (
+            <div className="mt-8 mb-16">
+              {contactTypes &&
+                contactTypes?.map((category) => (
+                  <div key={category.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedCategories = isChecked && !selectedCustomerTypes.includes(category.id)
+                              ? [...selectedCustomerTypes, category.id]
+                              : selectedCustomerTypes.filter((id) => id !== category.id);
+                              setSelectedCutomerTypes(updatedCategories);
+                            onChange(updatedCategories);
+                          }}
+                          checked={selectedCustomerTypes.includes(category.id)}
+                        />
+                      }
+                      label={category.name}
+                    />
+                  </div>
+                ))}
+            </div>
+          )}
+        />
+      </div>
       </div>
       <ContactImageTab isAddProfile={isAddProfile}/>
       <Controller

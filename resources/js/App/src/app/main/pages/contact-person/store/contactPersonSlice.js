@@ -23,15 +23,22 @@ export const saveProduct = createAsyncThunk(
   "contact/saveContact",
   async (productData, { dispatch, getState }) => {
     const formData = new FormData();
+    console.log(productData, 'productData')
     if (productData.image) {
       formData.append("image", productData.image);
     }
     Object.keys(productData).forEach((key) => {
-      if (key === "services" && Array.isArray(productData.services)) {
+      if (key === "services" && Array.isArray(productData.services) && productData.services.length > 0) {
         productData.services.forEach((service) => {
           formData.append("services[]", service);
         });
-      } else if (key !== "image" && productData[key] !== null && productData[key] !== undefined) {
+      }
+      else if (key === "customer_types" && Array.isArray(productData.customer_types) && productData.customer_types.length > 0) {
+        productData.customer_types.forEach((type) => {
+          formData.append("customer_types[]", type);
+        });
+      }
+      else if (key !== "image" && productData[key] !== null && productData[key] !== undefined) {
         formData.append(key, productData[key]);
       }
     });
@@ -61,7 +68,13 @@ export const addNewPerson = createAsyncThunk(
         personData.services.forEach((service) => {
           formData.append("services[]", service);
         });
-      } else if (key !== "image" && personData[key] !== null && personData[key] !== undefined) {
+      } 
+      else if (key === "customer_types" && Array.isArray(personData.customer_types)) {
+        personData.customer_types.forEach((type) => {
+          formData.append("customer_types[]", type);
+        });
+      }
+      else if (key !== "image" && personData[key] !== null && personData[key] !== undefined) {
         formData.append(key, personData[key]);
       }
     });

@@ -25,6 +25,7 @@ import ProductHeader from "./ContactPersonHeader";
 import authRoles from "../../../../auth/authRoles";
 import { selectUser } from "../../../../store/userSlice";
 import { getProducts as getCategories } from "../../categories/store/categoriesSlice";
+import { getProducts as getContactTypes } from "../../customer-types/store/customerTypesSlice";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { getLocations } from "../../locations/store/locationsSlice";
 import { contactSchema } from "../../../../schemas/validationSchemas";
@@ -37,6 +38,7 @@ const defaultValues = {
   phone: '',
   email: '',
   services: [],
+  customer_types: [],
 }
 
 function Contact(props) {
@@ -52,6 +54,7 @@ function Contact(props) {
   const [locations, setLocations] = useState(false);
   const [categories, setCategories] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
+  const [contactTypes, setContactTypes] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
@@ -115,6 +118,14 @@ function Contact(props) {
     });
   }, []);
 
+  useEffect(() => {
+    dispatch(getContactTypes()).then((action) => {
+      if (action.payload) {
+        setContactTypes(action.payload);
+      }
+    });
+  }, []);
+
    useEffect(() => {
       dispatch(getCategories()).then((action) => {
         if (action.payload) {
@@ -169,8 +180,7 @@ function Contact(props) {
     _.isEmpty(form) ||
     (product &&
       routeParams.productId !== product?.id?.toString() &&
-      routeParams.productId !== "new") || !locations
-  ) {
+      routeParams.productId !== "new") || !locations || !categories || !contactTypes  ) {
     return <FuseLoading />;
   }
 
@@ -193,7 +203,7 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} categories={categories} />
+                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} categories={categories} contactTypes={contactTypes} />
               </div>
             </div>
           </>

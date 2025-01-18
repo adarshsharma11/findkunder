@@ -25,10 +25,6 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function customerTypes()
-    {
-        return $this->belongsToMany(CustomerType::class);
-    }
     public function customerLocations()
     {
         return $this->belongsToMany(CustomerLocation::class);
