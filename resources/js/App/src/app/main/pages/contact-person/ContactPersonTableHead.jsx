@@ -75,6 +75,13 @@ const rows = [
     sort: true,
   },
   {
+    id: "customerTypes",
+    align: "right",
+    disablePadding: false,
+    label: "Customers I help",
+    sort: true,
+  },
+  {
     id: "linkedin",
     align: "right",
     disablePadding: false,

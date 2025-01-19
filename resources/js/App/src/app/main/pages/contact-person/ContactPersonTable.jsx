@@ -272,6 +272,17 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
+                     {n.customer_types && n.customer_types.length > 0
+                      ? n.customer_types.map(service => service.name).join(', ')
+                      : 'N/A'}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
                       {n.linkedin ? (
                         <div className="flex justify-end">
                           <a
