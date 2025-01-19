@@ -60,7 +60,7 @@ class Lead extends Model
 
     public function findBestMatches($locationId)
     {
-        $customers = Customer::with(['person', 'customerTypes'])->get();
+        $customers = Customer::with(['person'])->get();
 
         foreach ($customers as $customer) {
             $score = $this->getMatchingScore($customer, $locationId);
@@ -80,14 +80,14 @@ class Lead extends Model
         $score = 0;
 
         // Ensure we have collections to work with
-        $leadCustomerTypes = $this->customerType->pluck('id');
-        $customerCustomerTypes = $customer->customerTypes->pluck('id');
+        // $leadCustomerTypes = $this->customerType->pluck('id');
+        // $customerCustomerTypes = $customer->customerTypes->pluck('id');
         // $leadCategories = $this->categories->pluck('id');
         // $customerCategories = $customer->categories->pluck('id');
 
         // Calculate the score based on common customer types
-        $commonCustomerTypesCount = $leadCustomerTypes->intersect($customerCustomerTypes)->count();
-        $score += $commonCustomerTypesCount * 5;
+        // $commonCustomerTypesCount = $leadCustomerTypes->intersect($customerCustomerTypes)->count();
+        // $score += $commonCustomerTypesCount * 5;
 
         // Calculate the score based on common categories
         // $commonCategoriesCount = $leadCategories->intersect($customerCategories)->count();

@@ -86,7 +86,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::with(['person.location', 'user', 'categories.subcategories', 'customerTypes', 'customerLocations'])->find($id);
+        $customer = Customer::with(['person.location', 'user', 'categories.subcategories', 'customerLocations'])->find($id);
 
         if (!$customer) {
             return response()->json(['error' => 'Profile not found'], 404);
