@@ -116,7 +116,7 @@ function Company(props) {
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/locations"
+          to="/companies"
           color="inherit"
         >
           Go to company Page

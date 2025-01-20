@@ -173,6 +173,29 @@ function Contact(props) {
       </motion.div>
     );
   }
+
+  if (locations && locations?.length == 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-col flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          There are no locations added to system!
+        </Typography>
+        <Button
+          className="mt-24"
+          component={Link}
+          variant="outlined"
+          to="/locations/new"
+          color="inherit"
+        >
+          Go to Locations Page & add one
+        </Button>
+      </motion.div>
+    );
+  }
   /**
    * Wait while product data is loading and form is setted
    */
