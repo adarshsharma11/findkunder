@@ -14,9 +14,15 @@ class CompanyLocationController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $userId = $request->input('userId');
-        $companies = Company::where('user_id', $userId)->pluck('id');
-        $locations = CompanyLocation::whereIn('company_id', $companies)->with('company')->withCount('contactPersons')->get();
+        if ($user->role === 'admin') {
+            $locations = CompanyLocation::with('company')->withCount('contactPersons')->get();
+        } else {
+            $userId = $request->input('userId');
+            $companies = Company::where('user_id', $userId)->pluck('id');
+            $locations = CompanyLocation::whereIn('company_id', $companies)->with('company')->withCount('contactPersons')->get();
+        }
         return response()->json($locations);
     }    
     /**
