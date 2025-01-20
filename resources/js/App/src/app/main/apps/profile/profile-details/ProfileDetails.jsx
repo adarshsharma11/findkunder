@@ -81,6 +81,7 @@ function ProfileAppDetails() {
 
   const handleUpdateProfile = async (values) => {
     try {
+      setLoading(true)
       const is_profile_completed = 1;
       const response = await AuthService.updateUserData(values, is_profile_completed);
       const result = response?.data;
@@ -117,15 +118,14 @@ function ProfileAppDetails() {
     } catch (error) {
       dispatch(showMessage({ message: "Failed to update profile.", variant: "error" }));
       return false;
+    } finally {
+      setLoading(false)
     }
   };
 
 const handleSubmitProfile = async () => {
-
 handleSubmit(async (values) => {
-    setLoading(true);
     await handleUpdateProfile(values);
-    setLoading(false);
     })();
 };
 

@@ -83,17 +83,22 @@ function BasicInfoTab(props) {
         control={control}
         render={({ field }) => (
           <>
-            <InputLabel id="demo-simple-select-label">Title</InputLabel>
+          <FormControl sx={{ width: '100%'}}  error={!!errors.title}>
+            <InputLabel id="title">Select Title</InputLabel>
             <Select
               {...field}
+              value={field.value || ""}
+              onChange={(e) => {
+                field.onChange(e.target.value);
+              }}
               className="mt-8 mb-16"
-              error={!!errors.title}
               required
-              displayEmpty
-              helperText={errors?.title?.message}
               id="title"
+              labelId="title"
               variant="outlined"
               fullWidth
+              input={<OutlinedInput label="Select Title"/>}
+              inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="" disabled>
                 Select Title
@@ -105,6 +110,10 @@ function BasicInfoTab(props) {
                   </MenuItem>
                 ))}
             </Select>
+            {errors.title && 
+                <FormHelperText>{errors?.title?.message}</FormHelperText>
+            }
+            </FormControl>
           </>
         )}
       />

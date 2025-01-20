@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
+import ViewDescriptionDialog from "../../../shared-components/view-description-dialog";
 import {
   getProducts,
   selectProducts,
@@ -33,6 +34,9 @@ function ContactPersonTable(props) {
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(products);
   const [page, setPage] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogContent, setDialogContent] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
     direction: "asc",
@@ -105,6 +109,15 @@ function ContactPersonTable(props) {
 
     setSelected(newSelected);
   }
+  const toggleDialog = (state) => {
+    setDialogOpen(state);
+  };
+
+  const handleSeeMore = (services) => {
+    setDialogTitle("Services I Offer:");
+    setDialogContent(services.join(", "));
+    toggleDialog(true);
+  };
 
   function handleChangePage(event, value) {
     setPage(value);
@@ -261,9 +274,26 @@ function ContactPersonTable(props) {
                       scope="row"
                       align="right"
                     >
-                     {n.services && n.services.length > 0
-                      ? n.services.map(service => service.name).join(', ')
-                      : 'N/A'}
+                    {n.services && n.services.length > 0 ? (
+                        <>
+                          {n.services.slice(0, 2).map((service, index) => (
+                            <span key={index}>
+                              {service.name}
+                              {index < n.services.length - 1 && ", "}
+                            </span>
+                          ))}
+                          {n.services.length > 2 && (
+                            <Button
+                              size="small"
+                              onClick={() => handleSeeMore(n.services.map((service) => service.name))}
+                            >
+                              See More
+                            </Button>
+                          )}
+                        </>
+                      ) : (
+                        "N/A"
+                      )}
                     </TableCell>
 
                     <TableCell
@@ -353,6 +383,12 @@ function ContactPersonTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <ViewDescriptionDialog
+        open={dialogOpen}
+        toggleDialog={toggleDialog}
+        dialogTitle={dialogTitle}
+        dialogContent={dialogContent}
       />
     </div>
   );

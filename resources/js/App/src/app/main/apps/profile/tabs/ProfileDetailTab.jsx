@@ -10,7 +10,6 @@ import UpdateProfile from "../../../../shared-components/welcome-dialog/steps/Up
 
 function ProfileDetailTab(props) {
   const { user, isAdmin, isOwner, handleDeleteProfile, handleUpdateProfile, loading, methods, securityMethods, handleSubmitSecurityProfile, loadingPassword } = props;
-
   if (!user) {
     return null;
   }
