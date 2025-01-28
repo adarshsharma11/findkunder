@@ -1,31 +1,60 @@
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
-import FormHelperText from '@mui/material/FormHelperText';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import FormControl from '@mui/material/FormControl';
-import { Controller, useFormContext } from "react-hook-form";
+import LoadingButton from "@mui/lab/LoadingButton";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import FormHelperText from "@mui/material/FormHelperText";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import FormControl from "@mui/material/FormControl";
+import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 function UpdateProfile(props) {
-  const { isAdmin, product, isAddProfile, locations, productId } = props;
+  const { handleUpdateProfile, productId, loading, isProfilePage } = props;
   const methods = useFormContext();
-  const { control, formState } = methods;
-  const { errors } = formState;
+  const { control, formState, getValues } = methods;
+  const { errors, isDirty } = formState;
+  const [snackbarOpen, setSnackbarOpen] = useState(true);
+
+  const watchedFields = useWatch({ control }); // Watch all form fields
+  const initialValues = JSON.stringify(getValues()); // Initial form state
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  const handleNavigateAway = () => {
+    if (JSON.stringify(watchedFields) !== initialValues) {
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
+
+  const handleSaveChanges = () => {
+    setSnackbarOpen(false);
+    handleUpdateProfile();
+  };
+
   const roleOptions = [
-    {
-      value: "owner",
-      label: "Admin",
-    },
-    {
-      value: "user",
-      label: "Account owner",
-    },
+    { value: "owner", label: "Admin" },
+    { value: "user", label: "Account owner" },
   ];
 
   return (
     <div className="mt-8">
-         <Controller
+    { isProfilePage &&
+          <Controller
           name="role"
           control={control}
           render={({ field }) => (
@@ -58,8 +87,9 @@ function UpdateProfile(props) {
               }
               </FormControl>
             </>
-          )}
-        />
+        )}
+          />
+      }  
       <Controller
         name="first_name"
         control={control}
@@ -171,8 +201,37 @@ function UpdateProfile(props) {
           />
         )}
       />
-      
-       
+    {isProfilePage && 
+      <div className="flex justify-end">
+      <LoadingButton
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="primary"
+          loading={loading}
+          onClick={handleUpdateProfile}
+          startIcon={<FuseSvgIcon size={20}>heroicons-solid:bookmark</FuseSvgIcon>}
+        >
+             Update
+        </LoadingButton>
+      </div>
+    }
+      {/* <Snackbar
+        open={snackbarOpen}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={handleCloseSnackbar}
+        sx={{ top: '100px !important' }}
+        message="You have unsaved changes. Do you want to save them?"
+        action={
+          <>
+            <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
+              No
+            </Button>
+            <Button color="secondary" size="small" onClick={handleSaveChanges}>
+              Yes
+            </Button>
+          </>
+        }
+      /> */}
     </div>
   );
 }

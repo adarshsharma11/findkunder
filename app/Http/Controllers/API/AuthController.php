@@ -72,7 +72,7 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
         // Assign the "user" role to the new user
-        $role = Role::where('name', 'guest')->first();
+        $role = Role::where('name', 'owner')->first();
         $user->assignRole($role);
         $expirationTime = now()->addDay();
         $token = $user->createToken('auth-token', ['*'], $expirationTime)->accessToken->token;

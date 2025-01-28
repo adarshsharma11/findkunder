@@ -14,6 +14,9 @@ import { selectUser, updateUserData } from "app/store/userSlice";
 import AuthService from "../../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
 import authRoles from "../../../../auth/authRoles";
+import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
+import Slide from "@mui/material/Slide";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -45,6 +48,10 @@ function ProfileAppDetails() {
   const isOwner = user?.role === authRoles.owner[0];
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formChanged, setFormChanged] = useState(false);
+  const [initialFormValues, setInitialFormValues] = useState(null);
+  const [snackbarDismissed, setSnackbarDismissed] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
   const methods = useForm({
     mode: "onChange",
@@ -57,7 +64,35 @@ function ProfileAppDetails() {
     resolver: yupResolver(updateProfilePasswordSchema),
   });
   const { reset, watch, control, onChange, formState, setValue, handleSubmit } = methods;
+  const formValues = watch();
   const { handleSubmit: handleSubmitSecurity } = securityMethods;
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+    setSnackbarDismissed(true);
+  };
+
+  useEffect(() => {
+    if (initialFormValues) {
+      const isChanged = Object.keys(initialFormValues).some(
+        (key) => formValues[key] !== initialFormValues[key]
+      );
+      setFormChanged(isChanged);
+      if (isChanged && !snackbarOpen && !snackbarDismissed) {
+        setSnackbarOpen(true);
+      }
+    }
+  }, [formValues, initialFormValues, snackbarDismissed, snackbarOpen]);
+
+  useEffect(() => {
+    if (!formChanged) {
+      const delay = setTimeout(() => {
+        setSnackbarDismissed(false);
+      }, 5000);
+      return () => clearTimeout(delay);
+    }
+  }, [formChanged]);
+
 
    useEffect(() => {
       if (user?.data) {
@@ -65,15 +100,22 @@ function ProfileAppDetails() {
         const nameParts = fullName.trim().split(" ");
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
-        setValue("role", user.role);
-        setValue("company", user.data.company);
-        setValue("cvr", user.data.cvr);
-        setValue("telephone", user.data.telephone);
-        setValue("first_name", firstName);
-        setValue("last_name", lastName);
-        setValue("email", user.data.email);
+        const initialValues = {
+          role: user.role,
+          company: user.data.company,
+          cvr: user.data.cvr,
+          telephone: user.data.telephone,
+          first_name: firstName,
+          last_name: lastName,
+          email: user.data.email,
+        };
+        setInitialFormValues(initialValues); // Set initial form values
+        reset(initialValues); // Reset form to initial values
+        setFormChanged(false); // Reset form change detection
+        setSnackbarOpen(false); // Close Snackbar
+        setSnackbarDismissed(false); 
       }
-    }, [user, setValue]);
+    }, [user, reset]);
 
 
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -155,15 +197,52 @@ const handleSubmitSecurityProfile = async () => {
       });
   };
 
+  const handleConfirmSave = async () => {
+    setSnackbarOpen(false);
+    setSnackbarDismissed(false);
+    if (formChanged) {
+      await handleUpdateProfile(formValues);
+    }
+  };
+
   return (
     <Root
+    header={
+     <Snackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message="Are you sure you want to save changes?"
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        key={'top' + 'right'}
+        TransitionComponent={(props) => <Slide {...props} direction="down" />}
+        action={
+          <>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={handleConfirmSave}
+            >
+              Yes
+            </Button>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={handleSnackbarClose}
+            >
+              No
+            </Button>
+          </>
+        }
+      />
+    }
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-        <ProfileDetailTab user={user} isAdmin={isAdmin} isOwner={isOwner} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleSubmitProfile} handleSubmitSecurityProfile={handleSubmitSecurityProfile} loading={loading} loadingPassword={loadingPassword} methods={methods} securityMethods={securityMethods} />
+        <ProfileDetailTab user={user} isAdmin={isAdmin} isOwner={isOwner} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleSubmitProfile} handleSubmitSecurityProfile={handleSubmitSecurityProfile} loading={loading} loadingPassword={loadingPassword} methods={methods} securityMethods={securityMethods} />        
         </div>
       }
       scroll={isMobile ? "normal" : "page"}
-    />
+    >
+      </Root>
   );
 }
 

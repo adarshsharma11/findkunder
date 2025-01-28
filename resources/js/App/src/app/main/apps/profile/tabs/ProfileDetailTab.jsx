@@ -1,7 +1,5 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { LoadingButton } from "@mui/lab";
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { motion } from "framer-motion";
 import { FormProvider } from "react-hook-form";
 import DeleteAccountTab from "./DeleteAccountTab";
@@ -39,24 +37,12 @@ function ProfileDetailTab(props) {
         <div className="flex flex-col flex-1 md:ltr:pr-32 md:rtl:pl-32">
           <Card component={motion.div} variants={item} className="w-full mb-32">
             <CardContent className="px-32 py-24 w-full">
-            <FormProvider {...methods}> <UpdateProfile /> </FormProvider>
+            <FormProvider {...methods}> <UpdateProfile loading={loading} handleUpdateProfile={handleUpdateProfile} isProfilePage={true} /> </FormProvider>
             </CardContent>
           </Card>
         </div>
 
         <div className="flex flex-col md:w-320" >
-        <div className="w-3/4 mb-12">
-        <LoadingButton
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="primary"
-          loading={loading}
-          onClick={handleUpdateProfile}
-          startIcon={<FuseSvgIcon size={20}>heroicons-solid:bookmark</FuseSvgIcon>}
-        >
-             Update
-        </LoadingButton>
-        </div>
         <div className="w-3/4 mb-12">
         <FormProvider {...securityMethods}><UpdatePasswordTab handleUpdateProfile={handleSubmitSecurityProfile} loading={loadingPassword} /> </FormProvider>
         </div>
