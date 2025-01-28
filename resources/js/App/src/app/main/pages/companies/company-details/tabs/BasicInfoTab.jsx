@@ -143,7 +143,7 @@ function BasicInfoTab(props) {
             className="mt-8 mb-16"
             id="description"
             multiline
-            rows={5}
+            rows={11}
             error={!!errors.description}
             helperText={errors?.description?.message}
             label="Description"

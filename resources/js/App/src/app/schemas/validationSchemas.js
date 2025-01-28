@@ -5,9 +5,6 @@ import * as yup from "yup";
  */
 
 export const updateAccountProfileSchema = yup.object().shape({
-  role: yup.string()
-    .required("Role is required")
-    .oneOf(["owner", "user"], "Invalid role selection"),
   first_name: yup.string()
     .required("First name is required")
     .min(2, "First name must be at least 2 characters")
