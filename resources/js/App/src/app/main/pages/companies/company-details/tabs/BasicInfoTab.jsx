@@ -1,5 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
+import Grid from "@mui/material/Grid";
 import CompanyImageTab from "./CompanyImageTab";
 import { validateNumberInput } from '../../../../../schemas/validationRulesSchemas';
 
@@ -11,7 +12,9 @@ function BasicInfoTab(props) {
 
   return (
     <div>
-       {isAdmin && product?.user && (
+      <Grid container spacing={2}>
+      <Grid item xs={12} md={4}>
+      {isAdmin && product?.user && (
         <Controller
           name="user_email"
           control={control}
@@ -75,26 +78,9 @@ function BasicInfoTab(props) {
           />
         )}
       />
-      <CompanyImageTab />
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            id="description"
-            multiline
-            rows={5}
-            error={!!errors.description}
-            helperText={errors?.description?.message}
-            label="Description"
-            type="text"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-      />
+       <CompanyImageTab />
+      </Grid>
+      <Grid item xs={12} md={4}>
       <Controller
         name="website"
         control={control}
@@ -145,7 +131,30 @@ function BasicInfoTab(props) {
             fullWidth
           />
         )}
-      />    
+      />
+      </Grid>
+      <Grid item xs={12} md={4}>
+       <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            id="description"
+            multiline
+            rows={5}
+            error={!!errors.description}
+            helperText={errors?.description?.message}
+            label="Description"
+            type="text"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
+      </Grid>
+      </Grid>
     </div>
   );
 }
