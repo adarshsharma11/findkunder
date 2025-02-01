@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { styled } from "@mui/material/styles";
 import ProfileDetailTab from "../tabs/ProfileDetailTab";
@@ -14,9 +14,8 @@ import { selectUser, updateUserData } from "app/store/userSlice";
 import AuthService from "../../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
 import authRoles from "../../../../auth/authRoles";
-import Snackbar from "@mui/material/Snackbar";
-import Button from "@mui/material/Button";
-import Slide from "@mui/material/Slide";
+import history from '@history';
+import ProfileUpdatePromptDialog from "./ProfileUpdatePromptDialog";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -48,10 +47,6 @@ function ProfileAppDetails() {
   const isOwner = user?.role === authRoles.owner[0];
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [formChanged, setFormChanged] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState(null);
-  const [snackbarDismissed, setSnackbarDismissed] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
   const methods = useForm({
     mode: "onChange",
@@ -63,36 +58,77 @@ function ProfileAppDetails() {
     defaultValues: defaultSecurityValues,
     resolver: yupResolver(updateProfilePasswordSchema),
   });
-  const { reset, watch, control, onChange, formState, setValue, handleSubmit } = methods;
-  const formValues = watch();
+  const { reset, formState, handleSubmit } = methods;
+  const unblockRef = useRef(null);
+  const { isDirty } = formState;
   const { handleSubmit: handleSubmitSecurity } = securityMethods;
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setSnackbarDismissed(true);
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isDirty) {
+        const message = "You have unsaved changes. Are you sure you want to leave?";
+        e.preventDefault();
+        e.returnValue = message;
+        return message;
+      }
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    if (unblockRef.current) {
+      unblockRef.current();
+    }
+  
+    if (isDirty) {
+      unblockRef.current = history.block((tx) => {
+        setPendingNavigation(tx);
+        setShowPrompt(true);
+        return false;
+      });
+    } else {
+      unblockRef.current = null;
+    }
+  
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      if (unblockRef.current) {
+        unblockRef.current();
+        unblockRef.current = null;
+      }
+    };
+  }, [isDirty]);
+  
+  const handlePromptConfirm = async () => {
+    await handleSubmitProfile();
+    setShowPrompt(false);
+  
+    if (pendingNavigation) {
+      if (unblockRef.current) {
+        unblockRef.current();
+        unblockRef.current = null;
+      }
+  
+      history.push(pendingNavigation.location.pathname);
+      setPendingNavigation(null);
+    }
   };
 
-  useEffect(() => {
-    if (initialFormValues) {
-      const isChanged = Object.keys(initialFormValues).some(
-        (key) => formValues[key] !== initialFormValues[key]
-      );
-      setFormChanged(isChanged);
-      if (isChanged && !snackbarOpen && !snackbarDismissed) {
-        setSnackbarOpen(true);
-      }
+  const handlePromptCancel = () => {
+    setShowPrompt(false);
+    setPendingNavigation(null);
+    if (unblockRef.current) {
+      unblockRef.current();
+      unblockRef.current = null;
     }
-  }, [formValues, initialFormValues, snackbarDismissed, snackbarOpen]);
-
-  useEffect(() => {
-    if (!formChanged) {
-      const delay = setTimeout(() => {
-        setSnackbarDismissed(false);
-      }, 5000);
-      return () => clearTimeout(delay);
+  
+    if (pendingNavigation) {
+      history.push(pendingNavigation.location.pathname);
+    } else {
+      history.goBack();
     }
-  }, [formChanged]);
-
+  };
 
    useEffect(() => {
       if (user?.data) {
@@ -109,11 +145,7 @@ function ProfileAppDetails() {
           last_name: lastName,
           email: user.data.email,
         };
-        setInitialFormValues(initialValues); // Set initial form values
-        reset(initialValues); // Reset form to initial values
-        setFormChanged(false); // Reset form change detection
-        setSnackbarOpen(false); // Close Snackbar
-        setSnackbarDismissed(false); 
+        reset(initialValues);
       }
     }, [user, reset]);
 
@@ -197,52 +229,31 @@ const handleSubmitSecurityProfile = async () => {
       });
   };
 
-  const handleConfirmSave = async () => {
-    setSnackbarOpen(false);
-    setSnackbarDismissed(false);
-    if (formChanged) {
-      await handleUpdateProfile(formValues);
-    }
-  };
-
   return (
     <Root
-    header={
-     <Snackbar
-        open={snackbarOpen}
-        onClose={handleSnackbarClose}
-        message="Are you sure you want to save changes?"
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        key={'top' + 'right'}
-        TransitionComponent={(props) => <Slide {...props} direction="down" />}
-        action={
-          <>
-            <Button
-              color="secondary"
-              size="small"
-              onClick={handleConfirmSave}
-            >
-              Yes
-            </Button>
-            <Button
-              color="secondary"
-              size="small"
-              onClick={handleSnackbarClose}
-            >
-              No
-            </Button>
-          </>
-        }
-      />
-    }
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-        <ProfileDetailTab user={user} isAdmin={isAdmin} isOwner={isOwner} handleDeleteProfile={handleDeleteProfile} handleUpdateProfile={handleSubmitProfile} handleSubmitSecurityProfile={handleSubmitSecurityProfile} loading={loading} loadingPassword={loadingPassword} methods={methods} securityMethods={securityMethods} />        
+          <ProfileDetailTab 
+            user={user} 
+            isAdmin={isAdmin} 
+            isOwner={isOwner} 
+            handleDeleteProfile={handleDeleteProfile} 
+            handleUpdateProfile={handleSubmitProfile} 
+            handleSubmitSecurityProfile={handleSubmitSecurityProfile} 
+            loading={loading} 
+            loadingPassword={loadingPassword} 
+            methods={methods} 
+            securityMethods={securityMethods} 
+          />        
+          <ProfileUpdatePromptDialog 
+            open={showPrompt}
+            onConfirm={handlePromptConfirm}
+            onClose={handlePromptCancel}
+          />
         </div>
       }
       scroll={isMobile ? "normal" : "page"}
-    >
-      </Root>
+    />
   );
 }
 
