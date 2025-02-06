@@ -24,6 +24,7 @@ import {
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
+import LocationInfoTab from "./tabs/LocationInfoTab";
 import authRoles from "../../../../auth/authRoles";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
@@ -31,6 +32,7 @@ function Company(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
+  const { uuid } = user;
   const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
@@ -42,12 +44,13 @@ function Company(props) {
     defaultValues: {},
     resolver: yupResolver(companySchema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch } = methods;
   const form = watch();
+
+  const { productId } = routeParams;
 
   useDeepCompareEffect(() => {
     function updateProductState() {
-      const { productId } = routeParams;
 
       if (productId === "new") {
         /**
@@ -152,10 +155,14 @@ function Company(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
+              <Tab className="h-64" label="Locations" />
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab product={product} isAdmin={isAdmin}/>
+                <BasicInfoTab product={product} isAdmin={isAdmin} />
+              </div>
+              <div className={tabValue !== 1 ? "hidden" : ""}>
+                <LocationInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
               </div>
             </div>
           </>

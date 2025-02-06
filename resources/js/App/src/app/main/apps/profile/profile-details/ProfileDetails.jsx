@@ -66,16 +66,6 @@ function ProfileAppDetails() {
   const [pendingNavigation, setPendingNavigation] = useState(null);
 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (isDirty) {
-        const message = "You have unsaved changes. Are you sure you want to leave?";
-        e.preventDefault();
-        e.returnValue = message;
-        return message;
-      }
-    };
-  
-    window.addEventListener("beforeunload", handleBeforeUnload);
 
     if (unblockRef.current) {
       unblockRef.current();
@@ -87,12 +77,12 @@ function ProfileAppDetails() {
         setShowPrompt(true);
         return false;
       });
+      
     } else {
       unblockRef.current = null;
     }
   
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
       if (unblockRef.current) {
         unblockRef.current();
         unblockRef.current = null;
@@ -155,45 +145,52 @@ function ProfileAppDetails() {
 
   const handleUpdateProfile = async (values) => {
     try {
-      setLoading(true)
-      const is_profile_completed = 1;
-      const response = await AuthService.updateUserData(values, is_profile_completed);
-      const result = response?.data;
+      setLoading(true);
+      const response = await AuthService.updateUserData(values, 1);
+      const { data: result } = response;
 
-      if (!result.status && result.errors) {
+      if (!result?.status && result?.errors) {
         dispatch(showMessage({ message: result.errors, variant: 'error' }));
         return false;
       }
 
       const userInfo = result?.user;
-      if (userInfo) {
-        const newUser = {
-          uuid: userInfo.id,
-          from: "custom-db",
-          role: response.data.role,
-          data: {
-            displayName: userInfo.name,
-            email: userInfo.email,
-            totalCompanies: userInfo.companies_count,
-            totalProfiles: userInfo.customers_count,
-            totalContactPersons: userInfo.contact_person_count,
-            company: userInfo.company,
-            cvr: userInfo.cvr,
-            telephone: userInfo.telephone,
-            is_profile_completed: userInfo.is_profile_completed,
-            settings: {},
-            shortcuts: [],
-          },
-        };
-        dispatch(updateUserData(newUser));
-        dispatch(showMessage({ message: "Profile updated successfully!", variant: 'success'}));
-        return true;
-      }
+      if (!userInfo) return false;
+
+      const newUser = {
+        uuid: userInfo.id,
+        from: "custom-db",
+        role: response.data.role,
+        data: {
+          displayName: userInfo.name,
+          email: userInfo.email,
+          totalCompanies: userInfo.companies_count,
+          totalProfiles: userInfo.customers_count, 
+          totalContactPersons: userInfo.contact_person_count,
+          company: userInfo.company,
+          cvr: userInfo.cvr,
+          telephone: userInfo.telephone,
+          is_profile_completed: userInfo.is_profile_completed,
+          settings: {},
+          shortcuts: []
+        }
+      };
+
+      dispatch(updateUserData(newUser));
+      dispatch(showMessage({ 
+        message: "Profile updated successfully!", 
+        variant: 'success'
+      }));
+      return true;
+
     } catch (error) {
-      dispatch(showMessage({ message: "Failed to update profile.", variant: "error" }));
+      dispatch(showMessage({ 
+        message: "Failed to update profile.", 
+        variant: "error" 
+      }));
       return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -208,8 +205,8 @@ const handleSubmitSecurityProfile = async () => {
         setLoadingPassword(true);
         await handleUpdateProfile(values);
         setLoadingPassword(false);
-        })();
-    };
+    })();
+};
     
   const handleDeleteProfile = () => {
     AuthService.deleteProfile()

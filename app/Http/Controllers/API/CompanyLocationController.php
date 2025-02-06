@@ -17,12 +17,23 @@ class CompanyLocationController extends Controller
     {
         $user = Auth::user();
         $userId = $request->input('userId');
-        if ($user->role === 'admin') {
-            $locations = CompanyLocation::with('company')->withCount('contactPersons')->get();
+        $companyId = $request->input('companyId');
+        if ($companyId) {
+            $locations = CompanyLocation::where('company_id', $companyId)
+                ->with('company')
+                ->withCount('contactPersons')
+                ->get();
+        } else if ($user->role === 'admin') {
+            $locations = CompanyLocation::with('company')
+                ->withCount('contactPersons')
+                ->get();
         } else {
             $userId = $request->input('userId');
             $companies = Company::where('user_id', $userId)->pluck('id');
-            $locations = CompanyLocation::whereIn('company_id', $companies)->with('company')->withCount('contactPersons')->get();
+            $locations = CompanyLocation::whereIn('company_id', $companies)
+                ->with('company')
+                ->withCount('contactPersons')
+                ->get();
         }
         return response()->json($locations);
     }    

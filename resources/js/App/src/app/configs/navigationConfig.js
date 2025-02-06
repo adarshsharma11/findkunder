@@ -67,13 +67,13 @@ const navigationConfig = [
         icon: "material-outline:account_balance",
         url: "/companies",
       },
-      {
-        id: "apps.locations",
-        title: "Locations",
-        type: "item",
-        icon: "heroicons-outline:location-marker",
-        url: "/locations",
-      },
+      // {
+      //   id: "apps.locations",
+      //   title: "Locations",
+      //   type: "item",
+      //   icon: "heroicons-outline:location-marker",
+      //   url: "/locations",
+      // },
       {
         id: "apps.persons",
         title: "Contacts",

@@ -75,7 +75,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/locations"
+            to="/companies/new"
             color="inherit"
           >
             <FuseSvgIcon size={20}>
