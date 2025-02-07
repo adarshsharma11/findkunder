@@ -155,13 +155,12 @@ function Company(props) {
               classes={{ root: "w-full h-64 border-b-1" }}
             >
               <Tab className="h-64" label="Basic Info" />
-              <Tab className="h-64" label="Locations" />
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab product={product} isAdmin={isAdmin} />
               </div>
-              <div className={tabValue !== 1 ? "hidden" : ""}>
+              <div className="mt-16">
                 <LocationInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
               </div>
             </div>
