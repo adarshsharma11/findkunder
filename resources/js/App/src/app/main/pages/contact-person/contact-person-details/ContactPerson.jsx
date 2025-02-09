@@ -62,7 +62,7 @@ function Contact(props) {
   });
   const { reset, watch, control, onChange, formState, setValue } = methods;
   const form = watch();
-  const { productId, locationId } = routeParams;
+  const { productId, locationId, companyId } = routeParams;
 
   useDeepCompareEffect(() => {
     function updateProductState() {
@@ -111,7 +111,11 @@ function Contact(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getLocations(userId && userId)).then((action) => {
+    const params = {
+      userId: userId && userId,
+      companyId: companyId && companyId,
+  }
+    dispatch(getLocations(params)).then((action) => {
       if (action.payload) {
           setLocations(action.payload);
       }
