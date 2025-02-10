@@ -31,7 +31,7 @@ function ProductHeader(props) {
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
           dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
-          navigate("/locations");
+          navigate("/companies");
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
