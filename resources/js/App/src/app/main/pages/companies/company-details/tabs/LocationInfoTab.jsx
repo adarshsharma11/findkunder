@@ -27,7 +27,7 @@ function LocationInfoTab(props) {
             </FuseSvgIcon>
         }
         >
-            Add New
+            Add Location
         </Button>
        </div>
       <LocationsTable userId={userId} productId={productId} {...props} />
