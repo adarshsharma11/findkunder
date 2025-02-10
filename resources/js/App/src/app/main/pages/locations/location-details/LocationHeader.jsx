@@ -54,7 +54,7 @@ function ProductHeader(props) {
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload?.message }));
-      navigate("/locations");
+      navigate("/companies");
     });
   }
 
