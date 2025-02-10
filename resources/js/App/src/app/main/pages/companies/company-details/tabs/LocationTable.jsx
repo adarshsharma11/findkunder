@@ -132,20 +132,6 @@ function LocationsTable(props) {
     );
   }
 
-  if (data.length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.1 } }}
-        className="flex flex-1 items-center justify-center h-full"
-      >
-        <Typography color="text.secondary" variant="h5">
-          There are no locations!
-        </Typography>
-      </motion.div>
-    );
-  }
-
   return (
     <div className="w-full flex flex-col min-h-full">
       <FuseScrollbars className="grow overflow-x-auto">
