@@ -15,7 +15,7 @@ import {
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id } = props;
+  const { id, companyId } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -31,7 +31,7 @@ function ProductHeader(props) {
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
           dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
-          navigate("/companies");
+          navigate(`/companies/${companyId}`);
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
@@ -54,7 +54,7 @@ function ProductHeader(props) {
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload?.message }));
-      navigate("/companies");
+      navigate(`/companies/${companyId}`);
     });
   }
 
@@ -75,7 +75,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/companies/new"
+            to={`/companies/${companyId}`}
             color="inherit"
           >
             <FuseSvgIcon size={20}>

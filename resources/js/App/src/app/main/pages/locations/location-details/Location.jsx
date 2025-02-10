@@ -186,7 +186,7 @@ function Company(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} />}
+        header={<ProductHeader id={routeParams?.productId} companyId={companyId} />}
         content={
           <>
             <Tabs
