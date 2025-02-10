@@ -148,28 +148,6 @@ function LocationsTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full">
-        <div className="flex justify-end mb-16">
-        <Button
-        className="whitespace-nowrap"
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => {
-          if (productId !== 'new') {
-            navigate(`/locations/new/${productId}`)
-          } else {
-            navigate('/locations/new')
-          }
-        }}
-        startIcon={
-            <FuseSvgIcon size={20}>
-            heroicons-solid:external-link
-            </FuseSvgIcon>
-        }
-        >
-            Add New
-        </Button>
-       </div>
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
           <LocationsTableHead
