@@ -44,7 +44,11 @@ function ContactPersonTable(props) {
   });
 
   useEffect(() => {
-    dispatch(getProducts()).then(() => setLoading(false));
+    const params = {
+      userId: undefined,
+      locationId: undefined,
+    }
+    dispatch(getProducts(params)).then(() => setLoading(false));
   }, [dispatch]);
 
   useEffect(() => {

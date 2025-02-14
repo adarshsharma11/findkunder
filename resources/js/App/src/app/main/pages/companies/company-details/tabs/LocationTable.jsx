@@ -6,9 +6,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -88,7 +86,7 @@ function LocationsTable(props) {
   }
 
   function handleClick(item) {
-    navigate(`/locations/${item.id}`);
+    navigate(`/locations/${item.id}/${productId}`);
   }
 
 

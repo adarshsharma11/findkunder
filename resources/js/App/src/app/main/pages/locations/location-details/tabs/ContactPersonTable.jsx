@@ -33,6 +33,7 @@ function ContactPersonTable(props) {
   const [page, setPage] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
+  const { userId, productId } = props;
   const [dialogContent, setDialogContent] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
@@ -41,7 +42,11 @@ function ContactPersonTable(props) {
   });
 
   useEffect(() => {
-    dispatch(getProducts()).then((response) => {
+    const params = {
+        userId: userId && userId,
+        locationId: productId && productId,
+    }
+    dispatch(getProducts(params)).then((response) => {
       setProducts(response.payload);
       setLoading(false);
     });

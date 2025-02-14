@@ -17,22 +17,26 @@ class ContactPersonController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $userId = $request->userId;
-        if ($userId) {
-            $reqUser = User::find($userId);
-            if (!$reqUser) {
-                return response()->json(['error' => 'User not found'], 404);
-            }
-            $contactPersons = ContactPerson::with(['location', 'services', 'customerTypes'])->where('user_id', $userId)->get();
-            return response()->json($contactPersons);
+        $userId = $request->input('userId');
+        $locationId = $request->input('locationId');
+
+        if ($locationId) {
+            $contactPersons = ContactPerson::where('location_id', $locationId)
+                ->with(['location', 'services', 'customerTypes'])
+                ->get();
+        } else if ($user->role === 'admin') {
+            $contactPersons = ContactPerson::with(['location', 'services', 'customerTypes'])
+                ->get();
+        } else if ($userId) {
+            $contactPersons = ContactPerson::where('user_id', $userId)
+                ->with(['location', 'services', 'customerTypes'])
+                ->get();
         } else {
-            if ($user->hasRole('admin')) {
-                $contactPersons = ContactPerson::with(['location', 'services', 'customerTypes'])->get();
-            } else {
-                $contactPersons = $user->contact_person()->with(['location', 'services', 'customerTypes'])->get();
-            }
-            return response()->json($contactPersons);
+            $contactPersons = ContactPerson::where('user_id', $user->id)
+                ->with(['location', 'services', 'customerTypes'])
+                ->get();
         }
+        return response()->json($contactPersons);
     }
 
     public function show($id)
