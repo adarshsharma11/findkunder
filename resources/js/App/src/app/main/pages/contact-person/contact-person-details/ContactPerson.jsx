@@ -214,7 +214,7 @@ function Contact(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} />}
+        header={<ProductHeader id={routeParams?.productId} companyId={companyId} locationId={locationId}/>}
         content={
           <>
             <Tabs

@@ -25,6 +25,7 @@ import { getCompanies } from "../../companies/store/companiesSlice";
 import reducer from "../store";
 import ProductHeader from "./LocationHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
+import ContactInfoTab from "./tabs/ContactInfoTab";
 import authRoles from "../../../../auth/authRoles";
 import { locationSchema } from "../../../../schemas/validationSchemas";
 
@@ -39,6 +40,7 @@ function Company(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
+  const { uuid } = user;
   const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
@@ -200,9 +202,12 @@ function Company(props) {
             >
               <Tab className="h-64" label="Basic Info" />
             </Tabs>
-            <div className="p-16 sm:p-24 max-w-3xl">
+            <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
                 <BasicInfoTab product={product} isAdmin={isAdmin} companies={companies}/>
+              </div>
+              <div className="mt-16">
+                <ContactInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
               </div>
             </div>
           </>

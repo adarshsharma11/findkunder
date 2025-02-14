@@ -15,7 +15,7 @@ import {
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id } = props;
+  const { id, companyId, locationId } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -28,7 +28,7 @@ function ProductHeader(props) {
   function handleSaveProduct() {
     dispatch(addNewPerson(getValues())).then(() => {
       dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
-      navigate("/contact-person");
+      navigate(`/locations/${locationId}`);
     }).catch((err) => {
       console.error("Error saving contact person:", err);
       dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
@@ -38,7 +38,7 @@ function ProductHeader(props) {
   function handleRemoveProduct() {
     dispatch(removeProduct(id)).then(({ payload }) => {
       dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
-      navigate("/contact-person");
+      navigate(`/locations/${locationId}`);
     });
   }
 
@@ -64,7 +64,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/contact-person"
+            to={`/locations/${locationId}`}
             color="inherit"
           >
             <FuseSvgIcon size={20}>
