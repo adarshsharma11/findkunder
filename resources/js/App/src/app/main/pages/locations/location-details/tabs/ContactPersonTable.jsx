@@ -6,9 +6,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
@@ -137,20 +135,6 @@ function ContactPersonTable(props) {
       <div className="flex items-center justify-center h-full">
         <FuseLoading />
       </div>
-    );
-  }
-
-  if (data.length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.1 } }}
-        className="flex flex-1 items-center justify-center h-full"
-      >
-        <Typography color="text.secondary" variant="h5">
-          There are no contact persons!
-        </Typography>
-      </motion.div>
     );
   }
 
