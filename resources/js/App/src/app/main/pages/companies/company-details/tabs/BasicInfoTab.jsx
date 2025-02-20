@@ -108,7 +108,7 @@ function BasicInfoTab(props) {
             id="linkedin"
             label="Linkedin"
             error={!!errors.linkedin}
-            helperText={errors?.linkedin?.message}
+            helperText={errors?.linkedin?.message || "Please copy and paste the full URL, e.g., https://www.linkedin.com/company/findnetvaerket/"}
             type="text"
             variant="outlined"
             fullWidth
@@ -125,7 +125,7 @@ function BasicInfoTab(props) {
             id="facebook"
             label="Facebook"
             error={!!errors.facebook}
-            helperText={errors?.facebook?.message}
+            helperText={errors?.facebook?.message || "Please copy and paste the full URL, e.g., https://www.facebook.com/findnetvaerket/"}
             type="text"
             variant="outlined"
             fullWidth

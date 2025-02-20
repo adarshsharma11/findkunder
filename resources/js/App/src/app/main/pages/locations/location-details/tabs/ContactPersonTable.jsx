@@ -12,6 +12,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useEffect, useState } from "react";
 
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import FuseLoading from "@fuse/core/FuseLoading";
 import ViewDescriptionDialog from "../../../../../shared-components/view-description-dialog";
 import {
@@ -21,6 +22,7 @@ import ContactPersonTableHead from "./ContactPersonTableHead";
 
 function ContactPersonTable(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation("contactPerson");
 
   const [loading, setLoading] = useState(true);
@@ -90,7 +92,7 @@ function ContactPersonTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/contact-person/${item.id}`);
+    navigate(`/contact-person/${item.id}/${productId}`);
   }
 
   function handleCheck(event, id) {
