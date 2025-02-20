@@ -84,7 +84,7 @@ function BasicInfoTab(props) {
         render={({ field }) => (
           <>
           <FormControl sx={{ width: '100%'}}  error={!!errors.title}>
-            <InputLabel id="title">Select Title</InputLabel>
+            <InputLabel id="title">Select Title *</InputLabel>
             <Select
               {...field}
               value={field.value || ""}
@@ -97,7 +97,7 @@ function BasicInfoTab(props) {
               labelId="title"
               variant="outlined"
               fullWidth
-              input={<OutlinedInput label="Select Title"/>}
+              input={<OutlinedInput label="Select Title *"/>}
               inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="" disabled>
@@ -123,7 +123,7 @@ function BasicInfoTab(props) {
         render={({ field }) => (
           <>
             <FormControl sx={{ width: '100%'}}  error={!!errors.location_id}>
-            <InputLabel id="location_id">Select Location</InputLabel>
+            <InputLabel id="location_id">Select Location *</InputLabel>
             <Select
               {...field}
               value={field.value || ""}
@@ -135,7 +135,7 @@ function BasicInfoTab(props) {
               labelId="location_id"
               id="location_id"
               variant="outlined"
-              input={<OutlinedInput label="Select Location"/>}
+              input={<OutlinedInput label="Select Location *"/>}
               fullWidth
               inputProps={{ 'aria-label': 'Without label' }}
             >
@@ -332,7 +332,7 @@ function BasicInfoTab(props) {
             className="mt-8 mb-16"
             id={linkedInFieldName}
             error={!isAddProfile ? !!errors.linkedin : !!errors.contactLinkedin}
-            helperText={!isAddProfile ? errors?.linkedin?.message : errors?.contactLinkedin?.message}
+            helperText={(!isAddProfile ? errors?.linkedin?.message : errors?.contactLinkedin?.message) || "Please copy and paste the full URL, e.g., https://www.linkedin.com/in/mikiipsen/"}
             label="Linkedin"
             type="text"
             variant="outlined"
