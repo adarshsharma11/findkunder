@@ -64,7 +64,6 @@ export const selectNavigation = createSelector(
         if ( item.children && item.children[0].id === 'apps.profiles' && userRole === 'user') {
           item.children[0].title = 'My Profiles';
           item.children[1].title = 'My Companies';
-          item.children[2].title = 'My Contacts';
         }
 
         if ( item.id === 'apps.leads'  && userRole === 'user') {

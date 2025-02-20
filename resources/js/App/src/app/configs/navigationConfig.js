@@ -74,13 +74,13 @@ const navigationConfig = [
       //   icon: "heroicons-outline:location-marker",
       //   url: "/locations",
       // },
-      {
-        id: "apps.persons",
-        title: "Contacts",
-        type: "item",
-        icon: "heroicons-outline:user-circle",
-        url: "/contact-person",
-      },
+      // {
+      //   id: "apps.persons",
+      //   title: "Contacts",
+      //   type: "item",
+      //   icon: "heroicons-outline:user-circle",
+      //   url: "/contact-person",
+      // },
     ],
   },
   {
