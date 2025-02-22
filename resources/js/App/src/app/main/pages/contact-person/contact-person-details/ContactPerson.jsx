@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import {
@@ -19,6 +20,7 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
+  removeProduct,
 } from "../store/contactPersonSlice";
 import reducer from "../store";
 import ProductHeader from "./ContactPersonHeader";
@@ -29,7 +31,8 @@ import { getProducts as getContactTypes } from "../../customer-types/store/custo
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import { getLocations } from "../../locations/store/locationsSlice";
 import { contactSchema } from "../../../../schemas/validationSchemas";
-
+import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
+import { showMessage } from "app/store/fuse/messageSlice";
 const defaultValues = {
   location_id: '',
   title: '',
@@ -50,11 +53,13 @@ function Contact(props) {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [locations, setLocations] = useState(false);
   const [categories, setCategories] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const [contactTypes, setContactTypes] = useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
@@ -145,6 +150,21 @@ function Contact(props) {
     }
   }, [locationId, locations]);
 
+  function handleDeleteConfirmation() {
+    dispatch(removeProduct(productId)).then(({ payload }) => {
+      if (payload) {
+        dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
+        if (payload.status) {
+          navigate(`/locations/${locationId}`);
+        }
+      }
+    });
+  }
+
+  function toggleDeleteConfirmation() {
+    setOpenDeleteConfirmation(!openDeleteConfirmation);
+  }
+
   /**
    * Tab Change
    */
@@ -214,7 +234,7 @@ function Contact(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} companyId={companyId} locationId={locationId}/>}
+        header={<ProductHeader id={routeParams?.productId} companyId={companyId} locationId={locationId} toggleDeleteConfirmation={toggleDeleteConfirmation} />}
         content={
           <>
             <Tabs
@@ -236,6 +256,12 @@ function Contact(props) {
           </>
         }
         scroll={isMobile ? "normal" : "content"}
+      />
+      <DeleteConfirmationDialog
+        open={openDeleteConfirmation}
+        onClose={toggleDeleteConfirmation}
+        onConfirm={handleDeleteConfirmation}
+        message="Are you sure you want to delete the contact? This action will permanently delete the contact. This cannot be undone."
       />
     </FormProvider>
   );

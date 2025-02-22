@@ -9,7 +9,7 @@ import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,6 +20,7 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
+  removeProduct,
 } from "../store/locationSlice";
 import { getCompanies } from "../../companies/store/companiesSlice";
 import reducer from "../store";
@@ -28,7 +29,8 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
 import ContactInfoTab from "./tabs/ContactInfoTab";
 import authRoles from "../../../../auth/authRoles";
 import { locationSchema } from "../../../../schemas/validationSchemas";
-
+import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
+import { showMessage } from "app/store/fuse/messageSlice";
 const defaultValues = {
   company_id: '',
   street: '',
@@ -36,17 +38,19 @@ const defaultValues = {
   city: '',
 }
 
-function Company(props) {
+function Location(props) {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
   const { uuid } = user;
   const isAdmin = user?.role === authRoles.admin[0];
+  const navigate = useNavigate();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [companies, setCompanies] = useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
@@ -125,6 +129,21 @@ function Company(props) {
     setTabValue(value);
   }
 
+  function toggleDeleteConfirmation() {
+    setOpenDeleteConfirmation(!openDeleteConfirmation);
+  }
+
+  function handleDeleteConfirmation() {
+    dispatch(removeProduct(productId)).then(({ payload }) => {
+      if (payload) {
+        dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, })); 
+        if (payload.status) {
+          navigate(`/companies/${companyId}`);
+        }
+      }
+    });
+  }
+
   /**
    * Show Message if the requested products is not exists
    */
@@ -188,7 +207,7 @@ function Company(props) {
   return (
     <FormProvider {...methods}>
       <FusePageCarded
-        header={<ProductHeader id={routeParams?.productId} companyId={companyId} />}
+        header={<ProductHeader id={routeParams?.productId} companyId={companyId} toggleDeleteConfirmation={toggleDeleteConfirmation} />}
         content={
           <>
             <Tabs
@@ -214,8 +233,14 @@ function Company(props) {
         }
         scroll={isMobile ? "normal" : "content"}
       />
+      <DeleteConfirmationDialog
+        open={openDeleteConfirmation}
+        onClose={toggleDeleteConfirmation}
+        onConfirm={handleDeleteConfirmation}
+        message="Are you sure you want to delete the location? This action will permanently delete the location. This cannot be undone."
+      />
     </FormProvider>
   );
 }
 
-export default withReducer("location", reducer)(Company);
+export default withReducer("location", reducer)(Location);

@@ -83,6 +83,6 @@ class CompanyLocationController extends Controller
     public function destroy(CompanyLocation $companyLocation)
     {
         $companyLocation->delete();
-        return response()->json(['message' => 'Location deleted successfully']);
+        return response()->json(['message' => 'Location deleted successfully', 'status' => true]);
     }
 }

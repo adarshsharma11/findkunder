@@ -8,14 +8,13 @@ import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
-  removeProduct,
   saveProduct,
   addNewCompany,
 } from "../store/locationSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, companyId } = props;
+  const { id, companyId, toggleDeleteConfirmation } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -50,14 +49,6 @@ function ProductHeader(props) {
       });
   }
   
-
-  function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload?.message }));
-      navigate(`/companies/${companyId}`);
-    });
-  }
-
   function handleUpdateProduct() {
     dispatch(saveProduct(getValues())).then(() => {
       dispatch(showMessage({ message: "Location updated successfully!" }));
@@ -139,7 +130,7 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
-          onClick={handleRemoveProduct}
+          onClick={toggleDeleteConfirmation}
           disabled={id === "new"}
           startIcon={
             <FuseSvgIcon className="hidden sm:flex">

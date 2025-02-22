@@ -8,14 +8,13 @@ import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
-  removeProduct,
   saveProduct,
   addNewPerson,
 } from "../store/contactPersonSlice";
 import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id, companyId, locationId } = props;
+  const { id, companyId, locationId, toggleDeleteConfirmation } = props;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -32,13 +31,6 @@ function ProductHeader(props) {
     }).catch((err) => {
       console.error("Error saving contact person:", err);
       dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
-    });
-  }
-
-  function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
-      navigate(`/locations/${locationId}`);
     });
   }
 
@@ -129,7 +121,7 @@ function ProductHeader(props) {
           variant="contained"
           color="secondary"
           disabled={id === "new"}
-          onClick={handleRemoveProduct}
+          onClick={toggleDeleteConfirmation}
           startIcon={
             <FuseSvgIcon className="hidden sm:flex">
               heroicons-outline:trash
