@@ -82,7 +82,33 @@ class CompanyLocationController extends Controller
      */
     public function destroy(CompanyLocation $companyLocation)
     {
-        $companyLocation->delete();
-        return response()->json(['message' => 'Location deleted successfully', 'status' => true]);
+        try {
+            // First check if any contact persons have associated customers
+            $contactPersonsWithCustomers = $companyLocation->contactPersons()
+                ->whereHas('customers')
+                ->exists();
+
+            if ($contactPersonsWithCustomers) {
+                return response()->json([
+                    'message' => 'Cannot delete location - some contact persons have associated customers. Please remove customer associations first.',
+                    'status' => false
+                ], 201);
+            }
+
+            $companyLocation->contactPersons()->delete();
+
+            $companyLocation->delete();
+            
+            return response()->json([
+                'message' => 'Location and related contacts deleted successfully',
+                'status' => true
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete location: ' . $e->getMessage(),
+                'status' => false
+            ], 500);
+        }
     }
 }
