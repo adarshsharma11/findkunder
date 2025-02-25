@@ -30,6 +30,10 @@ const ContactPersonConfig = {
       element: <ContactPerson />,
     },
     {
+      path: "contact-person/:productId/:locationId/:companyId/*",
+      element: <ContactPerson />,
+    },
+    {
       path: "contact-person/:productId/*",
       element: <ContactPerson />,
     },

@@ -15,8 +15,8 @@ import AuthService from "../../../../auth/services/AuthService";
 import { showMessage } from "app/store/fuse/messageSlice";
 import authRoles from "../../../../auth/authRoles";
 import history from '@history';
-import ProfileUpdatePromptDialog from "./ProfileUpdatePromptDialog";
-
+import SaveChangesDialog from "../../../../shared-components/save-changes-dialog";
+import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
     backgroundColor: theme.palette.background.paper,
@@ -62,63 +62,19 @@ function ProfileAppDetails() {
   const unblockRef = useRef(null);
   const { isDirty } = formState;
   const { handleSubmit: handleSubmitSecurity } = securityMethods;
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [pendingNavigation, setPendingNavigation] = useState(null);
 
-  useEffect(() => {
-
-    if (unblockRef.current) {
-      unblockRef.current();
-    }
-  
-    if (isDirty) {
-      unblockRef.current = history.block((tx) => {
-        setPendingNavigation(tx);
-        setShowPrompt(true);
-        return false;
-      });
-      
-    } else {
-      unblockRef.current = null;
-    }
-  
-    return () => {
-      if (unblockRef.current) {
-        unblockRef.current();
-        unblockRef.current = null;
-      }
+  const handleSubmitProfile = async () => {
+    handleSubmit(async (values) => {
+        await handleUpdateProfile(values);
+        })();
     };
-  }, [isDirty]);
-  
-  const handlePromptConfirm = async () => {
-    await handleSubmitProfile();
-    setShowPrompt(false);
-  
-    if (pendingNavigation) {
-      if (unblockRef.current) {
-        unblockRef.current();
-        unblockRef.current = null;
-      }
-  
-      history.push(pendingNavigation.location.pathname);
-      setPendingNavigation(null);
-    }
-  };
 
-  const handlePromptCancel = () => {
-    setShowPrompt(false);
-    setPendingNavigation(null);
-    if (unblockRef.current) {
-      unblockRef.current();
-      unblockRef.current = null;
-    }
-  
-    if (pendingNavigation) {
-      history.push(pendingNavigation.location.pathname);
-    } else {
-      history.goBack();
-    }
-  };
+  const { handlePromptConfirm, handlePromptCancel, showPrompt } = useNavigationPrompt({
+    isDirty,
+    onSubmit: handleSubmitProfile,
+    history,
+    unblockRef,
+  });
 
    useEffect(() => {
       if (user?.data) {
@@ -194,12 +150,6 @@ function ProfileAppDetails() {
     }
   };
 
-const handleSubmitProfile = async () => {
-handleSubmit(async (values) => {
-    await handleUpdateProfile(values);
-    })();
-};
-
 const handleSubmitSecurityProfile = async () => {
     handleSubmitSecurity(async (values) => {
         setLoadingPassword(true);
@@ -242,7 +192,7 @@ const handleSubmitSecurityProfile = async () => {
             methods={methods} 
             securityMethods={securityMethods} 
           />        
-          <ProfileUpdatePromptDialog 
+          <SaveChangesDialog 
             open={showPrompt}
             onConfirm={handlePromptConfirm}
             onClose={handlePromptCancel}

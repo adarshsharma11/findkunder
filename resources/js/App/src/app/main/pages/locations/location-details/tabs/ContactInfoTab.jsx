@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ContactPersonTable from "./ContactPersonTable";
 
 function ContactInfoTab(props) {
-  const { userId, productId } = props;
+  const { userId, productId, companyId, locationId } = props;
   const navigate = useNavigate();
   return (
     <div>
@@ -16,9 +16,9 @@ function ContactInfoTab(props) {
         size="small"
         onClick={() => {
           if (productId !== 'new') {
-            navigate(`/contact-person/new/${productId}`)
+            navigate(`/contact-person/new/${productId}/${locationId}/${companyId}`)
           } else {
-            navigate('/contact-person/new')
+            navigate(`/contact-person/${productId}/${companyId}`)
           }
         }}
         startIcon={

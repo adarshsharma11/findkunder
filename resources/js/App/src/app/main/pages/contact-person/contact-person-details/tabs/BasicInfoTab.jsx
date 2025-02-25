@@ -9,17 +9,21 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import Button from "@mui/material/Button";
+import { motion } from "framer-motion";
+import _ from "lodash";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Controller, useFormContext } from "react-hook-form";
 import ContactImageTab from "./ContactImageTab";
 
 function BasicInfoTab(props) {
-  const { isAdmin, product, isAddProfile, locations, categories, contactTypes } = props;
+  const { isAdmin, product, isAddProfile, locations, categories, contactTypes, toggleDeleteConfirmation, handleSaveProduct, handleUpdateProduct, id } = props;
   const methods = useFormContext();
   const { t } = useTranslation("contactPerson");
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]); 
   const [selectedCustomerTypes, setSelectedCutomerTypes] = useState([]);
   const { control, formState, setValue } = methods;
-  const { errors } = formState;
+  const { errors, dirtyFields, isValid } = formState;
   const linkedInFieldName = isAddProfile ? "contactLinkedin" : "linkedin";
   const titleOptions = [
     {
@@ -339,7 +343,36 @@ function BasicInfoTab(props) {
             fullWidth
           />
         )}
-      />    
+      />
+       <motion.div
+        className="flex flex-row justify-end"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
+      >
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          disabled={id === "new"}
+          onClick={toggleDeleteConfirmation}
+          startIcon={
+            <FuseSvgIcon className="hidden sm:flex">
+              heroicons-outline:trash
+            </FuseSvgIcon>
+          }
+        >
+          Remove
+        </Button>
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          disabled={_.isEmpty(dirtyFields) || !isValid}
+          onClick={id !== "new" ? handleUpdateProduct : handleSaveProduct}
+        >
+          {id !== "new" ? "Update" : "Save"}
+        </Button>
+      </motion.div>    
     </div>
   );
 }

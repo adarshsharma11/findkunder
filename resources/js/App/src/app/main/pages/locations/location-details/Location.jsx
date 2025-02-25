@@ -226,7 +226,7 @@ function Location(props) {
                 <BasicInfoTab product={product} isAdmin={isAdmin} companies={companies}/>
               </div>
               <div className="mt-16">
-                <ContactInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
+                <ContactInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} companyId={companyId} locationId={routeParams?.locationId} />
               </div>
             </div>
           </>

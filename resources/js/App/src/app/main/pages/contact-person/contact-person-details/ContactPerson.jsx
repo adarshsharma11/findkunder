@@ -7,7 +7,7 @@ import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import _ from "@lodash";
@@ -21,6 +21,8 @@ import {
   resetProduct,
   selectProduct,
   removeProduct,
+  addNewPerson,
+  saveProduct,
 } from "../store/contactPersonSlice";
 import reducer from "../store";
 import ProductHeader from "./ContactPersonHeader";
@@ -32,7 +34,10 @@ import BasicInfoTab from "./tabs/BasicInfoTab";
 import { getLocations } from "../../locations/store/locationsSlice";
 import { contactSchema } from "../../../../schemas/validationSchemas";
 import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
+import SaveChangesDialog from "../../../../shared-components/save-changes-dialog";
+import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 import { showMessage } from "app/store/fuse/messageSlice";
+import history from '@history';
 const defaultValues = {
   location_id: '',
   title: '',
@@ -53,6 +58,7 @@ function Contact(props) {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
+
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [locations, setLocations] = useState(false);
@@ -60,14 +66,65 @@ function Contact(props) {
   const [noProduct, setNoProduct] = useState(false);
   const [contactTypes, setContactTypes] = useState(false);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
+  const unblockRef = useRef(null);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(contactSchema),
   });
-  const { reset, watch, control, onChange, formState, setValue } = methods;
+  const { reset, watch, control, onChange, formState, setValue, getValues } = methods;
   const form = watch();
   const { productId, locationId, companyId } = routeParams;
+
+
+  function handleSaveProduct() {
+    dispatch(addNewPerson(getValues())).then(() => {
+      dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
+      navigate(`/locations/${locationId}`);
+    }).catch((err) => {
+      console.error("Error saving contact person:", err);
+      dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
+    });
+  }
+
+  function handleUpdateProduct() {
+    dispatch(saveProduct(getValues())).then(() => {
+      dispatch(
+        showMessage({ message: "Contact person updated successfully!", variant: 'success' })
+      );
+    }).catch((err) => {
+      console.error("Error updating contact person:", err);
+      dispatch(showMessage({ message: "Failed to update contact person. Please try again.", variant: "error" }));
+    });
+  }
+
+  const handleSubmitProfile = async () => {
+    if (productId === "new") {
+      const isValid = await methods.trigger();
+      if (!isValid) {
+        dispatch(showMessage({ message: "Please fill in all required fields correctly", variant: "error" }));
+        return;
+      }
+      try {
+        await handleSaveProduct();
+      } catch (error) {
+        console.error("Error in handleSubmitProfile:", error);
+        dispatch(showMessage({ 
+          message: "An unexpected error occurred. Please try again.", 
+          variant: "error" 
+        }));
+      }
+    } else {
+      handleUpdateProduct();
+    }
+  };
+
+  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
+    isDirty: formState.isDirty,
+    onSubmit: handleSubmitProfile,
+    history,
+    unblockRef,
+  }); 
 
   useDeepCompareEffect(() => {
     function updateProductState() {
@@ -250,7 +307,7 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab isAdmin={isAdmin} product={product} locations={locations} categories={categories} contactTypes={contactTypes} />
+                <BasicInfoTab id={routeParams?.productId} isAdmin={isAdmin} product={product} locations={locations} categories={categories} contactTypes={contactTypes} toggleDeleteConfirmation={toggleDeleteConfirmation} handleSaveProduct={handleSaveProduct} handleUpdateProduct={handleUpdateProduct} />
               </div>
             </div>
           </>
@@ -262,6 +319,11 @@ function Contact(props) {
         onClose={toggleDeleteConfirmation}
         onConfirm={handleDeleteConfirmation}
         message="Are you sure you want to delete the contact? This action will permanently delete the contact. This cannot be undone."
+      />
+      <SaveChangesDialog
+        open={showPrompt}
+        onClose={handlePromptCancel}
+        onConfirm={handlePromptConfirm}
       />
     </FormProvider>
   );
