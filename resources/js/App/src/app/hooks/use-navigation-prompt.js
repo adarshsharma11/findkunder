@@ -48,12 +48,6 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
       unblockRef.current();
       unblockRef.current = null;
     }
-
-    if (pendingNavigation) {
-      history.push(pendingNavigation.location.pathname);
-    } else {
-      history.goBack();
-    }
   };
 
   return { showPrompt, pendingNavigation, handlePromptConfirm, handlePromptCancel };

@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FusePageCarded from "@fuse/core/FusePageCarded";
 import { useDeepCompareEffect } from "@fuse/hooks";
@@ -13,6 +14,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import history from '@history';
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import { selectUser } from "../../../../store/userSlice";
 import {
@@ -21,6 +23,8 @@ import {
   resetProduct,
   selectProduct,
   removeProduct,
+  saveProduct,
+  addNewCompany,
 } from "../store/locationSlice";
 import { getCompanies } from "../../companies/store/companiesSlice";
 import reducer from "../store";
@@ -31,6 +35,8 @@ import authRoles from "../../../../auth/authRoles";
 import { locationSchema } from "../../../../schemas/validationSchemas";
 import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
 import { showMessage } from "app/store/fuse/messageSlice";
+import SaveChangesDialog from "../../../../shared-components/save-changes-dialog";
+import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 const defaultValues = {
   company_id: '',
   street: '',
@@ -44,6 +50,7 @@ function Location(props) {
   const user = useSelector(selectUser);
   const { uuid } = user;
   const isAdmin = user?.role === authRoles.admin[0];
+  const unblockRef = useRef(null);
   const navigate = useNavigate();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
@@ -57,7 +64,7 @@ function Location(props) {
     defaultValues,
     resolver: yupResolver(locationSchema),
   });
-  const { reset, watch, control, onChange, formState, setValue } = methods;
+  const { reset, watch, control, onChange, formState, setValue, getValues } = methods;
   const form = watch();
   const { productId, companyId } = routeParams;
 
@@ -122,6 +129,62 @@ function Location(props) {
      }
   }, [companyId, companies]);
 
+  function handleSaveProduct() {
+    const formData = getValues();
+    dispatch(addNewCompany(formData))
+      .then((response) => {
+        if (response.meta.requestStatus === 'fulfilled') {
+          dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
+          navigate(`/companies/${companyId}`);
+        } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
+          const errors = response.payload?.errors || response.error?.data?.errors;
+          if (errors) {
+            // Loop through the errors and show a message for each field
+            for (const [field, messages] of Object.entries(errors)) {
+              dispatch(showMessage({ message: `Error in ${field}: ${messages.join(', ')}`, variant: 'error' }));
+            }
+          } else {
+            dispatch(showMessage({ message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.", variant: 'error' }));
+          }
+        }
+      })
+      .catch((error) => {
+        // Handle any other errors
+        dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
+      });
+  }
+  
+  function handleUpdateProduct() {
+    dispatch(saveProduct(getValues())).then(() => {
+      dispatch(showMessage({ message: "Location updated successfully!" }));
+    });
+  }
+  const handleSubmitProfile = async () => {
+    if (productId === "new") {
+      const isValid = await methods.trigger();
+      if (!isValid) {
+        dispatch(showMessage({ message: "Please fill in all required fields correctly", variant: "error" }));
+        return;
+      }
+      try {
+        await handleSaveProduct();
+      } catch (error) {
+        console.error("Error in handleSubmitProfile:", error);
+        dispatch(showMessage({ 
+          message: "An unexpected error occurred. Please try again.", 
+          variant: "error" 
+        }));
+      }
+    } else {
+      handleUpdateProduct();
+    }
+  };
+  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
+    isDirty: formState.isDirty,
+    onSubmit: handleSubmitProfile,
+    history,
+    unblockRef,
+  }); 
   /**
    * Tab Change
    */
@@ -143,6 +206,7 @@ function Location(props) {
       }
     });
   }
+
 
   /**
    * Show Message if the requested products is not exists
@@ -223,7 +287,7 @@ function Location(props) {
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab product={product} isAdmin={isAdmin} companies={companies}/>
+                <BasicInfoTab product={product} isAdmin={isAdmin} companies={companies} handleSaveProduct={handleSaveProduct} handleUpdateProduct={handleUpdateProduct} id={routeParams?.productId} toggleDeleteConfirmation={toggleDeleteConfirmation} />
               </div>
               <div className="mt-16">
                 <ContactInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} companyId={companyId} locationId={routeParams?.locationId} />
@@ -238,6 +302,11 @@ function Location(props) {
         onClose={toggleDeleteConfirmation}
         onConfirm={handleDeleteConfirmation}
         message="Ask Are you sure you want to delete the location? This action will permanently delete the location, its related contacts. This cannot be undone."
+      />
+        <SaveChangesDialog
+        open={showPrompt}
+        onClose={handlePromptCancel}
+        onConfirm={handlePromptConfirm}
       />
     </FormProvider>
   );
