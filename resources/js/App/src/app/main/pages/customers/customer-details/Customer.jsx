@@ -37,7 +37,7 @@ function Customer(props) {
   const user = useSelector(selectUser);
   const isAdmin = user?.role === "admin";
   const product = useSelector(selectProduct);
-  const { uuid: userId} = user;
+  const { uuid: userId } = user;
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();

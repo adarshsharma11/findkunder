@@ -28,12 +28,7 @@ class CompanyLocationController extends Controller
                 ->withCount('contactPersons')
                 ->get();
         } else {
-            $userId = $request->input('userId');
-            $companies = Company::where('user_id', $userId)->pluck('id');
-            $locations = CompanyLocation::whereIn('company_id', $companies)
-                ->with('company')
-                ->withCount('contactPersons')
-                ->get();
+            return response()->json([]);
         }
         return response()->json($locations);
     }    
