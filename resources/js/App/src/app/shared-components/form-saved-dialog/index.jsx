@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-function SaveChangesDialog({ open, onClose, onConfirm }) {
+function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to add one or contacts to the location.", title = "Location Saved", buttonText = "Add contact(s)" }) {
  
   const handleConfirm = () => {
     onConfirm();
@@ -18,20 +18,20 @@ function SaveChangesDialog({ open, onClose, onConfirm }) {
       onClose={onClose}
       aria-labelledby="update-confirmation-dialog-title"
     >
-      <DialogTitle>Update Confirmation</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <p className="mb-8">Do you want to save the changes?</p>
+        <p className="mb-8">{description}</p>
       </DialogContent>
       <DialogActions>
         <Button color="secondary" onClick={onClose}>
-          No
+          I will do it later
         </Button>
         <Button color="secondary" variant="contained" onClick={handleConfirm}>
-          Yes
+          {buttonText}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export default SaveChangesDialog;
+export default FormSavedDialog;

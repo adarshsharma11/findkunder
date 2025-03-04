@@ -35,8 +35,6 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
         unblockRef.current();
         unblockRef.current = null;
       }
-
-      history.push(pendingNavigation.location.pathname);
       setPendingNavigation(null);
     }
   };
@@ -47,6 +45,11 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
     if (unblockRef.current) {
       unblockRef.current();
       unblockRef.current = null;
+    }
+    if (pendingNavigation) {
+      history.push(pendingNavigation.location.pathname);
+    } else {
+      history.goBack();
     }
   };
 

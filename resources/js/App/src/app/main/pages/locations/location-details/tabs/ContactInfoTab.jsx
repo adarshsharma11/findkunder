@@ -18,7 +18,7 @@ function ContactInfoTab(props) {
           if (productId !== 'new') {
             navigate(`/contact-person/new/${productId}/${locationId}/${companyId}`)
           } else {
-            navigate(`/contact-person/${productId}/${companyId}`)
+            navigate(`/contact-person/${productId}/${companyId}/${companyId}`)
           }
         }}
         startIcon={

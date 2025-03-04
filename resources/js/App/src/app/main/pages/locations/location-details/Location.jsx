@@ -36,6 +36,7 @@ import { locationSchema } from "../../../../schemas/validationSchemas";
 import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
 import { showMessage } from "app/store/fuse/messageSlice";
 import SaveChangesDialog from "../../../../shared-components/save-changes-dialog";
+import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
 import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 const defaultValues = {
   company_id: '',
@@ -59,6 +60,7 @@ function Location(props) {
   const [companies, setCompanies] = useState(false);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
+  const [openFormSavedDialog, setOpenFormSavedDialog] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
@@ -134,8 +136,10 @@ function Location(props) {
     dispatch(addNewCompany(formData))
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
-          navigate(`/companies/${companyId}`);
+          dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));          
+          setTimeout(() => {
+            setOpenFormSavedDialog(true);
+          }, 1000);
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
@@ -153,6 +157,16 @@ function Location(props) {
         dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
       });
   }
+
+  function handleCloseFormSavedDialog() {
+    setOpenFormSavedDialog(false);
+    navigate(`/companies/${companyId}`);
+  }
+
+  function handleAddContacts() {
+    setOpenFormSavedDialog(false);
+    navigate(`/contact-person/new/${productId}/${companyId}/${companyId}`);
+  }
   
   function handleUpdateProduct() {
     dispatch(saveProduct(getValues())).then(() => {
@@ -163,24 +177,13 @@ function Location(props) {
     if (productId === "new") {
       const isValid = await methods.trigger();
       if (!isValid) {
-        dispatch(showMessage({ message: "Please fill in all required fields correctly", variant: "error" }));
-        return;
+        return false;
       }
-      try {
-        await handleSaveProduct();
-      } catch (error) {
-        console.error("Error in handleSubmitProfile:", error);
-        dispatch(showMessage({ 
-          message: "An unexpected error occurred. Please try again.", 
-          variant: "error" 
-        }));
-      }
-    } else {
-      handleUpdateProduct();
     }
+    return true;
   };
   const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty: formState.isDirty,
+    isDirty: (getValues().street || getValues().postal_code || getValues().city) && !openFormSavedDialog,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
@@ -307,6 +310,11 @@ function Location(props) {
         open={showPrompt}
         onClose={handlePromptCancel}
         onConfirm={handlePromptConfirm}
+      />
+      <FormSavedDialog
+        open={openFormSavedDialog}
+        onClose={handleCloseFormSavedDialog}
+        onConfirm={handleAddContacts}
       />
     </FormProvider>
   );
