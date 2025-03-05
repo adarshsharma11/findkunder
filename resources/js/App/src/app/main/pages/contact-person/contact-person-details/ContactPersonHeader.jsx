@@ -26,7 +26,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to={id === 'new' ? `/locations/${id}/${locationId}` : `/locations/${locationId}`}
+            to={`/locations/${locationId}/${companyId}`}
             color="inherit"
           >
             <FuseSvgIcon size={20}>

@@ -183,11 +183,11 @@ function Location(props) {
     return true;
   };
   const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty: (getValues().street || getValues().postal_code || getValues().city) && !openFormSavedDialog,
+    isDirty: methods.formState.isDirty && !openFormSavedDialog,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
-  }); 
+  });
   /**
    * Tab Change
    */
@@ -304,7 +304,7 @@ function Location(props) {
         open={openDeleteConfirmation}
         onClose={toggleDeleteConfirmation}
         onConfirm={handleDeleteConfirmation}
-        message="Ask Are you sure you want to delete the location? This action will permanently delete the location, its related contacts. This cannot be undone."
+        message="Are you sure you want to delete the location? This action will permanently delete the location, its related contacts. This cannot be undone."
       />
         <SaveChangesDialog
         open={showPrompt}

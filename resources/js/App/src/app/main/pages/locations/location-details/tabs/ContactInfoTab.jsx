@@ -16,9 +16,9 @@ function ContactInfoTab(props) {
         size="small"
         onClick={() => {
           if (productId !== 'new') {
-            navigate(`/contact-person/new/${productId}/${locationId}/${companyId}`)
+            navigate(`/contact-person/new/${productId}/${companyId}`)
           } else {
-            navigate(`/contact-person/${productId}/${companyId}/${companyId}`)
+            navigate(`/contact-person/new`)
           }
         }}
         startIcon={

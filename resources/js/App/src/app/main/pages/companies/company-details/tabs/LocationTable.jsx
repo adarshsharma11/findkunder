@@ -91,7 +91,7 @@ function LocationsTable(props) {
 
 
   function handleAddContact(item) {
-    navigate(`/contact-person/new/${item.id}`);
+    navigate(`/contact-person/new/${item.id}/${productId}`);
   }
 
   function handleCheck(event, id) {
