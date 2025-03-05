@@ -168,7 +168,7 @@ function BasicInfoTab(props) {
             </FuseSvgIcon>
           }
         >
-          Remove
+          Delete
         </Button>
         <Button
           className="whitespace-nowrap mx-4"
