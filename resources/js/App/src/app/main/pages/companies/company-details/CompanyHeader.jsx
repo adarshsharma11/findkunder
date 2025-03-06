@@ -1,68 +1,17 @@
-import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import _ from "@lodash";
+import { Link } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import {
-  removeProduct,
-  saveProduct,
-  addNewCompany,
-} from "../store/companySlice";
-import { showMessage } from "app/store/fuse/messageSlice";
 
 function ProductHeader(props) {
-  const { id } = props;
-  const dispatch = useDispatch();
   const methods = useFormContext();
-  const { formState, watch, getValues } = methods;
-  const { isValid, dirtyFields } = formState;
+  const { watch } = methods;
+
   const image = watch("image");
   const name = watch("company_name");
   const theme = useTheme();
-  const navigate = useNavigate();
-
-  function handleSaveProduct() {
-    const formData = getValues();
-    dispatch(addNewCompany(formData))
-      .then((response) => {
-        if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
-          navigate("/companies");
-        } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
-          const errors = response.payload?.errors || response.error?.data?.errors;
-          if (errors) {
-            // Loop through the errors and show a message for each field
-            for (const [field, messages] of Object.entries(errors)) {
-              dispatch(showMessage({ message: `Error in ${field}: ${messages.join(', ')}`, variant: 'error' }));
-            }
-          } else {
-            dispatch(showMessage({ message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.", variant: 'error' }));
-          }
-        }
-      })
-      .catch((error) => {
-        // Handle any other errors
-        dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
-      });
-  }
-  
-
-  function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload?.message }));
-      navigate("/companies");
-    });
-  }
-
-  function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Company updated successfully!" }));
-    });
-  }
 
   return (
     <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
@@ -130,35 +79,6 @@ function ProductHeader(props) {
           </motion.div>
         </div>
       </div>
-      <motion.div
-        className="flex"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
-      >
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          onClick={handleRemoveProduct}
-          disabled={id === "new"}
-          startIcon={
-            <FuseSvgIcon className="hidden sm:flex">
-              heroicons-outline:trash
-            </FuseSvgIcon>
-          }
-        >
-          Remove
-        </Button>
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          disabled={_.isEmpty(dirtyFields) || !isValid}
-          onClick={id !== "new" ? handleUpdateProduct : handleSaveProduct}
-        >
-          {id !== "new" ? "Update" : "Save"}
-        </Button>
-      </motion.div>
     </div>
   );
 }

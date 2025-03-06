@@ -2,13 +2,19 @@ import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
 import Grid from "@mui/material/Grid";
 import CompanyImageTab from "./CompanyImageTab";
+import { motion } from "framer-motion";
+import Button from "@mui/material/Button";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import _ from "lodash";
 import { validateNumberInput } from '../../../../../schemas/validationRulesSchemas';
 
 function BasicInfoTab(props) {
-  const { product, isAdmin } = props;
+  const { product, isAdmin, handleRemoveProduct, handleUpdateProduct, handleSaveProduct, id } = props;
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
+  const dirtyFields = formState.dirtyFields;
+  const isValid = formState.isValid;
 
   return (
     <div>
@@ -155,6 +161,35 @@ function BasicInfoTab(props) {
       />
       </Grid>
       </Grid>
+      <motion.div
+        className="flex justify-end"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
+      >
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          onClick={handleRemoveProduct}
+          disabled={id === "new"}
+          startIcon={
+            <FuseSvgIcon className="hidden sm:flex">
+              heroicons-outline:trash
+            </FuseSvgIcon>
+          }
+        >
+          Delete
+        </Button>
+        <Button
+          className="whitespace-nowrap mx-4"
+          variant="contained"
+          color="secondary"
+          disabled={_.isEmpty(dirtyFields) || !isValid}
+          onClick={id !== "new" ? handleUpdateProduct : handleSaveProduct}
+        >
+          {id !== "new" ? "Update" : "Save"}
+        </Button>
+      </motion.div>
     </div>
   );
 }

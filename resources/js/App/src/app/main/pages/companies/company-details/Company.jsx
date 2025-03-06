@@ -21,6 +21,9 @@ import {
   newProduct,
   resetProduct,
   selectProduct,
+  addNewCompany,
+  removeProduct,
+  saveProduct,
 } from "../store/companySlice";
 import reducer from "../store";
 import ProductHeader from "./CompanyHeader";
@@ -30,6 +33,9 @@ import authRoles from "../../../../auth/authRoles";
 import SaveChangesDialog from "app/shared-components/save-changes-dialog";
 import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 import history from "@history";
+import { showMessage } from "app/store/fuse/messageSlice";
+import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
+import { useNavigate } from "react-router-dom";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
@@ -37,19 +43,21 @@ function Company(props) {
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
   const { uuid } = user;
+  const navigate = useNavigate();
   const isAdmin = user?.role === authRoles.admin[0];
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
   const unblockRef = useRef(null);
   const [tabValue, setTabValue] = useState(0);
+  const [formSaved, setFormSaved] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
     resolver: yupResolver(companySchema),
   });
-  const { reset, watch } = methods;
+  const { reset, watch, getValues } = methods;
   const form = watch();
 
   const { productId } = routeParams;
@@ -116,6 +124,55 @@ function Company(props) {
     }
     return true;
   };
+
+  function handleSaveProduct() {
+    const formData = getValues();
+    dispatch(addNewCompany(formData))
+      .then((response) => {
+        if (response.meta.requestStatus === 'fulfilled') {
+          dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
+          setFormSaved(true);
+        } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
+          const errors = response.payload?.errors || response.error?.data?.errors;
+          if (errors) {
+            // Loop through the errors and show a message for each field
+            for (const [field, messages] of Object.entries(errors)) {
+              dispatch(showMessage({ message: `Error in ${field}: ${messages.join(', ')}`, variant: 'error' }));
+            }
+          } else {
+            dispatch(showMessage({ message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.", variant: 'error' }));
+          }
+        }
+      })
+      .catch((error) => {
+        // Handle any other errors
+        dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
+      });
+  }
+
+  function handleCloseFormSavedDialog() {
+    setFormSaved(false);
+    navigate(`/companies`);
+  }
+
+  function handleAddLocation() {
+    setFormSaved(false);
+    navigate(`/locations/new`);
+  }
+  
+
+  function handleRemoveProduct() {
+    dispatch(removeProduct(id)).then(({ payload }) => {
+      dispatch(showMessage({ message: payload?.message }));
+      navigate("/companies");
+    });
+  }
+
+  function handleUpdateProduct() {
+    dispatch(saveProduct(getValues())).then(() => {
+      dispatch(showMessage({ message: "Company updated successfully!" }));
+    });
+  }
 
   const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_name || methods.formState.dirtyFields?.cvr : methods.formState.isDirty;
 
@@ -184,7 +241,7 @@ function Company(props) {
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab product={product} isAdmin={isAdmin} />
+                <BasicInfoTab product={product} isAdmin={isAdmin} id={productId} handleRemoveProduct={handleRemoveProduct} handleUpdateProduct={handleUpdateProduct} handleSaveProduct={handleSaveProduct} />
               </div>
               <div className="mt-16">
                 <LocationInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
@@ -195,6 +252,7 @@ function Company(props) {
         scroll={isMobile ? "normal" : "content"}
       />
       <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={handlePromptConfirm} />
+      <FormSavedDialog open={formSaved} onClose={handleCloseFormSavedDialog} onConfirm={handleAddLocation} title="Company Saved" description="Remember to add one or more locations." buttonText="Add Location(s)" />
     </FormProvider>
   );
 }
