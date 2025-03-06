@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FusePageCarded from "@fuse/core/FusePageCarded";
 import { useDeepCompareEffect } from "@fuse/hooks";
@@ -26,6 +27,9 @@ import ProductHeader from "./CompanyHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import LocationInfoTab from "./tabs/LocationInfoTab";
 import authRoles from "../../../../auth/authRoles";
+import SaveChangesDialog from "app/shared-components/save-changes-dialog";
+import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
+import history from "@history";
 import { companySchema } from "../../../../schemas/validationSchemas";
 
 function Company(props) {
@@ -37,6 +41,7 @@ function Company(props) {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
 
   const routeParams = useParams();
+  const unblockRef = useRef(null);
   const [tabValue, setTabValue] = useState(0);
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
@@ -101,6 +106,27 @@ function Company(props) {
   function handleTabChange(event, value) {
     setTabValue(value);
   }
+
+  const handleSubmitProfile = async () => {
+    if (productId === "new") {
+      const isValid = await methods.trigger();
+      if (!isValid) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_name || methods.formState.dirtyFields?.cvr : methods.formState.isDirty;
+
+  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
+    isDirty,
+    onSubmit: handleSubmitProfile,
+    history,
+    unblockRef,
+  });
+
+
 
   /**
    * Show Message if the requested products is not exists
@@ -168,6 +194,7 @@ function Company(props) {
         }
         scroll={isMobile ? "normal" : "content"}
       />
+      <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={handlePromptConfirm} />
     </FormProvider>
   );
 }

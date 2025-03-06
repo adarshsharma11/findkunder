@@ -182,8 +182,11 @@ function Location(props) {
     }
     return true;
   };
+
+  const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_id || methods.formState.dirtyFields?.street || methods.formState.dirtyFields?.postal_code || methods.formState.dirtyFields?.city : methods.formState.isDirty;
+
   const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty: methods.formState.isDirty && !openFormSavedDialog,
+    isDirty : isDirty && !openFormSavedDialog,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
