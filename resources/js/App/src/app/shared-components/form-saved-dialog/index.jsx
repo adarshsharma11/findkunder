@@ -1,11 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to add one or contacts to the location.", title = "Location Saved", buttonText = "Add contact(s)" }) {
+function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to add one or more contacts to the location.", title = "Location Saved", buttonText = "Add contact(s)" }) {
  
   const handleConfirm = () => {
     onConfirm();
@@ -35,3 +36,12 @@ function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to 
 }
 
 export default FormSavedDialog;
+
+FormSavedDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  description: PropTypes.string,
+  title: PropTypes.string,
+  buttonText: PropTypes.string,
+};

@@ -39,6 +39,10 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
     }
   };
 
+  const togglePrompt = () => {
+    setShowPrompt(!showPrompt);
+  };
+
   const handlePromptCancel = () => {
     setShowPrompt(false);
     setPendingNavigation(null);
@@ -53,5 +57,5 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
     }
   };
 
-  return { showPrompt, pendingNavigation, handlePromptConfirm, handlePromptCancel };
+  return { showPrompt, pendingNavigation, handlePromptConfirm, handlePromptCancel, togglePrompt };
 }

@@ -61,12 +61,14 @@ function Location(props) {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const [openFormSavedDialog, setOpenFormSavedDialog] = useState(false);
+  const [savedLocationId, setSavedLocationId] = useState(null);
   const methods = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(locationSchema),
   });
   const { reset, watch, control, onChange, formState, setValue, getValues } = methods;
+  const { errors, dirtyFields, isValid } = formState;
   const form = watch();
   const { productId, companyId } = routeParams;
 
@@ -136,7 +138,9 @@ function Location(props) {
     dispatch(addNewCompany(formData))
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));          
+          dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
+          setSavedLocationId(response.payload.id);
+          handlePromptConfirm();
           setTimeout(() => {
             setOpenFormSavedDialog(true);
           }, 1000);
@@ -165,7 +169,7 @@ function Location(props) {
 
   function handleAddContacts() {
     setOpenFormSavedDialog(false);
-    navigate(`/contact-person/new/${productId}/${companyId}/${companyId}`);
+    navigate(`/contact-person/new/${savedLocationId}/${companyId}`);
   }
   
   function handleUpdateProduct() {
@@ -185,8 +189,8 @@ function Location(props) {
 
   const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_id || methods.formState.dirtyFields?.street || methods.formState.dirtyFields?.postal_code || methods.formState.dirtyFields?.city : methods.formState.isDirty;
 
-  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty : isDirty && !openFormSavedDialog,
+  const { showPrompt, handlePromptConfirm, handlePromptCancel, togglePrompt } = useNavigationPrompt({
+    isDirty : isDirty && isValid && !openFormSavedDialog,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
@@ -312,7 +316,7 @@ function Location(props) {
         <SaveChangesDialog
         open={showPrompt}
         onClose={handlePromptCancel}
-        onConfirm={handlePromptConfirm}
+        onConfirm={togglePrompt}
       />
       <FormSavedDialog
         open={openFormSavedDialog}
