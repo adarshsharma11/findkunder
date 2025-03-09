@@ -130,16 +130,13 @@ class CompanyController extends Controller
     {
         $company = Company::find($id);
         if (!$company) {
-            return response()->json(['message' => 'Company not found'], 404);
-        }
-        if ($company->customers()->exists()) {
-            return response()->json(['message' => 'Cannot delete company with associated customers'], 201);
+            return response()->json(['message' => 'Company not found', 'status' => false], 201);
         }
         $imagePath = $company->image;
         $company->delete();
         if ($imagePath && File::exists(public_path($imagePath))) {
             File::delete(public_path($imagePath));
         }
-        return response()->json(['message' => 'Company deleted successfully']);
+        return response()->json(['message' => 'Company deleted successfully', 'status' => true]);
     }
 }

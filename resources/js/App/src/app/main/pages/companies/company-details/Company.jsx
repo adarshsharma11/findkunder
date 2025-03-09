@@ -37,6 +37,7 @@ import { showMessage } from "app/store/fuse/messageSlice";
 import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
 import { useNavigate } from "react-router-dom";
 import { companySchema } from "../../../../schemas/validationSchemas";
+import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
 
 function Company(props) {
   const dispatch = useDispatch();
@@ -52,12 +53,15 @@ function Company(props) {
   const [tabValue, setTabValue] = useState(0);
   const [formSaved, setFormSaved] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
+  const [savedCompanyId, setSavedCompanyId] = useState(null);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const methods = useForm({
     mode: "onChange",
     defaultValues: {},
     resolver: yupResolver(companySchema),
   });
-  const { reset, watch, getValues } = methods;
+  const { reset, watch, getValues, formState } = methods;
+  const { errors, dirtyFields, isValid } = formState;
   const form = watch();
 
   const { productId } = routeParams;
@@ -125,13 +129,21 @@ function Company(props) {
     return true;
   };
 
+  const toggleDeleteConfirmation = () => {
+    setOpenDeleteConfirmation(!openDeleteConfirmation);
+  }
+
   function handleSaveProduct() {
     const formData = getValues();
     dispatch(addNewCompany(formData))
       .then((response) => {
         if (response.meta.requestStatus === 'fulfilled') {
           dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
-          setFormSaved(true);
+          setSavedCompanyId(response.payload.id);
+          handlePromptConfirm();
+          setTimeout(() => {
+            setFormSaved(true);
+          }, 1000);
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
@@ -157,14 +169,16 @@ function Company(props) {
 
   function handleAddLocation() {
     setFormSaved(false);
-    navigate(`/locations/new`);
+    navigate(`/locations/new/${savedCompanyId}`);
   }
   
 
   function handleRemoveProduct() {
-    dispatch(removeProduct(id)).then(({ payload }) => {
-      dispatch(showMessage({ message: payload?.message }));
-      navigate("/companies");
+    dispatch(removeProduct(productId)).then(({ payload }) => {
+      dispatch(showMessage({ message: payload?.message, variant: payload?.status ? 'success' : 'error', autoHideDuration: 600000 }));
+      if (payload?.status) {
+        navigate("/companies");
+      }
     });
   }
 
@@ -176,8 +190,8 @@ function Company(props) {
 
   const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_name || methods.formState.dirtyFields?.cvr : methods.formState.isDirty;
 
-  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty,
+  const { showPrompt, handlePromptConfirm, handlePromptCancel, togglePrompt } = useNavigationPrompt({
+    isDirty : isDirty && isValid && !formSaved,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
@@ -241,7 +255,7 @@ function Company(props) {
             </Tabs>
             <div className="p-16 sm:p-24">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab product={product} isAdmin={isAdmin} id={productId} handleRemoveProduct={handleRemoveProduct} handleUpdateProduct={handleUpdateProduct} handleSaveProduct={handleSaveProduct} />
+                <BasicInfoTab product={product} isAdmin={isAdmin} id={productId} handleRemoveProduct={toggleDeleteConfirmation} handleUpdateProduct={handleUpdateProduct} handleSaveProduct={handleSaveProduct} />
               </div>
               <div className="mt-16">
                 <LocationInfoTab product={product} isAdmin={isAdmin} userId={uuid} productId={productId} />
@@ -251,8 +265,9 @@ function Company(props) {
         }
         scroll={isMobile ? "normal" : "content"}
       />
-      <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={handlePromptConfirm} />
+      <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={togglePrompt} />
       <FormSavedDialog open={formSaved} onClose={handleCloseFormSavedDialog} onConfirm={handleAddLocation} title="Company Saved" description="Remember to add one or more locations." buttonText="Add Location(s)" />
+      <DeleteConfirmationDialog open={openDeleteConfirmation} onClose={toggleDeleteConfirmation} onConfirm={handleRemoveProduct} message="Are you sure you want to delete the company? This action will permanently delete the company, its related locations and contacts. This cannot be undone."/>
     </FormProvider>
   );
 }
