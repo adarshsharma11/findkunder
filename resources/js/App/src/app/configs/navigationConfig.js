@@ -53,13 +53,13 @@ const navigationConfig = [
     type: "group",
     icon: "heroicons-outline:home",
     children: [
-      {
-        id: "apps.profiles",
-        title: "Profiles",
-        type: "item",
-        icon: "search",
-        url: "/profiles",
-      },
+      // {
+      //   id: "apps.profiles",
+      //   title: "Profiles",
+      //   type: "item",
+      //   icon: "search",
+      //   url: "/profiles",
+      // },
       {
         id: "apps.companies",
         title: "Companies",

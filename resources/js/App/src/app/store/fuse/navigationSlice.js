@@ -60,13 +60,13 @@ export const selectNavigation = createSelector(
         if (item.translate && item.title) {
           item.title = i18next.t(`navigation:${item.translate}`);
         }
+        console.log(item);
 
-        if ( item.children && item.children[0].id === 'apps.profiles' && userRole === 'user') {
-          item.children[0].title = 'My Profiles';
-          item.children[1].title = 'My Companies';
+        if ( item.children && item.children[0].id === 'apps.companies' && (userRole === 'user' || userRole === 'owner')) {
+          item.children[0].title = 'My Companies';
         }
 
-        if ( item.id === 'apps.leads'  && userRole === 'user') {
+        if ( item.id === 'apps.leads'  && (userRole === 'user' || userRole === 'owner')) {
           item.title = 'My Leads';
         }
 
