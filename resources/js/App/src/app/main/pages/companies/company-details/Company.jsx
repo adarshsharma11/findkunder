@@ -267,7 +267,7 @@ function Company(props) {
       />
       <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={togglePrompt} />
       <FormSavedDialog open={formSaved} onClose={handleCloseFormSavedDialog} onConfirm={handleAddLocation} title="Company Saved" description="Remember to add one or more locations." buttonText="Add Location(s)" />
-      <DeleteConfirmationDialog open={openDeleteConfirmation} onClose={toggleDeleteConfirmation} onConfirm={handleRemoveProduct} message="Are you sure you want to delete the company? This action will permanently delete the company, its related locations and contacts. This cannot be undone."/>
+      <DeleteConfirmationDialog open={openDeleteConfirmation} onClose={toggleDeleteConfirmation} onConfirm={handleRemoveProduct} title="Are you sure you want to delete the company ?" message="This action will permanently delete the company, its related locations and contacts. This cannot be undone."/>
     </FormProvider>
   );
 }

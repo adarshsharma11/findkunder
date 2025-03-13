@@ -318,7 +318,8 @@ function Contact(props) {
         open={openDeleteConfirmation}
         onClose={toggleDeleteConfirmation}
         onConfirm={handleDeleteConfirmation}
-        message="Are you sure you want to delete the contact? This action will permanently delete the contact. This cannot be undone."
+        title="Are you sure you want to delete the contact ?"
+        message="This action will permanently delete the contact. This cannot be undone."
       />
       <SaveChangesDialog
         open={showPrompt}

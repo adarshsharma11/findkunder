@@ -311,7 +311,8 @@ function Location(props) {
         open={openDeleteConfirmation}
         onClose={toggleDeleteConfirmation}
         onConfirm={handleDeleteConfirmation}
-        message="Are you sure you want to delete the location? This action will permanently delete the location, its related contacts. This cannot be undone."
+        title="Are you sure you want to delete the location ?"
+        message="This action will permanently delete the location, its related contacts. This cannot be undone."
       />
         <SaveChangesDialog
         open={showPrompt}

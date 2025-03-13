@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-function DeleteConfirmationDialog({ open, onClose, onConfirm, message }) {
+function DeleteConfirmationDialog({ open, onClose, onConfirm, message, title = 'Delete Confirmation' }) {
 
   const handleConfirm = () => {
     onConfirm();
@@ -20,7 +20,7 @@ function DeleteConfirmationDialog({ open, onClose, onConfirm, message }) {
       onClose={onClose}
       aria-labelledby="delete-confirmation-dialog-title"
     >
-      <DialogTitle>Delete Confirmation</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <p className="mb-8">{message}</p>
       </DialogContent>
@@ -43,4 +43,5 @@ DeleteConfirmationDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   message: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
