@@ -37,6 +37,7 @@ import DeleteConfirmationDialog from "../../../../shared-components/delete-confi
 import SaveChangesDialog from "../../../../shared-components/save-changes-dialog";
 import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 import { showMessage } from "app/store/fuse/messageSlice";
+import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
 import history from '@history';
 const defaultValues = {
   location_id: '',
@@ -65,6 +66,7 @@ function Contact(props) {
   const [categories, setCategories] = useState(false);
   const [noProduct, setNoProduct] = useState(false);
   const [contactTypes, setContactTypes] = useState(false);
+  const [formSaved, setFormSaved] = useState(false);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const unblockRef = useRef(null);
   const methods = useForm({
@@ -72,15 +74,20 @@ function Contact(props) {
     defaultValues,
     resolver: yupResolver(contactSchema),
   });
-  const { reset, watch, control, onChange, formState, setValue, getValues } = methods;
+  const { reset, watch, formState, setValue, getValues } = methods;
+  const { errors, dirtyFields, isValid } = formState;
   const form = watch();
   const { productId, locationId, companyId } = routeParams;
 
 
-  function handleSaveProduct() {
+  function handleSaveProduct(isAddAnother = false) {
     dispatch(addNewPerson(getValues())).then(() => {
       dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
-      navigate(`/locations/${locationId}`);
+      if (isAddAnother) {
+        reset({...defaultValues, location_id: locationId});
+      } else {
+        setFormSaved(true);
+      }
     }).catch((err) => {
       console.error("Error saving contact person:", err);
       dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
@@ -119,8 +126,12 @@ function Contact(props) {
     }
   };
 
+
+
+  const isDirty = productId === 'new' ? dirtyFields?.location_id || dirtyFields?.title || dirtyFields?.first_name || dirtyFields?.last_name || dirtyFields?.phone || dirtyFields?.email : formState.isDirty;
+
   const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty: formState.isDirty,
+    isDirty: isDirty && !openDeleteConfirmation && !formSaved && isValid,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
@@ -228,6 +239,20 @@ function Contact(props) {
   function handleTabChange(event, value) {
     setTabValue(value);
   }
+  
+  function handleAddContact() {
+    setFormSaved(false);
+  }
+
+  function handleAddLocation() {
+    setFormSaved(false);
+    navigate(`/locations/new/${companyId}`);
+  }
+
+  function handleDone() {
+    setFormSaved(false);
+    navigate(`/companies`);
+  }
 
   /**
    * Show Message if the requested products is not exists
@@ -325,6 +350,17 @@ function Contact(props) {
         open={showPrompt}
         onClose={handlePromptCancel}
         onConfirm={handlePromptConfirm}
+      />
+      <FormSavedDialog
+        open={formSaved}
+        onClose={handleDone}
+        onConfirm={handleAddContact}
+        title="Contact Person Saved"
+        description="What do you want to do now?"  
+        buttonText="Add more contacts to this location"
+        buttonText2="Add another location to this company"
+        handleButton2={handleAddLocation}
+        closeButtonText="I am done"
       />
     </FormProvider>
   );

@@ -33,7 +33,7 @@ function ContactPersonTable(props) {
   const [page, setPage] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const { userId, productId } = props;
+  const { userId, productId, companyId } = props;
   const [dialogContent, setDialogContent] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
@@ -92,7 +92,7 @@ function ContactPersonTable(props) {
   }
 
   function handleClick(item) {
-    navigate(`/contact-person/${item.id}/${productId}`);
+    navigate(`/contact-person/${item.id}/${productId}/${companyId}`);
   }
 
   function handleCheck(event, id) {

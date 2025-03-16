@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
-function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to add one or more contacts to the location.", title = "Location Saved", buttonText = "Add contact(s)" }) {
+function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to add one or more contacts to the location.", title = "Location Saved", buttonText = "Add contact(s)", closeButtonText = "I will do it later", buttonText2, handleButton2 }) {
  
   const handleConfirm = () => {
     onConfirm();
@@ -16,8 +16,14 @@ function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to 
     <Dialog
       open={open}
       fullWidth
+      maxWidth="md"
       onClose={onClose}
       aria-labelledby="update-confirmation-dialog-title"
+      PaperProps={{
+        style: {
+          maxWidth: '750px'
+        }
+      }}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
@@ -25,8 +31,13 @@ function FormSavedDialog({ open, onClose, onConfirm, description = "Remember to 
       </DialogContent>
       <DialogActions>
         <Button color="secondary" onClick={onClose}>
-          I will do it later
+          {closeButtonText}
         </Button>
+        {buttonText2 && (
+          <Button color="secondary" variant="contained" onClick={handleButton2}>
+            {buttonText2}
+          </Button>
+        )}
         <Button color="secondary" variant="contained" onClick={handleConfirm}>
           {buttonText}
         </Button>

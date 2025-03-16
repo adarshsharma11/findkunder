@@ -361,8 +361,21 @@ function BasicInfoTab(props) {
             </FuseSvgIcon>
           }
         >
-          Remove
+          Delete
         </Button>
+        {id === "new" && (
+          <Button
+            className="whitespace-nowrap mx-4"
+            variant="contained"
+            color="secondary"
+            disabled={_.isEmpty(dirtyFields) || !isValid}
+            onClick={() => {
+              handleSaveProduct(true); // Pass true to indicate "save and add another"
+            }}
+          >
+            Save & Add Another
+          </Button>
+        )}
         <Button
           className="whitespace-nowrap mx-4"
           variant="contained"
