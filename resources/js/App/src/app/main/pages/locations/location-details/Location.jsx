@@ -72,6 +72,24 @@ function Location(props) {
   const form = watch();
   const { productId, companyId } = routeParams;
 
+  // Define handleSubmitProfile before using it in useNavigationPrompt
+  const handleSubmitProfile = async () => {
+    if (productId === "new") {
+      // Trigger validation to show all field errors
+      const isValid = await methods.trigger();
+
+      // If form is valid and we have dirty fields, save the location
+      if (isValid && Object.keys(methods.formState.dirtyFields).length > 0) {
+        handleSaveProduct();
+        return true;
+      }
+
+      // Return false to keep the user on the page but still show validation errors
+      return false;
+    }
+    return true;
+  };
+
   useDeepCompareEffect(() => {
     function updateProductState() {
 
@@ -140,10 +158,7 @@ function Location(props) {
         if (response.meta.requestStatus === 'fulfilled') {
           dispatch(showMessage({ message: "Location added successfully!", variant: 'success' }));
           setSavedLocationId(response.payload.id);
-          handlePromptConfirm();
-          setTimeout(() => {
-            setOpenFormSavedDialog(true);
-          }, 1000);
+          setOpenFormSavedDialog(true);
         } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
           const errors = response.payload?.errors || response.error?.data?.errors;
           if (errors) {
@@ -171,26 +186,31 @@ function Location(props) {
     setOpenFormSavedDialog(false);
     navigate(`/contact-person/new/${savedLocationId}/${companyId}`);
   }
-  
-  function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Location updated successfully!" }));
-    });
-  }
-  const handleSubmitProfile = async () => {
-    if (productId === "new") {
-      const isValid = await methods.trigger();
-      if (!isValid) {
-        return false;
-      }
-    }
-    return true;
-  };
 
-  const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_id || methods.formState.dirtyFields?.street || methods.formState.dirtyFields?.postal_code || methods.formState.dirtyFields?.city : methods.formState.isDirty;
+  function handleUpdateProduct() {
+    const values = getValues();
+    dispatch(saveProduct(values))
+      .then(({ payload }) => {
+        if (payload) {
+          dispatch(showMessage({ message: "Location updated successfully!", variant: 'success' }));
+          navigate(`/companies/${companyId}`);
+        } else {
+          dispatch(showMessage({ message: "Failed to update location", variant: 'error' }));
+        }
+      })
+      .catch((error) => {
+        dispatch(showMessage({ message: `Update error: ${error.message}`, variant: 'error' }));
+      });
+  }
+  // handleSubmitProfile has been moved up before useNavigationPrompt
+
+  // Check if any field has been modified, regardless of validation status
+  const isDirty = productId === 'new'
+    ? Object.keys(methods.formState.dirtyFields).length > 0
+    : methods.formState.isDirty;
 
   const { showPrompt, handlePromptConfirm, handlePromptCancel, togglePrompt } = useNavigationPrompt({
-    isDirty : isDirty && isValid && !openFormSavedDialog,
+    isDirty: isDirty && !openFormSavedDialog,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
@@ -209,7 +229,7 @@ function Location(props) {
   function handleDeleteConfirmation() {
     dispatch(removeProduct(productId)).then(({ payload }) => {
       if (payload) {
-        dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, })); 
+        dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
         if (payload.status) {
           navigate(`/companies/${companyId}`);
         }

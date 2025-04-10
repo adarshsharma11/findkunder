@@ -10,7 +10,7 @@ import withReducer from "app/store/withReducer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -35,11 +35,10 @@ import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 import history from "@history";
 import { showMessage } from "app/store/fuse/messageSlice";
 import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
-import { useNavigate } from "react-router-dom";
 import { companySchema } from "../../../../schemas/validationSchemas";
 import DeleteConfirmationDialog from "../../../../shared-components/delete-confirmation-dialog";
 
-function Company(props) {
+function Company() {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const user = useSelector(selectUser);
@@ -60,8 +59,8 @@ function Company(props) {
     defaultValues: {},
     resolver: yupResolver(companySchema),
   });
-  const { reset, watch, getValues, formState } = methods;
-  const { errors, dirtyFields, isValid } = formState;
+  const { reset, watch, getValues } = methods;
+  // We don't need to destructure formState here as we access it through methods.formState
   const form = watch();
 
   const { productId } = routeParams;
@@ -115,50 +114,104 @@ function Company(props) {
   /**
    * Tab Change
    */
-  function handleTabChange(event, value) {
+  function handleTabChange(_, value) {
     setTabValue(value);
   }
-
   const handleSubmitProfile = async () => {
+    // Set isSaving to true to prevent navigation prompt
+    setIsSaving(true);
+
+    // Trigger validation to show all field errors
+    const isValid = await methods.trigger();
+
     if (productId === "new") {
-      const isValid = await methods.trigger();
-      if (!isValid) {
-        return false;
+      // If form is valid and we have dirty fields, save the company
+      if (isValid && Object.keys(methods.formState.dirtyFields).length > 0) {
+        handleSaveProduct();
+        return true;
       }
+      setIsSaving(false); // Reset isSaving if validation fails
+      return false;
+    } else {
+      // For existing products, update if valid and dirty
+      if (isValid && Object.keys(methods.formState.dirtyFields).length > 0) {
+        handleUpdateProduct();
+        return true;
+      }
+      // Even if not dirty, allow navigation away from existing product
+      return true;
     }
-    return true;
   };
 
   const toggleDeleteConfirmation = () => {
     setOpenDeleteConfirmation(!openDeleteConfirmation);
   }
 
+  // State for tracking save operation
+  const [isSaving, setIsSaving] = useState(false);
+
   function handleSaveProduct() {
+    // Prevent multiple submissions
+    if (isSaving) return;
+
+    // Set loading state
+    setIsSaving(true);
+
+    // Get form values
     const formData = getValues();
+
+    // Dispatch the addNewCompany action
     dispatch(addNewCompany(formData))
       .then((response) => {
+        // Check if the request was successful
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(showMessage({ message: "Company added successfully!", variant: 'success' }));
+          // Show success message
+          dispatch(showMessage({
+            message: "Company added successfully!",
+            variant: 'success',
+            autoHideDuration: 3000
+          }));
+
+          // Store the saved company ID for adding locations
           setSavedCompanyId(response.payload.id);
-          handlePromptConfirm();
-          setTimeout(() => {
-            setFormSaved(true);
-          }, 1000);
-        } else if (response.meta.requestStatus === 'rejected' && response.error && response.error.message === 'Request failed with status code 422') {
+
+          // Show the form saved dialog
+          setFormSaved(true);
+        } else if (response.meta.requestStatus === 'rejected') {
+          // Handle validation errors
           const errors = response.payload?.errors || response.error?.data?.errors;
+
           if (errors) {
             // Loop through the errors and show a message for each field
             for (const [field, messages] of Object.entries(errors)) {
-              dispatch(showMessage({ message: `Error in ${field}: ${messages.join(', ')}`, variant: 'error' }));
+              dispatch(showMessage({
+                message: `Error in ${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`,
+                variant: 'error',
+                autoHideDuration: 6000
+              }));
             }
           } else {
-            dispatch(showMessage({ message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.", variant: 'error' }));
+            // Show specific error message for duplicate company
+            dispatch(showMessage({
+              message: "The company details must be unique. At least one of the fields (name, cvr, street, postal_code, city) must be different from existing records.",
+              variant: 'error',
+              autoHideDuration: 6000
+            }));
           }
         }
       })
       .catch((error) => {
-        // Handle any other errors
-        dispatch(showMessage({ message: `An error occurred: ${error.message}`, variant: 'error' }));
+        // Handle any unexpected errors
+        console.error("Error saving company:", error);
+        dispatch(showMessage({
+          message: `An unexpected error occurred: ${error.message}`,
+          variant: 'error',
+          autoHideDuration: 6000
+        }));
+      })
+      .finally(() => {
+        // Reset loading state
+        setIsSaving(false);
       });
   }
 
@@ -171,7 +224,7 @@ function Company(props) {
     setFormSaved(false);
     navigate(`/locations/new/${savedCompanyId}`);
   }
-  
+
 
   function handleRemoveProduct() {
     dispatch(removeProduct(productId)).then(({ payload }) => {
@@ -182,20 +235,85 @@ function Company(props) {
     });
   }
 
-  function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Company updated successfully!" }));
-    });
-  }
+  // Check if any field has been modified, regardless of validation status
+  const isDirty = productId === 'new'
+    ? Object.keys(methods.formState.dirtyFields).length > 0
+    : methods.formState.isDirty;
 
-  const isDirty = productId === 'new' ? methods.formState.dirtyFields?.company_name || methods.formState.dirtyFields?.cvr : methods.formState.isDirty;
-
-  const { showPrompt, handlePromptConfirm, handlePromptCancel, togglePrompt } = useNavigationPrompt({
-    isDirty : isDirty && isValid && !formSaved,
+  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
+    isDirty: isDirty && !formSaved,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
   });
+
+  function handleUpdateProduct() {
+    // Prevent multiple submissions
+    if (isSaving) return;
+
+    // Set loading state
+    setIsSaving(true);
+
+    // Get form values
+    const formData = getValues();
+
+    // Dispatch the saveProduct action
+    dispatch(saveProduct(formData))
+      .then((response) => {
+        // Check if the request was successful
+        if (response.meta.requestStatus === 'fulfilled') {
+          // Show success message
+          dispatch(showMessage({
+            message: "Company updated successfully!",
+            variant: 'success',
+            autoHideDuration: 3000
+          }));
+
+          // Unblock navigation and navigate to companies page
+          if (unblockRef.current) {
+            unblockRef.current();
+            unblockRef.current = null;
+          }
+
+          // Use direct navigation to ensure immediate redirect
+          navigate("/companies");
+        } else if (response.meta.requestStatus === 'rejected') {
+          // Handle validation errors
+          const errors = response.payload?.errors || response.error?.data?.errors;
+
+          if (errors) {
+            // Loop through the errors and show a message for each field
+            for (const [field, messages] of Object.entries(errors)) {
+              dispatch(showMessage({
+                message: `Error in ${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`,
+                variant: 'error',
+                autoHideDuration: 6000
+              }));
+            }
+          } else {
+            // Show generic error message
+            dispatch(showMessage({
+              message: response.error?.message || "Failed to update company. Please try again.",
+              variant: 'error',
+              autoHideDuration: 6000
+            }));
+          }
+        }
+      })
+      .catch((error) => {
+        // Handle any unexpected errors
+        console.error("Error updating company:", error);
+        dispatch(showMessage({
+          message: `An unexpected error occurred: ${error.message}`,
+          variant: 'error',
+          autoHideDuration: 6000
+        }));
+      })
+      .finally(() => {
+        // Reset loading state
+        setIsSaving(false);
+      });
+  }
 
 
 
@@ -265,7 +383,7 @@ function Company(props) {
         }
         scroll={isMobile ? "normal" : "content"}
       />
-      <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={togglePrompt} />
+      <SaveChangesDialog open={showPrompt} onClose={handlePromptCancel} onConfirm={handlePromptConfirm} />
       <FormSavedDialog open={formSaved} onClose={handleCloseFormSavedDialog} onConfirm={handleAddLocation} title="Company Saved" description="Remember to add one or more locations." buttonText="Add Location(s)" />
       <DeleteConfirmationDialog open={openDeleteConfirmation} onClose={toggleDeleteConfirmation} onConfirm={handleRemoveProduct} title="Are you sure you want to delete the company ?" message="This action will permanently delete the company, its related locations and contacts. This cannot be undone."/>
     </FormProvider>

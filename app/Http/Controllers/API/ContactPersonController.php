@@ -55,6 +55,7 @@ class ContactPersonController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:contact_person',
             'phone' => 'nullable|string|max:20',
+            'location_id' => 'required|exists:company_locations,id',
             'services' => 'nullable|array',
             'services.*' => 'exists:categories,id',
             'customer_types' => 'nullable|array',
@@ -71,17 +72,18 @@ class ContactPersonController extends Controller
         $data = $request->all();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $image_name = time().'.'.$image->extension();  
+            $image_name = time().'.'.$image->extension();
             $image->move(public_path('assets/images/contact-person'), $image_name);
             $data['image'] = $image_name;
-        }  
-        if ($user->hasRole('admin') && !$data['user_id']) {
+        }
+
+        if ($user->hasRole('admin') && !isset($data['user_id'])) {
             $data['user_id'] = $user->id;
             $contactPerson = ContactPerson::create($data);
         }
-        else if ($user->hasRole('admin') && $data['user_id']) {
+        else if ($user->hasRole('admin') && isset($data['user_id'])) {
             $contactPerson = ContactPerson::create($data);
-        } 
+        }
         else {
             $contactPerson = $user->contact_person()->create($data);
         }
@@ -109,6 +111,7 @@ class ContactPersonController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:contact_person,email,' . $id,
             'phone' => 'nullable|string|max:20',
+            'location_id' => 'required|exists:company_locations,id',
             'services' => 'nullable|array',
             'services.*' => 'exists:categories,id',
             'customer_types' => 'nullable|array',
@@ -124,7 +127,7 @@ class ContactPersonController extends Controller
         $data = $request->all();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $image_name = time().'.'.$image->extension();  
+            $image_name = time().'.'.$image->extension();
             $image->move(public_path('assets/images/contact-person'), $image_name);
             $data['image'] = $image_name;
             if ($oldImagePath && File::exists(public_path($oldImagePath))) {
@@ -139,25 +142,73 @@ class ContactPersonController extends Controller
             $contactPerson->customerTypes()->sync($data['customer_types']);
         }
         $contactPerson->load(['services']);
-        $contactPerson->load(['customer_types']);
+        $contactPerson->load(['customerTypes']);
         return response()->json($contactPerson);
     }
 
     public function destroy($id)
     {
-        $contactPerson = ContactPerson::find($id);
-        if (!$contactPerson) {
-            return response()->json(['message' => 'Contact person not found'], 404);
-        }
-        if ($contactPerson->customers()->exists()) {
-            return response()->json(['message' => 'Cannot delete contact with associated profile', 'status' => false], 201);
-        }
-        $imagePath = $contactPerson->image;
+        try {
+            // Check if user is authenticated
+            if (!Auth::check()) {
+                return response()->json([
+                    'message' => 'Authentication required to perform this action',
+                    'status' => false
+                ], 401);
+            }
 
-        $contactPerson->delete();
-        if ($imagePath && File::exists(public_path($imagePath))) {
-            File::delete(public_path($imagePath));
+            $user = Auth::user();
+            $contactPerson = ContactPerson::find($id);
+
+            // Check if contact exists
+            if (!$contactPerson) {
+                return response()->json([
+                    'message' => 'Contact person not found',
+                    'status' => false
+                ], 404);
+            }
+
+            // Check permissions (non-admins can only delete their own contacts)
+            if (!$user->hasRole('admin') && $contactPerson->user_id !== $user->id) {
+                return response()->json([
+                    'message' => 'You do not have permission to delete this contact',
+                    'status' => false
+                ], 403);
+            }
+
+            // Check for associated customers - business rule constraint
+            if ($contactPerson->customers()->exists()) {
+                return response()->json([
+                    'message' => 'Cannot delete contact with associated profile',
+                    'status' => false
+                ], 422); // Using 422 Unprocessable Entity for business rule violations
+            }
+
+            $imagePath = $contactPerson->image;
+
+            // Attempt to delete
+            $contactPerson->delete();
+
+            // Clean up image if it exists
+            if ($imagePath && File::exists(public_path($imagePath))) {
+                File::delete(public_path($imagePath));
+            }
+
+            return response()->json([
+                'message' => 'Contact person deleted successfully',
+                'status' => true
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Error deleting contact person: ' . $e->getMessage());
+
+            // Return a server error response
+            return response()->json([
+                'message' => 'Server error occurred while deleting contact',
+                'status' => false,
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-        return response()->json(['message' => 'Contact person deleted successfully', 'status' => true]);
     }
 }

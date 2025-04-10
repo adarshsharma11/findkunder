@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 export default function useNavigationPrompt({ isDirty, onSubmit, history, unblockRef }) {
   const [showPrompt, setShowPrompt] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  
   useEffect(() => {
     if (unblockRef.current) {
       unblockRef.current();
@@ -26,21 +27,40 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
     };
   }, [isDirty]);
 
-  const handlePromptConfirm = async () => {
-    await onSubmit();
+  // Function to unblock navigation without showing prompt
+  const unblockNavigation = () => {
+    if (unblockRef.current) {
+      unblockRef.current();
+      unblockRef.current = null;
+    }
+    setPendingNavigation(null);
     setShowPrompt(false);
+  };
 
-    if (pendingNavigation) {
-      if (unblockRef.current) {
-        unblockRef.current();
-        unblockRef.current = null;
+  const handlePromptConfirm = async () => {
+    // Call onSubmit and get the result
+    const submitResult = await onSubmit();
+
+    // Only close the prompt and navigate away if onSubmit returns true
+    // This allows the form to validate and stay on the page if needed
+    if (submitResult) {
+      setShowPrompt(false);
+
+      if (pendingNavigation) {
+        unblockNavigation();
       }
-      setPendingNavigation(null);
+    } else {
+      // Keep the dialog open if validation failed
+      setShowPrompt(false);
     }
   };
 
-  const togglePrompt = () => {
-    setShowPrompt(!showPrompt);
+  const togglePrompt = (show = null) => {
+    if (show !== null) {
+      setShowPrompt(show);
+    } else {
+      setShowPrompt(!showPrompt);
+    }
   };
 
   const handlePromptCancel = () => {
@@ -57,5 +77,12 @@ export default function useNavigationPrompt({ isDirty, onSubmit, history, unbloc
     }
   };
 
-  return { showPrompt, pendingNavigation, handlePromptConfirm, handlePromptCancel, togglePrompt };
+  return { 
+    showPrompt, 
+    pendingNavigation, 
+    handlePromptConfirm, 
+    handlePromptCancel, 
+    togglePrompt,
+    unblockNavigation 
+  };
 }

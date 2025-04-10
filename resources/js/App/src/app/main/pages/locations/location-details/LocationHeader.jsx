@@ -50,9 +50,19 @@ function ProductHeader(props) {
   }
   
   function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
-      dispatch(showMessage({ message: "Location updated successfully!" }));
-    });
+    const values = getValues();
+    dispatch(saveProduct(values))
+      .then(({ payload }) => {
+        if (payload) {
+          dispatch(showMessage({ message: "Location updated successfully!", variant: 'success' }));
+          navigate(`/companies/${companyId}`);
+        } else {
+          dispatch(showMessage({ message: "Failed to update location", variant: 'error' }));
+        }
+      })
+      .catch((error) => {
+        dispatch(showMessage({ message: `Update error: ${error.message}`, variant: 'error' }));
+      });
   }
 
   return (

@@ -39,6 +39,7 @@ import useNavigationPrompt from "../../../../hooks/use-navigation-prompt";
 import { showMessage } from "app/store/fuse/messageSlice";
 import FormSavedDialog from "../../../../shared-components/form-saved-dialog";
 import history from '@history';
+
 const defaultValues = {
   location_id: '',
   title: '',
@@ -79,63 +80,35 @@ function Contact(props) {
   const form = watch();
   const { productId, locationId, companyId } = routeParams;
 
-
-  function handleSaveProduct(isAddAnother = false) {
-    dispatch(addNewPerson(getValues())).then(() => {
-      dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
-      if (isAddAnother) {
-        reset({...defaultValues, location_id: locationId});
-      } else {
-        setFormSaved(true);
-      }
-    }).catch((err) => {
-      console.error("Error saving contact person:", err);
-      dispatch(showMessage({ message: "Failed to save contact person. Please try again.", variant: "error" }));
-    });
-  }
-
-  function handleUpdateProduct() {
-    dispatch(saveProduct(getValues())).then(() => {
-      dispatch(
-        showMessage({ message: "Contact person updated successfully!", variant: 'success' })
-      );
-    }).catch((err) => {
-      console.error("Error updating contact person:", err);
-      dispatch(showMessage({ message: "Failed to update contact person. Please try again.", variant: "error" }));
-    });
-  }
-
+  // Define handleSubmitProfile before using it in useNavigationPrompt
   const handleSubmitProfile = async () => {
     if (productId === "new") {
+      // Trigger validation to show all field errors
       const isValid = await methods.trigger();
-      if (!isValid) {
-        dispatch(showMessage({ message: "Please fill in all required fields correctly", variant: "error" }));
-        return;
+
+      // If form is valid and we have dirty fields, save the company
+      if (isValid && Object.keys(methods.formState.dirtyFields).length > 0) {
+        handleSaveProduct();
+        return true;
       }
-      try {
-        await handleSaveProduct();
-      } catch (error) {
-        console.error("Error in handleSubmitProfile:", error);
-        dispatch(showMessage({ 
-          message: "An unexpected error occurred. Please try again.", 
-          variant: "error" 
-        }));
-      }
-    } else {
-      handleUpdateProduct();
+
+      // Return false to keep the user on the page but still show validation errors
+      return false;
     }
+    return true;
   };
 
+  // Check if any field has been modified, regardless of validation status
+  const isDirty = productId === 'new'
+    ? Object.keys(dirtyFields).length > 0
+    : formState.isDirty;
 
-
-  const isDirty = productId === 'new' ? dirtyFields?.location_id || dirtyFields?.title || dirtyFields?.first_name || dirtyFields?.last_name || dirtyFields?.phone || dirtyFields?.email : formState.isDirty;
-
-  const { showPrompt, handlePromptConfirm, handlePromptCancel } = useNavigationPrompt({
-    isDirty: isDirty && !openDeleteConfirmation && !formSaved && isValid,
+  const { showPrompt, handlePromptConfirm, handlePromptCancel, unblockNavigation } = useNavigationPrompt({
+    isDirty: isDirty && !openDeleteConfirmation && !formSaved,
     onSubmit: handleSubmitProfile,
     history,
     unblockRef,
-  }); 
+  });
 
   useDeepCompareEffect(() => {
     function updateProductState() {
@@ -214,16 +187,136 @@ function Contact(props) {
 
   useEffect(() => {
     if (locationId && locations) {
-      setValue('location_id', locationId);
+      setValue('location_id', String(locationId));
     }
-  }, [locationId, locations]);
+  }, [locationId, locations, setValue]);
+
+  function handleSaveProduct(isAddAnother = false) {
+    const formValues = getValues();
+    // Ensure location_id exists
+    if (!formValues.location_id) {
+      dispatch(showMessage({
+        message: "Location is required. Please select a location before saving.",
+        variant: "error"
+      }));
+      return;
+    }
+
+    dispatch(addNewPerson(formValues)).then(({payload}) => {
+      const isSuccess = payload.status !== false;
+      if (isSuccess) {
+        dispatch(showMessage({ message: "Contact person added successfully!", variant: "success" }));
+        if (isAddAnother) {
+          reset({...defaultValues, location_id: String(locationId)});
+        } else {
+          setFormSaved(true);
+        }
+      } else {
+        dispatch(showMessage({ message: payload.message || "Failed to add contact person", variant: "error" }));
+      }
+    }).catch((err) => {
+      // Reverted to original error handling using showMessage
+      if (err.response && err.response.data) {
+        if (err.response.data.error && typeof err.response.data.error === 'object') {
+          // Format validation errors
+          const errorMessage = Object.entries(err.response.data.error)
+            .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+            .join(' | ');
+
+          dispatch(showMessage({
+            message: `Validation failed: ${errorMessage}`,
+            variant: "error",
+            autoHideDuration: 6000
+          }));
+        } else if (err.response.data.message) {
+          // Show API error message
+          dispatch(showMessage({
+            message: err.response.data.message,
+            variant: "error"
+          }));
+        } else {
+          // Generic error
+          dispatch(showMessage({
+            message: "Failed to save contact person. Please try again.",
+            variant: "error"
+          }));
+        }
+      } else {
+        // Generic error
+        dispatch(showMessage({
+          message: "Failed to save contact person. Please check your network connection.",
+          variant: "error"
+        }));
+      }
+    });
+  }
+
+  function handleUpdateProduct() {
+    const formValues = getValues();
+    if (!formValues.location_id) {
+      dispatch(showMessage({
+        message: "Location is required. Please select a location before updating.",
+        variant: "error"
+      }));
+      return;
+    }
+    dispatch(saveProduct(formValues))
+      .then(({ payload }) => {
+        if (payload) {
+          unblockNavigation();
+          dispatch(showMessage({
+            message: "Contact person updated successfully!",
+            variant: 'success'
+          }));
+        } else {
+          // Reverted to simple error message
+          dispatch(showMessage({
+            message: "Failed to update contact person",
+            variant: 'error'
+          }));
+        }
+      })
+      .catch((err) => {
+        console.error("Error updating contact person:", err);
+
+        // Reverted to original error handling using showMessage
+        if (err.response && err.response.data) {
+          if (err.response.data.error && typeof err.response.data.error === 'object') {
+            const errorMessage = Object.entries(err.response.data.error)
+              .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+              .join(' | ');
+
+            dispatch(showMessage({
+              message: `Validation failed: ${errorMessage}`,
+              variant: "error",
+              autoHideDuration: 6000
+            }));
+          } else if (err.response.data.message) {
+            dispatch(showMessage({
+              message: err.response.data.message,
+              variant: "error"
+            }));
+          } else {
+            dispatch(showMessage({
+              message: "Failed to update contact person. Please try again.",
+              variant: "error"
+            }));
+          }
+        } else {
+          dispatch(showMessage({
+            message: `Update error: ${err.message}`,
+            variant: "error"
+          }));
+        }
+      });
+  }
 
   function handleDeleteConfirmation() {
     dispatch(removeProduct(productId)).then(({ payload }) => {
       if (payload) {
         dispatch(showMessage({ message: payload.message, variant: payload.status ? 'success' : 'error',  autoHideDuration: 600000, }));
         if (payload.status) {
-          navigate(`/locations/${locationId}`);
+          navigate(`/locations/${locationId}/${companyId}`);
         }
       }
     });
@@ -236,10 +329,10 @@ function Contact(props) {
   /**
    * Tab Change
    */
-  function handleTabChange(event, value) {
+  function handleTabChange(_, value) {
     setTabValue(value);
   }
-  
+
   function handleAddContact() {
     setFormSaved(false);
   }
@@ -332,7 +425,18 @@ function Contact(props) {
             </Tabs>
             <div className="p-16 sm:p-24 max-w-3xl">
               <div className={tabValue !== 0 ? "hidden" : ""}>
-                <BasicInfoTab id={routeParams?.productId} isAdmin={isAdmin} product={product} locations={locations} categories={categories} contactTypes={contactTypes} toggleDeleteConfirmation={toggleDeleteConfirmation} handleSaveProduct={handleSaveProduct} handleUpdateProduct={handleUpdateProduct} />
+                <BasicInfoTab 
+                  id={routeParams?.productId} 
+                  isAdmin={isAdmin} 
+                  product={product} 
+                  locations={locations} 
+                  categories={categories} 
+                  contactTypes={contactTypes} 
+                  toggleDeleteConfirmation={toggleDeleteConfirmation} 
+                  handleSaveProduct={handleSubmitProfile} 
+                  handleUpdateProduct={handleUpdateProduct}
+                  handleSubmitProfile={handleSubmitProfile} 
+                />
               </div>
             </div>
           </>
@@ -356,7 +460,7 @@ function Contact(props) {
         onClose={handleDone}
         onConfirm={handleAddContact}
         title="Contact Person Saved"
-        description="What do you want to do now?"  
+        description="What do you want to do now?"
         buttonText="Add more contacts to this location"
         buttonText2="Add another location to this company"
         handleButton2={handleAddLocation}

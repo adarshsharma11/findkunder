@@ -127,34 +127,42 @@ function BasicInfoTab(props) {
         render={({ field }) => (
           <>
             <FormControl sx={{ width: '100%'}}  error={!!errors.location_id}>
-            <InputLabel id="location_id">Select Location *</InputLabel>
+            <InputLabel id="location_id" required error={!!errors.location_id}>Select Location</InputLabel>
             <Select
               {...field}
               value={field.value || ""}
               onChange={(e) => {
-                field.onChange(e.target.value);
+                const value = e.target.value ? String(e.target.value) : "";
+                field.onChange(value);
+                console.log("Location selected:", value);
               }}
               className="mt-8 mb-16"
               required
+              error={!!errors.location_id}
               labelId="location_id"
               id="location_id"
               variant="outlined"
-              input={<OutlinedInput label="Select Location *"/>}
+              input={<OutlinedInput label="Select Location" required />}
               fullWidth
               inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="" disabled>
                 Select Location
               </MenuItem>
-              {locations &&
-                locations?.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.street}
+              {locations && locations.length === 0 && (
+                <MenuItem value="" disabled>
+                  No locations available - please create a location first
+                </MenuItem>
+              )}
+              {locations && locations.length > 0 &&
+                locations.map((option) => (
+                  <MenuItem key={option.id} value={String(option.id)}>
+                    {option.street || "Unknown"} - {option.city || "Unknown"}
                   </MenuItem>
                 ))}
             </Select>
             {errors.location_id && 
-                <FormHelperText>{errors?.location_id?.message}</FormHelperText>
+                <FormHelperText error>{errors?.location_id?.message || "Location is required"}</FormHelperText>
               }
             </FormControl>
           </>

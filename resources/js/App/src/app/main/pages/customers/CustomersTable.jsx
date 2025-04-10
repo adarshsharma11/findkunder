@@ -73,7 +73,6 @@ function CutomersTable(props) {
           regionMatch ||
           categoriesMatch ||
           customerTypesMatch
-          // Add more conditions with logical OR (||) as needed
         );
       })
     );

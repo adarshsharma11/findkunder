@@ -399,7 +399,7 @@ function CompaniesTable(props) {
           "aria-label": "Previous Page",
         }}
         nextIconButtonProps={{
-          "aria-label": "Next Page",
+           "aria-label": "Next Page",
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}

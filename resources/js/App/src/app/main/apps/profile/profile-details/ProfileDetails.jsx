@@ -40,7 +40,7 @@ const defaultSecurityValues = {
     oldPassword: "",
     password: "",
     passwordConfirm: "",
-  };  
+  };
 function ProfileAppDetails() {
   const user = useSelector(selectUser);
   const isAdmin = user?.role === authRoles.admin[0];
@@ -64,10 +64,21 @@ function ProfileAppDetails() {
   const { handleSubmit: handleSubmitSecurity } = securityMethods;
 
   const handleSubmitProfile = async () => {
-    handleSubmit(async (values) => {
-        await handleUpdateProfile(values);
-        })();
-    };
+    // Trigger form validation and get the result
+    const isValid = await methods.trigger();
+
+    // If the form is valid and has changes, save the data
+    if (isValid && isDirty) {
+      return handleSubmit(async (values) => {
+        const result = await handleUpdateProfile(values);
+        return result; // Return the result to determine if navigation should proceed
+      })();
+    }
+
+    // If the form is not valid, return false to prevent navigation
+    // but still show validation errors
+    return false;
+  };
 
   const { handlePromptConfirm, handlePromptCancel, showPrompt } = useNavigationPrompt({
     isDirty,
@@ -97,7 +108,7 @@ function ProfileAppDetails() {
 
 
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
-  
+
 
   const handleUpdateProfile = async (values) => {
     try {
@@ -121,7 +132,7 @@ function ProfileAppDetails() {
           displayName: userInfo.name,
           email: userInfo.email,
           totalCompanies: userInfo.companies_count,
-          totalProfiles: userInfo.customers_count, 
+          totalProfiles: userInfo.customers_count,
           totalContactPersons: userInfo.contact_person_count,
           company: userInfo.company,
           cvr: userInfo.cvr,
@@ -133,16 +144,16 @@ function ProfileAppDetails() {
       };
 
       dispatch(updateUserData(newUser));
-      dispatch(showMessage({ 
-        message: "Profile updated successfully!", 
+      dispatch(showMessage({
+        message: "Profile updated successfully!",
         variant: 'success'
       }));
       return true;
 
     } catch (error) {
-      dispatch(showMessage({ 
-        message: "Failed to update profile.", 
-        variant: "error" 
+      dispatch(showMessage({
+        message: "Failed to update profile.",
+        variant: "error"
       }));
       return false;
     } finally {
@@ -157,7 +168,7 @@ const handleSubmitSecurityProfile = async () => {
         setLoadingPassword(false);
     })();
 };
-    
+
   const handleDeleteProfile = () => {
     AuthService.deleteProfile()
       .then((response) => {
@@ -180,19 +191,19 @@ const handleSubmitSecurityProfile = async () => {
     <Root
       content={
         <div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
-          <ProfileDetailTab 
-            user={user} 
-            isAdmin={isAdmin} 
-            isOwner={isOwner} 
-            handleDeleteProfile={handleDeleteProfile} 
-            handleUpdateProfile={handleSubmitProfile} 
-            handleSubmitSecurityProfile={handleSubmitSecurityProfile} 
-            loading={loading} 
-            loadingPassword={loadingPassword} 
-            methods={methods} 
-            securityMethods={securityMethods} 
-          />        
-          <SaveChangesDialog 
+          <ProfileDetailTab
+            user={user}
+            isAdmin={isAdmin}
+            isOwner={isOwner}
+            handleDeleteProfile={handleDeleteProfile}
+            handleUpdateProfile={handleSubmitProfile}
+            handleSubmitSecurityProfile={handleSubmitSecurityProfile}
+            loading={loading}
+            loadingPassword={loadingPassword}
+            methods={methods}
+            securityMethods={securityMethods}
+          />
+          <SaveChangesDialog
             open={showPrompt}
             onConfirm={handlePromptConfirm}
             onClose={handlePromptCancel}
